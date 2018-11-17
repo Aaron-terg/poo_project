@@ -1,7 +1,7 @@
-package Models;
+package Models.planet;
 
 /**
- * <b>Planet class represent the planet</b>
+ * <b>Neutral class represent a planet not own by a player yet</b>
  * <p>
  *     A planet has the following property:
  *     <ul>
@@ -12,18 +12,23 @@ package Models;
  *     </li>
  * </p>
  * 
- * @see Player
- * @see SpaceShip
+ * @see PlanetStateIntermediate
  * 
  * @author meryl
  * @version 1.0
  *
  */
-public class Planet {
-
-	/**
-	 * The owner of the planet
-	 */
-	private Player owner;
+public class Neutral extends PlanetStateIntermediate{
 	
+	/**
+	 * Owned Planet Constructor
+	 * <p>
+	 * 		Instanciate a neutral planet with default value.
+	 * </p>
+	 */
+	public Neutral() {
+		super(null, null, 0);
+	}
+	
+
 }

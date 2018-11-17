@@ -2,6 +2,8 @@ package Models;
 
 import java.util.Collection;
 
+import Models.planet.Planet;
+
 /**
  * <b>Player class represent the player</b>
  * <p>
@@ -21,10 +23,15 @@ import java.util.Collection;
  */
 public class Player {
 
+	public String playerTag;
 	/**
 	 * The planet owned
 	 * 
 	 * 
 	 */
 	private Collection<Planet> territory;
+	
+	public Player() {
+		this.playerTag = "default";
+	}
 }
