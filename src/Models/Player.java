@@ -23,14 +23,21 @@ import Models.planet.Planet;
  */
 public class Player {
 
+	/**
+	 * The player tag
+	 */
 	public String playerTag;
+	
 	/**
 	 * The planet owned
 	 * 
-	 * 
+	 * @see Planet
 	 */
 	private Collection<Planet> territory;
 	
+	/**
+	 * The default constructor, set the player tag to default.
+	 */
 	public Player() {
 		this.playerTag = "default";
 	}

@@ -3,31 +3,25 @@ package Models.planet;
 /**
  * <b>Neutral class represent a planet not own by a player yet</b>
  * <p>
- *     A planet has the following property:
- *     <ul>
- *         <li>The owner of the planet if there is one</li>
- *         <li>The spaceship type it produce</li>
- *         <li>The production rate of spaceship</li>
- *         <li>The number of ship on it</li>
- *     </li>
+ *     A planet has the owner of the planet if there is one.
  * </p>
  * 
  * @see PlanetStateIntermediate
  * 
  * @author meryl
- * @version 1.0
+ * @version 1.1
  *
  */
 public class Neutral extends PlanetStateIntermediate{
 	
 	/**
-	 * Owned Planet Constructor
+	 * Neutral Planet Constructor
 	 * <p>
 	 * 		Instanciate a neutral planet with default value.
 	 * </p>
 	 */
 	public Neutral() {
-		super(null, null, 0);
+		super(null);
 	}
 	
 
