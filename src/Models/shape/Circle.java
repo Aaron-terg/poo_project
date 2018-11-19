@@ -1,4 +1,4 @@
-package shape;
+package Models.shape;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -47,7 +47,7 @@ public class Circle implements Shape{
 	}
 
 	@Override
-	public void render(GraphicsContext gc) {
+	public void drawShape(GraphicsContext gc) {
 		Paint gcFill = gc.getFill();
 		Paint gcStroke = gc.getStroke();
 		double gcLineWidth = gc.getLineWidth();

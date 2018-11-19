@@ -1,12 +1,12 @@
 package Models.Spaceship;
 
-import javafx.scene.shape.Rectangle;
+import Models.shape.Polygon;
 
 public class BasicSpaceshipType extends SpaceshipType {
 	
 	
 	public BasicSpaceshipType() {
-		super(1, 100, 2, new Rectangle(2, 2));
+		super(1, 100, 2, new Polygon());
 	}
 	
 	

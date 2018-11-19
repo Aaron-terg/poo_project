@@ -2,8 +2,10 @@ package Models.planet;
 
 import Models.Player;
 import Models.Spaceship.SpaceshipType;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Shape;
+import Models.shape.Circle;
+import Models.shape.Renderable;
+import Models.shape.Shape;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  * <b>Planet class represent the planet</b>
@@ -25,7 +27,7 @@ import javafx.scene.shape.Shape;
  * @version 2.1
  *
  */
-public class Planet {
+public class Planet implements Renderable{
 
 	/**
 	 * The number of spaceship on the planet.
@@ -60,13 +62,13 @@ public class Planet {
 	private int shipOnPlanet;
 	
 	/**
-	 * The shape of the planet
+	 * The Models.shape of the planet
 	 * 
 	 * @see javafx.scene.shape
 	 * @see Planet#getPlanetShape()
 	 * @see Planet#setPlanetShape(PlanetShape)
 	 */
-	private Shape planetShape = new Circle(50, 50, 50);
+	private Shape planetShape = new Circle(50,50,50,100,100,100);
 	
 	/**
 	 * Planet Constructor
@@ -149,9 +151,9 @@ public class Planet {
 	}
 	
 	/**
-	 * Get the shape of the planet.
+	 * Get the Models.shape of the planet.
 	 * 
-	 * @return the shape of the planet.
+	 * @return the Models.shape of the planet.
 	 * 
 	 * @see javafx.scene.shape
 	 * @see Planet#planetShape
@@ -161,10 +163,10 @@ public class Planet {
 	}
 	
 	/**
-	 * set the shape of the planet.
+	 * set the Models.shape of the planet.
 	 * 
-	 * @param shape
-	 * 			The new shape of the planet.
+	 * @param Models.shape
+	 * 			The new Models.shape of the planet.
 	 * 
 	 * @see javafx.scene#shape
 	 * @see Planet#planetShape
@@ -219,6 +221,11 @@ public class Planet {
 	 */
 	public void newOwner(Player player) {
 		this.planetState.setOwner(player);
+	}
+
+	@Override
+	public void render(GraphicsContext gc) {
+		this.planetShape.drawShape(gc);
 	}
 	
 	

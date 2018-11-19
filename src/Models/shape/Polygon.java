@@ -1,4 +1,5 @@
-package shape;
+package Models.shape;
+
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -9,6 +10,14 @@ public class Polygon implements Shape{
 	private double headX, headY;
 	private double[] x, y; 
 	private Color rgba;
+	
+	public Polygon() {
+		this.x = new double[]{100,150,100};
+		this.headX = x[0];
+		this.y = new double[]{50,100,25};
+		this.headY = y[0];
+		this.rgba = Color.ALICEBLUE;
+	}
 	
 	@Override
 	public double[] position() {
@@ -23,7 +32,7 @@ public class Polygon implements Shape{
 	}
 
 	@Override
-	public void render(GraphicsContext gc) {
+	public void drawShape(GraphicsContext gc) {
 
 		Paint gcFill = gc.getFill();
 		Paint gcStroke = gc.getStroke();

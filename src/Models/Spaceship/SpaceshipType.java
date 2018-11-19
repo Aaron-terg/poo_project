@@ -1,8 +1,10 @@
 package Models.Spaceship;
 
-import javafx.scene.shape.Shape;
+import Models.shape.Renderable;
+import Models.shape.Shape;
+import javafx.scene.canvas.GraphicsContext;
 
-public abstract class SpaceshipType {
+public abstract class SpaceshipType implements Renderable{
 	
 	private int attPower;
 	private int speed;
@@ -36,5 +38,9 @@ public abstract class SpaceshipType {
 	
 	public Shape getSpaceshipShape() {
 		return spaceshipShape;
+	}
+	
+	public void render(GraphicsContext gc) {
+		this.spaceshipShape.drawShape(gc);
 	}
 }
