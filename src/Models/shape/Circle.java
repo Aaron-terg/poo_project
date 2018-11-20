@@ -7,6 +7,7 @@ import javafx.scene.paint.Paint;
 public class Circle implements Shape{
 	
 	private double x, y;
+	private int maxWidth, maxHeight;
 	private double radius;
 	private Color rgba;
 	
@@ -17,19 +18,21 @@ public class Circle implements Shape{
 		this.rgba = Color.BLACK;
 	}
 	
-	public Circle(double x, double y, double radius, int r, int g, int b, double a) {
+	public Circle(double x, double y, double radius, int r, int g, int b, double a, int w, int h) {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
 		this.rgba = Color.rgb(r, g, b, a);
+		this.maxWidth= w;
+		this.maxHeight=h;
 	}
 	
-	public Circle(double x, double y, double radius, int r, int g, int b) {
-		this(x, y, radius, r, g, b, 1);
+	public Circle(double x, double y, double radius, int r, int g, int b, int w, int h) {
+		this(x, y, radius, r, g, b, 1, w,h);
 	}
 	
-	public Circle(double x, double y, double radius, int[] rgb) {
-		this(x, y, radius, rgb[0], rgb[1], rgb[2], 1);
+	public Circle(double x, double y, double radius, int[] rgb, int w, int h) {
+		this(x, y, radius, rgb[0], rgb[1], rgb[2], 1, w, h);
 	}
 	
 	@Override
@@ -40,11 +43,16 @@ public class Circle implements Shape{
 
 	@Override
 	public boolean intersects(Shape shape) {
-		// TODO find the condition 
-		if(shape instanceof Circle)
-			return true;
+		if(shape instanceof Circle) {
+			double newRadius  = this.radius + ((Circle)shape).radius;
+			return (shape.position()[0] <= this.position()[0] + newRadius
+					||  shape.position()[0] <= this.position()[0] - newRadius)
+					&& (shape.position()[1] <= this.position()[1] + newRadius
+					|| shape.position()[1] <= this.position()[1] - newRadius);
+		}
 		return false;
 	}
+	
 
 	@Override
 	public void drawShape(GraphicsContext gc) {
@@ -59,5 +67,34 @@ public class Circle implements Shape{
 		gc.setStroke(gcStroke);
 		gc.setLineWidth(gcLineWidth);
 	}
-
+	
+	/*public void setPosition(double x, double y) {
+		this.x = x; 
+		this.y = y;
+		validPosition();
+	}*/
+	
+	
+	public void validPosition() {
+		if(this.x+radius >= this.maxWidth) {
+			this.x=this.x-radius;	
+		}
+		if(this.x-radius <=0) {
+			this.x=(this.x+radius);
+		}
+		
+		if(y+radius >= this.maxHeight) {
+			this.y=y-radius;
+		}
+		if(y-radius<=0) {
+			this.y = y+radius;
+		}
+		
+	}
+	
+	
+	
+	
+	
 }
+	

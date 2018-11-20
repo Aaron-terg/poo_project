@@ -68,15 +68,22 @@ public class Planet implements Renderable{
 	 * @see Planet#getPlanetShape()
 	 * @see Planet#setPlanetShape(PlanetShape)
 	 */
-	private Shape planetShape = new Circle(50,50,50,100,100,100);
 	
+	private Shape planetShape;
+
 	/**
 	 * Planet Constructor
 	 * 
 	 */
+	
 	public Planet() {
 		if(isOwn())
 			this.productionRate = (int)((float)1/spaceshipType.getProductionTime());
+		
+	}
+	public Planet(double x, double y, double r, int w, int h) {
+		this.planetShape = new Circle(x,y,r,100,100,100, w, h);
+		planetShape.validPosition();
 		
 	}
 	/***********************************\
@@ -227,7 +234,9 @@ public class Planet implements Renderable{
 	public void render(GraphicsContext gc) {
 		this.planetShape.drawShape(gc);
 	}
-	
+	public boolean superimposed(Planet p) {
+		return(!(this.planetShape.intersects(p.planetShape)));
+	}
 	
 	
 }

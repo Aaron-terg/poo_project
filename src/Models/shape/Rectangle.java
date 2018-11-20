@@ -8,6 +8,7 @@ public class Rectangle implements Shape{
 
 	private double x, y;
 	private double width, height;
+	private double maxWidth, maxHeight;
 	private Color rgba;
 	
 	
@@ -61,5 +62,9 @@ public class Rectangle implements Shape{
 		gc.setStroke(gcStroke);
 		gc.setLineWidth(gcLineWidth);
 	}
+	
+	public void validPosition() {
+		
+		}
 
 }

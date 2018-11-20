@@ -45,5 +45,8 @@ public class Polygon implements Shape{
 		gc.setStroke(gcStroke);
 		gc.setLineWidth(gcLineWidth);
 	}
+	public void validPosition() {
+		
+	}
 
 }

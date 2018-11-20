@@ -1,5 +1,8 @@
 package Views;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import Models.Player;
 import Models.Spaceship.BasicSpaceshipType;
 import Models.Spaceship.SpaceshipType;
@@ -36,10 +39,17 @@ public class TestObject extends Application{
 		
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 
-		Planet planet = new Planet();
 		SpaceshipType spaceship = new BasicSpaceshipType();
 		
-		planet.render(gc);
+		Random randomNumber = new Random();
+		ArrayList<Planet> planets = new ArrayList<Planet>();
+		int numberOfPlanets = randomNumber.nextInt(10)+4;
+		for(int i = 0; i< numberOfPlanets; i++) {
+			Planet planet = new Planet(WIDTH*randomNumber.nextDouble(), HEIGHT*randomNumber.nextDouble(), randomNumber.nextInt(100)+10, WIDTH, HEIGHT);
+				planets.add(planet);
+				planet.render(gc);
+			}	
+		
 		spaceship.render(gc);
 		stage.setScene(scene);
 		stage.show();
