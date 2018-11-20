@@ -19,6 +19,14 @@ public class Polygon implements Shape{
 		this.rgba = Color.ALICEBLUE;
 	}
 	
+	public double[] getX() {
+		return x;
+	}
+
+	public double[] getY() {
+		return y;
+	}
+
 	@Override
 	public double[] position() {
 		double[] position = {this.headX, this.headY};
