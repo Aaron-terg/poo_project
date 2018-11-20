@@ -14,7 +14,8 @@ import javafx.scene.canvas.GraphicsContext;
 public interface Shape {
 	public double[] position();
 	public boolean intersects(Shape shape);
+	public double distance(Shape shape);
 	public void drawShape(GraphicsContext gc);
-	public void validPosition();
+	public void validPosition(double frameWidth, double frameHeight);
 	
 }

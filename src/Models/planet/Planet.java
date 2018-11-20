@@ -5,6 +5,7 @@ import Models.Spaceship.SpaceshipType;
 import Models.shape.Circle;
 import Models.shape.Renderable;
 import Models.shape.Shape;
+import Views.TestObject;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
@@ -77,13 +78,13 @@ public class Planet implements Renderable{
 	 */
 	
 	public Planet() {
-		if(isOwn())
-			this.productionRate = (int)((float)1/spaceshipType.getProductionTime());
 		
 	}
-	public Planet(double x, double y, double r, int w, int h) {
-		this.planetShape = new Circle(x,y,r,100,100,100, w, h);
-		planetShape.validPosition();
+	public Planet(double pointX, double pointY, double radius, int[] rgb) {
+		this.planetShape = new Circle(pointX, pointY, radius, rgb[0], rgb[1], rgb[2]);
+		double frameWidth = TestObject.WIDTH;
+		double frameHeight = TestObject.HEIGHT;
+		planetShape.validPosition(frameWidth, frameHeight);
 		
 	}
 	/***********************************\
@@ -212,13 +213,13 @@ public class Planet implements Renderable{
 		return (this.owner != null); 
 	}
 	
+	public boolean superimposed(Planet p) {
+		return ((this.getPlanetShape().distance(p.getPlanetShape()) > 5));
+	}
+	
 	@Override
 	public void render(GraphicsContext gc) {
 		this.planetShape.drawShape(gc);
 	}
-	public boolean superimposed(Planet p) {
-		return(!(this.planetShape.intersects(p.planetShape)));
-	}
-	
-	
+
 }

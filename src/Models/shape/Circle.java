@@ -7,7 +7,6 @@ import javafx.scene.paint.Paint;
 public class Circle implements Shape{
 	
 	private double x, y;
-	private int maxWidth, maxHeight;
 	private double radius;
 	private Color rgba;
 	
@@ -18,21 +17,23 @@ public class Circle implements Shape{
 		this.rgba = Color.BLACK;
 	}
 	
-	public Circle(double x, double y, double radius, int r, int g, int b, double a, int w, int h) {
+	public Circle(double x, double y, double radius, int r, int g, int b, double a) {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
 		this.rgba = Color.rgb(r, g, b, a);
-		this.maxWidth= w;
-		this.maxHeight=h;
 	}
 	
-	public Circle(double x, double y, double radius, int r, int g, int b, int w, int h) {
-		this(x, y, radius, r, g, b, 1, w,h);
+	public Circle(double x, double y, double radius, int r, int g, int b) {
+		this(x, y, radius, r, g, b, 1);
 	}
 	
-	public Circle(double x, double y, double radius, int[] rgb, int w, int h) {
-		this(x, y, radius, rgb[0], rgb[1], rgb[2], 1, w, h);
+	public Circle(double x, double y, double radius, int[] rgb) {
+		this(x, y, radius, rgb[0], rgb[1], rgb[2], 1);
+	}
+	
+	public double radius() {
+		return this.radius;
 	}
 	
 	@Override
@@ -45,14 +46,14 @@ public class Circle implements Shape{
 	public boolean intersects(Shape shape) {
 		// TODO find the condition 
 		if(shape instanceof Circle) {
-			double newRadius  = this.radius + ((Circle)shape).radius;
-			return (shape.position()[0] <= this.position()[0] + newRadius
-					||  shape.position()[0] <= this.position()[0] - newRadius)
-					&& (shape.position()[1] <= this.position()[1] + newRadius
-					|| shape.position()[1] <= this.position()[1] - newRadius);
+			double newRadius  = this.radius + ((Circle)shape).radius();
+			return Math.abs(shape.position()[0] - this.position()[0])  <= newRadius
+					&& Math.abs(shape.position()[1] - this.position()[1])  <= newRadius;
+					
+			//return this.distance(shape) > 0;
 		}
-		/*
-		 * if(shape instanceof Rectangle) {
+		
+		if(shape instanceof Rectangle) {
 			Rectangle rect = (Rectangle) shape;
 			double rectX = rect.position()[0];
 			double rectY = rect.position()[1];
@@ -74,7 +75,7 @@ public class Circle implements Shape{
 			}
 			return result;
 		}
-		*/
+		
 
 		if(shape instanceof Polygon) {
 			Polygon polygon = (Polygon) shape;
@@ -88,6 +89,40 @@ public class Circle implements Shape{
 	
 
 	@Override
+	public double distance(Shape shape) {
+		// TODO Auto-generated method stub
+		if(shape instanceof Circle) {
+			Circle circle = (Circle)shape;
+			double radiusSum  = this.radius + circle.radius();
+			return this.distPoint(shape.position()[0], shape.position()[1]) - radiusSum;
+		}
+		if(shape instanceof Rectangle) {
+			Rectangle rect = (Rectangle) shape;
+			double rectX = rect.position()[0];
+			double rectY = rect.position()[1];
+			double[] pointsX = new double[] {
+					rectX-(rect.width())/2 , rectX+rect.width()/2
+			};
+			double[] pointsY = new double[] {
+					rectY - rect.height()/2, rectY + (rect.height())/2
+			};
+			double distTopL = this.distPoint(pointsX[0], pointsY[0]);
+			double distTopR = this.distPoint(pointsX[1], pointsY[0]);
+			double distBotL = this.distPoint(pointsX[0], pointsY[1]);
+			double distBotR = this.distPoint(pointsX[1], pointsY[1]);
+			
+		}
+		if(shape instanceof Polygon) {
+			
+		}
+		return -1;
+	}
+	
+	public double distPoint(double p1X, double p1Y) {
+		return Math.sqrt(Math.pow((p1X - this.x), 2) + Math.pow((p1Y - this.y), 2));
+	}
+
+	@Override
 	public void drawShape(GraphicsContext gc) {
 		Paint gcFill = gc.getFill();
 		Paint gcStroke = gc.getStroke();
@@ -95,7 +130,7 @@ public class Circle implements Shape{
 		gc.setFill(rgba);
 		gc.setStroke(Color.BLACK);
 		gc.setLineWidth(1);
-		gc.fillOval(x, y, radius, radius);
+		gc.fillOval(x - radius, y - radius, radius*2, radius*2);
 		gc.setFill(gcFill);
 		gc.setStroke(gcStroke);
 		gc.setLineWidth(gcLineWidth);
@@ -107,27 +142,22 @@ public class Circle implements Shape{
 		validPosition();
 	}*/
 	
-	
-	public void validPosition() {
-		if(this.x+radius >= this.maxWidth) {
-			this.x=this.x-radius;	
-		}
-		if(this.x-radius <=0) {
-			this.x=(this.x+radius);
-		}
+	@Override
+	public void validPosition(double frameWidth, double frameHeight) {
+		double offset = this.radius + 5;
+		if(this.x + this.radius >= frameWidth) 
+			this.x -= offset;	
 		
-		if(y+radius >= this.maxHeight) {
-			this.y=y-radius;
-		}
-		if(y-radius<=0) {
-			this.y = y+radius;
-		}
+		if(this.x - this.radius <= 0)
+			this.x += offset;
+		
+		if(this.y + this.radius >= frameHeight)
+			this.y -= offset;
+		
+		if(this.y - this.radius <= 0)
+			this.y += offset;
 		
 	}
-	
-	
-	
-	
 	
 }
 	
