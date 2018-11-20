@@ -38,6 +38,21 @@ public class Polygon implements Shape{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Override
+	public double distance(Shape shape) {
+		// TODO Auto-generated method stub
+		if(shape instanceof Circle) {
+			Circle circle = (Circle)shape;
+		}
+		if(shape instanceof Rectangle) {
+			
+		}
+		if(shape instanceof Polygon) {
+			
+		}
+		return -1;
+	}
 
 	@Override
 	public void drawShape(GraphicsContext gc) {
@@ -53,7 +68,7 @@ public class Polygon implements Shape{
 		gc.setStroke(gcStroke);
 		gc.setLineWidth(gcLineWidth);
 	}
-	public void validPosition() {
+	public void validPosition(double frameWidth, double frameHeight) {
 		
 	}
 

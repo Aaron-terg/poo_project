@@ -8,7 +8,6 @@ public class Rectangle implements Shape{
 
 	private double x, y;
 	private double width, height;
-	private double maxWidth, maxHeight;
 	private Color rgba;
 	
 	
@@ -63,6 +62,21 @@ public class Rectangle implements Shape{
 	}
 
 	@Override
+	public double distance(Shape shape) {
+		// TODO Auto-generated method stub
+		if(shape instanceof Circle) {
+			Circle circle = (Circle)shape;
+		}
+		if(shape instanceof Rectangle) {
+			
+		}
+		if(shape instanceof Polygon) {
+			
+		}
+		return -1;
+	}
+	
+	@Override
 	public void drawShape(GraphicsContext gc) {
 		Paint gcFill = gc.getFill();
 		Paint gcStroke = gc.getStroke();
@@ -76,8 +90,13 @@ public class Rectangle implements Shape{
 		gc.setLineWidth(gcLineWidth);
 	}
 	
-	public void validPosition() {
+	public void validPosition(int frameWidth, int frameHeight) {
 		
 		}
+	@Override
+	public void validPosition(double frameWidth, double frameHeight) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
