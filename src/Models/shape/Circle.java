@@ -48,7 +48,8 @@ public class Circle implements Shape{
 				&& (shape.position()[1] <= this.position()[1] + newRadius
 						||  shape.position()[1] <= this.position()[1] - newRadius);
 		}
-		if(shape instanceof Rectangle) {
+		/*
+		 * if(shape instanceof Rectangle) {
 			Rectangle rect = (Rectangle) shape;
 			double rectX = rect.position()[0];
 			double rectY = rect.position()[1];
@@ -63,13 +64,22 @@ public class Circle implements Shape{
 			
 			boolean result = false;
 			for (int i = 0; i < pointsY.length; i++) {
+				int newInd = (i+1)%4;
 				result |= (pointsX[i] <= this.position()[0] + this.radius) || (pointsX[i] <= this.position()[0] - this.radius)
 					    && (pointsY[i] <= this.position()[0] + this.radius) || (pointsY[i] <= this.position()[0] - this.radius);
 				
 			}
 			return result;
 		}
+		*/
 
+		if(shape instanceof Polygon) {
+			Polygon polygon = (Polygon) shape;
+			return (shape.position()[0] <= this.position()[0] + this.radius
+					||  shape.position()[0] <= this.position()[0] - this.radius)
+				&& (shape.position()[1] <= this.position()[1] + this.radius
+						||  shape.position()[1] <= this.position()[1] - this.radius);
+		}
 		return false;
 	}
 

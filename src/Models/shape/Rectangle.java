@@ -14,8 +14,8 @@ public class Rectangle implements Shape{
 	public Rectangle() {
 		this.x = 0;
 		this.y = 0;
-		this.width = 1;
-		this.height = 1;
+		this.width = 50;
+		this.height = 50;
 		this.rgba = Color.BLACK;
 	}
 	public Rectangle(double x, double y, double width, double height, int r, int g, int b, double a) {
@@ -33,6 +33,19 @@ public class Rectangle implements Shape{
 	public Rectangle(double x, double y, double width, double height, int[] rgb) {
 		this(x, y, width, height, rgb[0], rgb[1], rgb[2], 1);
 	}
+	/***********************************\
+	 * 								   *
+	 * 			Getter/Setter		   *
+	 * 								   *
+	\***********************************/
+
+	public double width() {
+		return width;
+	}
+	public double height() {
+		return height;
+	}
+	
 	@Override
 	public double[] position() {
 		double[] position = {this.x, this.y};

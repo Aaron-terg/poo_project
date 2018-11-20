@@ -1,16 +1,19 @@
 package Views;
 
+import java.util.Random;
+
 import Models.Player;
 import Models.Spaceship.BasicSpaceshipType;
 import Models.Spaceship.SpaceshipType;
-import Models.planet.Owned;
 import Models.planet.Planet;
+import Models.shape.Rectangle;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
+
 
 public class TestObject extends Application{
 	private final static int WIDTH = 600;
@@ -19,7 +22,7 @@ public class TestObject extends Application{
 		Planet planet = new Planet();
 		
 		System.out.println(planet.isOwn());
-		planet.setPlanetState(new Owned(new Player()));
+		planet.newOwner(new Player());
 		System.out.println(planet.isOwn());
 		launch(args);
 	}
@@ -33,12 +36,13 @@ public class TestObject extends Application{
 		Scene scene = new Scene(root);
 		Canvas canvas = new Canvas(WIDTH, HEIGHT);
 		root.getChildren().add(canvas);
-		
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 
 		Planet planet = new Planet();
 		SpaceshipType spaceship = new BasicSpaceshipType();
 		
+		Random al = new Random();
+		planet.setPlanetShape(new Rectangle());
 		planet.render(gc);
 		spaceship.render(gc);
 		stage.setScene(scene);

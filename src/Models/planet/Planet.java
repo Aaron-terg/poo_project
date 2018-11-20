@@ -19,9 +19,9 @@ import javafx.scene.canvas.GraphicsContext;
  *     </li>
  * </p>
  * 
- * @see PlanetState
  * @see SpaceshipType
  * @see Player
+ *
  * 
  * @author meryl
  * @version 2.1
@@ -30,13 +30,13 @@ import javafx.scene.canvas.GraphicsContext;
 public class Planet implements Renderable{
 
 	/**
-	 * The number of spaceship on the planet.
+	 * The owner of the planet.
 	 * 
-	 * @see PlanetState
+	 * @see Player
 	 * @see Planet#owner()
 	 * @see Planet#newOwner(PlanetState)
 	 */
-	private PlanetState planetState = new Neutral();
+	private Player owner = null;
 	
 	/**
 	 * The type of Spaceship the planet produce
@@ -86,21 +86,30 @@ public class Planet implements Renderable{
 	\***********************************/
 
 	/**
-	 * set the state of the planet.
-	 * <p>
-	 * 	Specify if the planet is owned or get neutral
-	 * </p>
-	 * @param state
-	 * 			The new state of the planet.
+	 * Get the current owner of the planet.
 	 * 
-	 * @see PlanetState
-	 * @see Owned
-	 * @see Neutral
+	 * @return the player owning this planet or null if the planet is neutral.
+	 * 
+	 * @see PlayerState#getOwner()
+	 * @see Player
 	 * @see Planet#planetState
-	 * 
 	 */
-	public void setPlanetState(PlanetState state) {
-		this.planetState = state;
+	public Player owner() {
+		return this.owner;
+	}
+	
+	/**
+	 * set the current owner of the planet.
+	 * 
+	 * @param player
+	 * 			The new owner of the planet
+	 * 
+	 * @see PlayerState#setOwner(Player)
+	 * @see Player
+	 * @see Planet#planetState
+	 */
+	public void newOwner(Player player) {
+		this.owner = player;
 	}
 	
 	/**
@@ -193,36 +202,9 @@ public class Planet implements Renderable{
 	 * @see Planet#planetState
 	 */
 	public boolean isOwn() {
-		return (this.planetState instanceof Owned); 
+		return (this.owner != null); 
 	}
 	
-	/**
-	 * Get the current owner of the planet.
-	 * 
-	 * @return the player owning this planet or null if the planet is neutral.
-	 * 
-	 * @see PlayerState#getOwner()
-	 * @see Player
-	 * @see Planet#planetState
-	 */
-	public Player owner() {
-		return planetState.getOwner();
-	}
-	
-	/**
-	 * set the current owner of the planet.
-	 * 
-	 * @param player
-	 * 			The new owner of the planet
-	 * 
-	 * @see PlayerState#setOwner(Player)
-	 * @see Player
-	 * @see Planet#planetState
-	 */
-	public void newOwner(Player player) {
-		this.planetState.setOwner(player);
-	}
-
 	@Override
 	public void render(GraphicsContext gc) {
 		this.planetShape.drawShape(gc);
