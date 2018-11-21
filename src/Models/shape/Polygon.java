@@ -9,14 +9,22 @@ public class Polygon implements Shape{
 
 	private double headX, headY;
 	private double[] x, y; 
-	private Color rgba;
+	private Color rgb;
 	
 	public Polygon() {
-		this.x = new double[]{100,150,100};
-		this.headX = x[0];
-		this.y = new double[]{50,100,25};
-		this.headY = y[0];
-		this.rgba = Color.ALICEBLUE;
+		this(new double[]{100,112.5,125}, new double[]{50, 75 ,50}, Color.BLACK);
+	}
+	
+	public Polygon(double[] x, double[] y,int[] rgb) {
+		this(x, y, Color.rgb(rgb[0], rgb[1], rgb[2]));
+	}
+	
+	public Polygon(double[] x, double[] y, Color rgb) {
+		this.x = x;
+		this.headX = x[1];
+		this.y = y;
+		this.headY = y[1];
+		this.rgb = rgb;
 	}
 	
 	public double[] getX() {
@@ -60,7 +68,7 @@ public class Polygon implements Shape{
 		Paint gcFill = gc.getFill();
 		Paint gcStroke = gc.getStroke();
 		double gcLineWidth = gc.getLineWidth();
-		gc.setFill(rgba);
+		gc.setFill(rgb);
 		gc.setStroke(Color.BLACK);
 		gc.setLineWidth(1);
 		gc.fillPolygon(x, y, x.length);;

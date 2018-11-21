@@ -79,10 +79,7 @@ public class Circle implements Shape{
 
 		if(shape instanceof Polygon) {
 			Polygon polygon = (Polygon) shape;
-			return (shape.position()[0] <= this.position()[0] + this.radius
-					||  shape.position()[0] <= this.position()[0] - this.radius)
-				&& (shape.position()[1] <= this.position()[1] + this.radius
-						||  shape.position()[1] <= this.position()[1] - this.radius);
+			return this.distance(polygon) <= 0;
 		}
 		return false;
 	}
@@ -113,7 +110,8 @@ public class Circle implements Shape{
 			
 		}
 		if(shape instanceof Polygon) {
-			
+			Polygon poly = (Polygon)shape;
+			return this.distPoint(poly.position()[0], poly.position()[1]) - this.radius;
 		}
 		return -1;
 	}
