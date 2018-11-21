@@ -1,5 +1,7 @@
 package Models.planet;
 
+import java.util.Random;
+
 import Models.Player;
 import Models.Spaceship.SpaceshipType;
 import Models.shape.Circle;
@@ -7,6 +9,7 @@ import Models.shape.Renderable;
 import Models.shape.Shape;
 import Views.TestObject;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  * <b>Planet class represent the planet</b>
@@ -78,8 +81,23 @@ public class Planet implements Renderable{
 	 */
 	
 	public Planet() {
-		
+		Random randomNumber = new Random();
+		double radius = randomNumber.nextInt(50)+25;
+		double frameWidth = TestObject.WIDTH;
+		double frameHeight = TestObject.HEIGHT;
+		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius;
+		double pointY = (frameHeight - radius)*randomNumber.nextDouble() + radius;
+		int[] rgb = {
+				randomNumber.nextInt(256),
+				randomNumber.nextInt(256),
+				randomNumber.nextInt(256)
+		};
+		this.shipOnPlanet = randomNumber.nextInt(100);
+		this.planetShape = new Circle(pointX, pointY, radius, rgb[0], rgb[1], rgb[2]);
+		planetShape.validPosition(frameWidth, frameHeight);
+
 	}
+	
 	public Planet(double pointX, double pointY, double radius, int[] rgb) {
 		this.planetShape = new Circle(pointX, pointY, radius, rgb[0], rgb[1], rgb[2]);
 		double frameWidth = TestObject.WIDTH;
@@ -163,8 +181,19 @@ public class Planet implements Renderable{
 	 * 
 	 * @see Planet#shipOnPlanet
 	 */
-	public int NbShipOnPlanet() {
+	public int nbShipOnPlanet() {
 		return this.shipOnPlanet;
+	}
+	
+	/**
+	 * Set the number of ship on the planet.
+	 * 
+	 * @param nb the number of ship to add.
+	 * 
+	 * @see Planet#shipOnPlanet
+	 */
+	public void nbShipOnPlanet(int nb) {
+		this.shipOnPlanet += nb;
 	}
 	
 	/**
@@ -220,6 +249,8 @@ public class Planet implements Renderable{
 	@Override
 	public void render(GraphicsContext gc) {
 		this.planetShape.drawShape(gc);
+		gc.setFill(Color.WHITE);
+		gc.fillText("" + shipOnPlanet, this.planetShape.position()[0], this.planetShape.position()[1]);
 	}
 
 }
