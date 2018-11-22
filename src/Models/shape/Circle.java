@@ -35,6 +35,14 @@ public class Circle implements Shape{
 		this(x, y, radius, rgb[0], rgb[1], rgb[2], 1, w, h);
 	}
 	
+	public double getX()
+	{
+		return this.x;
+	}
+	
+	public double getY() {
+		return this.y;
+	}
 	@Override
 	public double[] position() {
 		double[] position = {this.x, this.y};
@@ -125,9 +133,18 @@ public class Circle implements Shape{
 		
 	}
 	
+	public double distance(Shape p) {
+		double d1 = this.x -p.position()[0];
+		double d2 = this.y -p.position()[1];
+		return Math.sqrt(d1*d1+d2*d2);
+	}
 	
+	public boolean no_superimposed(Shape s) {
+		return this.distance(s)<this.radius+((Circle)s).radius;
+	}
+
 	
-	
+
 	
 }
 	

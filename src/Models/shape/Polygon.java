@@ -56,5 +56,8 @@ public class Polygon implements Shape{
 	public void validPosition() {
 		
 	}
+	public boolean no_superimposed(Shape s) {
+		return true;
+	}
 
 }

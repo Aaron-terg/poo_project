@@ -70,6 +70,7 @@ public class Planet implements Renderable{
 	 */
 	
 	private Shape planetShape;
+	private double x, y;
 
 	/**
 	 * Planet Constructor
@@ -83,6 +84,8 @@ public class Planet implements Renderable{
 	}
 	public Planet(double x, double y, double r, int w, int h) {
 		this.planetShape = new Circle(x,y,r,100,100,100, w, h);
+		this.x = x;
+		this.y = y;
 		planetShape.validPosition();
 		
 	}
@@ -216,9 +219,10 @@ public class Planet implements Renderable{
 	public void render(GraphicsContext gc) {
 		this.planetShape.drawShape(gc);
 	}
-	public boolean superimposed(Planet p) {
-		return(!(this.planetShape.intersects(p.planetShape)));
+	public boolean notSuperimposed(Planet p) {
+			return this.planetShape.no_superimposed(p.planetShape);
+		
 	}
-	
+		
 	
 }

@@ -16,5 +16,6 @@ public interface Shape {
 	public boolean intersects(Shape shape);
 	public void drawShape(GraphicsContext gc);
 	public void validPosition();
+	public boolean no_superimposed(Shape s);
 	
 }

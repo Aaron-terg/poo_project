@@ -1,14 +1,12 @@
 package Views;
 
 import java.util.ArrayList;
-
 import java.util.Random;
 
 import Models.Player;
 import Models.Spaceship.BasicSpaceshipType;
 import Models.Spaceship.SpaceshipType;
 import Models.planet.Planet;
-import Models.shape.Rectangle;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -45,12 +43,23 @@ public class TestObject extends Application{
 		Random randomNumber = new Random();
 		ArrayList<Planet> planets = new ArrayList<Planet>();
 		int numberOfPlanets = randomNumber.nextInt(10)+4;
+		
 		for(int i = 0; i< numberOfPlanets; i++) {
 			Planet planet = new Planet(WIDTH*randomNumber.nextDouble(), HEIGHT*randomNumber.nextDouble(), randomNumber.nextInt(100)+10, WIDTH, HEIGHT);
+			boolean not_superimposed = true;
+			for(int j = 0; j<planets.size(); j++) {
+				not_superimposed = planet.notSuperimposed(planets.get(j));
+					
+			
+			}if(not_superimposed== true) {
 				planets.add(planet);
+				System.out.println("Planet added");
 				planet.render(gc);
+			}
+			
 			}	
 		
+			
 		spaceship.render(gc);
 		stage.setScene(scene);
 		stage.show();
