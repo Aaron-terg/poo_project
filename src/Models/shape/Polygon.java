@@ -3,21 +3,39 @@ package Models.shape;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
-public class Polygon implements Shape{
+public class Polygon extends Shape {
 
 	private double headX, headY;
 	private double[] x, y; 
-	private Color rgba;
+
 	
+	
+	/**
+	 * Triangle constructor
+	 */
 	public Polygon() {
-		this.x = new double[]{100,150,100};
-		this.headX = x[0];
-		this.y = new double[]{50,100,25};
-		this.headY = y[0];
-		this.rgba = Color.ALICEBLUE;
+		this(new double[]{100,112.5,125}, new double[]{50, 75 ,50}, Color.BLACK);
 	}
+	
+	public Polygon(double[] x, double[] y) {
+		for(int i = 0; i<x.length; i++) {
+				this.x[i]= x[i];
+				this.y[i]= y[i];
+		}
+	}
+	
+	public Polygon(double[] x, double[] y, Color rgb) {
+		super(rgb);
+		this.x = x;
+		this.headX = x[1];
+		this.y = y;
+		this.headY = y[1];
+	}
+	
+	/**
+	 * Getter && setter
+	 */
 	
 	public double[] getX() {
 		return x;
@@ -26,38 +44,55 @@ public class Polygon implements Shape{
 	public double[] getY() {
 		return y;
 	}
+	public double getHeadX() {
+		return this.headX;
+	}
+	public double getHeadY() {
+		return this.headY;
+	}
+	public void setHeadXY(double headX, double headY) {
+		this.headX = headX;
+		this.headY= headY;
+	}
 
-	@Override
 	public double[] position() {
 		double[] position = {this.headX, this.headY};
 		return position;
 	}
-
-	@Override
-	public boolean intersects(Shape shape) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
+	
+	
 	public void drawShape(GraphicsContext gc) {
-
-		Paint gcFill = gc.getFill();
-		Paint gcStroke = gc.getStroke();
-		double gcLineWidth = gc.getLineWidth();
-		gc.setFill(rgba);
-		gc.setStroke(Color.BLACK);
-		gc.setLineWidth(1);
+		super.drawShape(gc);
 		gc.fillPolygon(x, y, x.length);;
-		gc.setFill(gcFill);
-		gc.setStroke(gcStroke);
-		gc.setLineWidth(gcLineWidth);
-	}
-	public void validPosition() {
 		
+	}
+
+	
+	public boolean outOfWindow(double frameWidth, double frameHeight) {
+			return(this.x[0]>frameWidth ||this.y[0]>frameHeight ||this.x[0]<0 ||this.y[0]<0 ||
+					this.x[1]>frameWidth ||this.y[1]>frameHeight ||this.x[1]<0 ||this.y[1]<0 ||
+					this.x[2]>frameWidth ||this.y[2]>frameHeight ||this.x[2]<0 ||this.y[2]<0 );
+	
 	}
 	public boolean no_superimposed(Shape s) {
 		return true;
 	}
+	public void rgb(Color rgb) {
+		
+	}
+	public void moveTo(double pos_x, double pos_y) {
+		double x_int = x[0];
+		double y_int = y[0];
+		for(int i = 0; i<this.x.length; i++) {
+			double distance_x= x_int-x[i];
+			double distance_y = y_int-y[i];
+			x[i] = pos_x + distance_x;
+			y[i]= pos_y+distance_y;
+		}
+
+	}
+	
+
+	
 
 }

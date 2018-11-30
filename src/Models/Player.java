@@ -1,8 +1,11 @@
 package Models;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Random;
 
 import Models.planet.Planet;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  * <b>Player class represent the player</b>
@@ -33,12 +36,46 @@ public class Player {
 	 * 
 	 * @see Planet
 	 */
-	private Collection<Planet> territory;
+	private ArrayList<Planet> territory;
 	
 	/**
 	 * The default constructor, set the player tag to default.
 	 */
 	public Player() {
 		this.playerTag = "default";
+		this.territory= new ArrayList<Planet>();
+		
 	}
+	public ArrayList<Planet> getTerritory(){
+		return this.territory;
+	}
+	
+	
+	
+	/**
+	 * Choose the palyer's first planet and fill her with a specified color
+	 * @param u,
+	 * @param gc
+	 */
+	public void firstPlanet(Universe u, GraphicsContext gc) {
+		Random random = new Random();
+		int indexPlanet = random.nextInt(u.getPlanets().size());
+		this.territory.add(u.getPlanets().get(indexPlanet));
+		u.getPlanets().get(indexPlanet).getPlanetShape().rgb(Color.RED);
+		u.getPlanets().get(indexPlanet).getPlanetShape().drawShape(gc);
+	}
+	
+	/**
+	 * add a planet in the list of planet owned by the player
+	 * fill them with the specified color
+	 * @param p
+	 * @param gc
+	 */
+	public void myPlanet(Planet p, GraphicsContext gc) {
+		this.territory.add(p);
+		p.getPlanetShape().rgb(Color.RED);
+		p.getPlanetShape().drawShape(gc);
+	}
+	
+	
 }

@@ -1,11 +1,15 @@
 package Models.planet;
 
+import java.util.Random;
+
+
 import Models.Player;
 import Models.Spaceship.SpaceshipType;
 import Models.shape.Circle;
 import Models.shape.Renderable;
-import Models.shape.Shape;
+import Views.TestObject;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  * <b>Planet class represent the planet</b>
@@ -68,26 +72,45 @@ public class Planet implements Renderable{
 	 * @see Planet#getPlanetShape()
 	 * @see Planet#setPlanetShape(PlanetShape)
 	 */
+	private Circle planetShape;
+	private boolean is_destination=false;
 	
-	private Shape planetShape;
-	private double x, y;
 
 	/**
 	 * Planet Constructor
 	 * 
 	 */
 	
+	
 	public Planet() {
-		if(isOwn())
-			this.productionRate = (int)((float)1/spaceshipType.getProductionTime());
+		Random randomNumber = new Random();
+		double radius = randomNumber.nextInt(50)+25;
+		double frameWidth = TestObject.WIDTH;
+		double frameHeight = TestObject.HEIGHT;
+		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius;
+		double pointY = (frameHeight - radius)*randomNumber.nextDouble() + radius;
+		Color color = Color.LIGHTBLUE;
+		this.shipOnPlanet = randomNumber.nextInt(100)+1;
+		this.planetShape = new Circle(pointX, pointY, radius, color);
+		planetShape.validPosition(frameWidth, frameHeight);
+
+	}
+	
+	public Planet(double pointX, double pointY, double radius, Color color) {
+		this.planetShape = new Circle(pointX, pointY, radius, color);
+		double frameWidth = TestObject.WIDTH;
+		double frameHeight = TestObject.HEIGHT;
+		planetShape.validPosition(frameWidth, frameHeight);
 		
 	}
-	public Planet(double x, double y, double r, int w, int h) {
-		this.planetShape = new Circle(x,y,r,100,100,100, w, h);
-		this.x = x;
-		this.y = y;
-		planetShape.validPosition();
-		
+	public Planet(int shipOnPlanet, Circle planetShape) {
+		this.shipOnPlanet = shipOnPlanet;
+		this.planetShape = planetShape;
+	}
+	
+	public Planet(Planet planet) {
+		this(planet.shipOnPlanet, planet.planetShape);
+		this.is_destination = planet.getIs_destination();
 	}
 	/***********************************\
 	 * 								   *
@@ -165,8 +188,19 @@ public class Planet implements Renderable{
 	 * 
 	 * @see Planet#shipOnPlanet
 	 */
-	public int NbShipOnPlanet() {
+	public int nbShipOnPlanet() {
 		return this.shipOnPlanet;
+	}
+	
+	/**
+	 * Set the number of ship on the planet.
+	 * 
+	 * @param nb the number of ship to add.
+	 * 
+	 * @see Planet#shipOnPlanet
+	 */
+	public void nbShipOnPlanet(int nb) {
+		this.shipOnPlanet += nb;
 	}
 	
 	/**
@@ -177,7 +211,7 @@ public class Planet implements Renderable{
 	 * @see javafx.scene.shape
 	 * @see Planet#planetShape
 	 */
-	public Shape getPlanetShape() {
+	public Circle getPlanetShape() {
 		return this.planetShape;
 	}
 	
@@ -191,7 +225,7 @@ public class Planet implements Renderable{
 	 * @see Planet#planetShape
 	 * 
 	 */
-	public void setPlanetShape(Shape shape) {
+	public void setPlanetShape(Circle shape) {
 		this.planetShape = shape;
 	}
 	
@@ -215,14 +249,88 @@ public class Planet implements Renderable{
 		return (this.owner != null); 
 	}
 	
+	/**
+	 * Check if two planets are too close
+	 * @param p
+	 * @return
+	 */
+	public boolean superimposed(Planet p) {
+		return ((this.getPlanetShape().distance(p.getPlanetShape()) > 5));
+	}
+	
+
+	
 	@Override
 	public void render(GraphicsContext gc) {
 		this.planetShape.drawShape(gc);
+		gc.setFill(Color.BLACK);
+	
+		gc.fillText(""+shipOnPlanet, planetShape.position()[0],planetShape.position()[1]);
 	}
-	public boolean notSuperimposed(Planet p) {
-			return this.planetShape.no_superimposed(p.planetShape);
+	
+	 
+	/**
+	 * Add 1 spaceship in the planet according to production time
+	 * @param s spaceship type
+	 * @param gc 
+	 */
+/*	public void production(SpaceshipType s, GraphicsContext gc) {
+		Timer timer = new Timer();
+		TimerTask duplication = new TimerTask() {
+			public void run() {
+				shipOnPlanet++;
+				System.out.println("Nb of ships :"+shipOnPlanet);
+			    gc.fillText("" + shipOnPlanet, planetShape.position()[0],planetShape.position()[1] );
+				
+				
+			}
+			public void stop() {
+				timer.cancel();
+				timer.purge();
+			}
+				
+			};
+				timer.scheduleAtFixedRate(duplication, s.getProductionTime(), s.getProductionTime());
+			
+	}*/
+	
+	/**
+	 * Decrease the number of spaceships on a planet in case of an attack
+	 * Increase this number if the player has the planet
+	 * @param s
+	 */
+	
+	public void spaceShipEnter(Player p) {
+			if(!(p.getTerritory().contains(this))&& this.shipOnPlanet>0) {
+			this.shipOnPlanet-=1;
+		}else {
+			this.shipOnPlanet++;
+		}
 		
 	}
+	/**
+	 * check if a planet is lose
+	 * @return
+	 */
+
+	public boolean planetLose() {
+		return (this.shipOnPlanet<0);
+	}
+	public Planet getDestination() {
+		return this;
+	}
+
+	public boolean getIs_destination() {
+		return is_destination;
+	}
+
+	public void setIs_destination(boolean is_destination) {
+		this.is_destination = is_destination;
+	}
+	
+	
+	
 		
+
 	
 }

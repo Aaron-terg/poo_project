@@ -4,11 +4,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
-public class Rectangle implements Shape{
+public class Rectangle extends Shape{
 
 	private double x, y;
 	private double width, height;
-	private double maxWidth, maxHeight;
 	private Color rgba;
 	
 	
@@ -56,12 +55,11 @@ public class Rectangle implements Shape{
 		return position;
 	}
 
-	@Override
-	public boolean intersects(Shape shape) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
+	public void rgb(Color rgb) {
+		
+	}
+	
 	@Override
 	public void drawShape(GraphicsContext gc) {
 		Paint gcFill = gc.getFill();
@@ -76,11 +74,16 @@ public class Rectangle implements Shape{
 		gc.setLineWidth(gcLineWidth);
 	}
 	
-	public void validPosition() {
+	public void validPosition(int frameWidth, int frameHeight) {
 		
 		}
-	public boolean no_superimposed(Shape s) {
+	
+	public boolean outOfWindow(double frameWidth, double frameHeight) {
+		return x+width > frameWidth || x<0 || y+height >frameHeight || y<0;
+	}
+	public boolean isInside(double px, double py) {
 		return true;
 	}
+	
 
 }
