@@ -4,6 +4,7 @@ package Views;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 import Models.Player;
 import Models.Universe;
@@ -56,14 +57,14 @@ public class TestObject extends Application{
 		 EventHandler<MouseEvent> firstclick = new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent e) { 	
 				if(e.getButton().equals(MouseButton.PRIMARY)) {
-				System.out.println("<left click");		
 				for(int i = 0; i<player.getTerritory().size();i++) {
 					Planet p = player.getTerritory().get(i);
-					if(p.getPlanetShape().isInside(e.getX(), e.getY())) {
-						SpaceshipType spaceship= new BasicSpaceshipType();
+					if(p.getPlanetShape().isInside(e.getX(), e.getY())&&player.getTerritory().contains(p)) {
+						SpaceshipType spaceship= new BasicSpaceshipType(p.getSpaceShipeType());
 						listOfShips.add(spaceship);
 						spaceship.setPositionAtStart(p.getPlanetShape().position()[0],  p.getPlanetShape().position()[1]);
 						spaceship.render(gc);
+						System.out.println("size   "+listOfShips.size());
 						
 					}
 
@@ -75,47 +76,62 @@ public class TestObject extends Application{
 		EventHandler<MouseEvent> click = new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent f) { 
 				if(f.getButton().equals(MouseButton.SECONDARY)) {
-					System.out.println("Right click");
 					Iterator<Planet> it = universe.getPlanets().iterator();
 					while (it.hasNext()) {
 						Planet planet = it.next();
 						if(planet.getPlanetShape().isInside(f.getX(), f.getY())) {
-							planet.setIs_destination(true);
-									
-					}
+							planet.setIs_destination(true);	
+						}
 				
 					}
-							}
-						}	
-				};
-				
-				scene.setOnMouseClicked(click);
-				scene.setOnMousePressed(firstclick);
+				}
+			}	
+		};
+		scene.setOnMouseClicked(click);
+		scene.setOnMousePressed(firstclick);
 				
 		
 		
-
 		new AnimationTimer() {
 			public void handle(long arg0) {
 				gc.clearRect(0, 0, WIDTH, HEIGHT);
 				universe.render(gc);
+				Iterator<Planet> it2 = universe.getPlanets().iterator();
 				Iterator<Planet> it = universe.getPlanets().iterator();
 				while (it.hasNext()) {
 					Planet planet = it.next();
-					if((planet.getIs_destination())) {
-						for(int j = 0; j<listOfShips.size();j++) {
-							listOfShips.get(j).goTo(planet);
-							listOfShips.get(j).render(gc);
+					if((planet.getIs_destination())) {	
+						for(int i = 0; i<listOfShips.size();i++) {
+							SpaceshipType spaceShip = listOfShips.get(i);
+							if(planet.getPlanetShape().isInside(spaceShip.getSpaceshipShape().getX()[0], spaceShip.getSpaceshipShape().getY()[0])) {
+								planet.spaceShipEnter(player);
+								listOfShips.remove(spaceShip);
+								planet.setIs_destination(false);
+
+							}
+						while(it2.hasNext()) {
+							Planet obstacle = it2.next();
+							for(int j = 0; j<spaceShip.getSpaceshipShape().getX().length;j++) {
+								double length = Math.abs(spaceShip.getSpaceshipShape().getY()[0]-spaceShip.getSpaceshipShape().getY()[1]);
+								if(!(obstacle.getIs_destination()) &&!(player.getTerritory().contains(obstacle))&&
+									(Math.abs(obstacle.getPlanetShape().distPoint(spaceShip.getSpaceshipShape().getX()[j], spaceShip.getSpaceshipShape().getY()[i]))<=obstacle.getPlanetShape().getRadius()+length+20)){
+									//spaceShip.get_around(obstacle);
+								}
+							}
 						}
+						spaceShip.goTo(planet);
+						spaceShip.render(gc);
+						}
+					}
 						
 					}
 				
 				}
-			}
+			
+				
 	
 			
 		}.start();
-		
 	}
 	
 }

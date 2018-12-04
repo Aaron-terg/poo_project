@@ -71,10 +71,9 @@ public class Player {
 	 * @param p
 	 * @param gc
 	 */
-	public void myPlanet(Planet p, GraphicsContext gc) {
+	public void myPlanet(Planet p) {
 		this.territory.add(p);
 		p.getPlanetShape().rgb(Color.RED);
-		p.getPlanetShape().drawShape(gc);
 	}
 	
 	

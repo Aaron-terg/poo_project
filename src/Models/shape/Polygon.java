@@ -1,13 +1,14 @@
 package Models.shape;
 
 
+import Models.planet.Planet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Polygon extends Shape {
+public class Polygon{
 
-	private double headX, headY;
 	private double[] x, y; 
+	private Color rgb;
 
 	
 	
@@ -15,7 +16,7 @@ public class Polygon extends Shape {
 	 * Triangle constructor
 	 */
 	public Polygon() {
-		this(new double[]{100,112.5,125}, new double[]{50, 75 ,50}, Color.BLACK);
+		this(new double[]{0,20,10}, new double[]{0, 0 ,20},Color.BLACK);
 	}
 	
 	public Polygon(double[] x, double[] y) {
@@ -26,13 +27,14 @@ public class Polygon extends Shape {
 	}
 	
 	public Polygon(double[] x, double[] y, Color rgb) {
-		super(rgb);
+		this.rgb = rgb;
 		this.x = x;
-		this.headX = x[1];
 		this.y = y;
-		this.headY = y[1];
 	}
-	
+	public Polygon(Polygon polygon) {
+		this(polygon.x, polygon.y, polygon.rgb);
+	}
+
 	/**
 	 * Getter && setter
 	 */
@@ -44,25 +46,14 @@ public class Polygon extends Shape {
 	public double[] getY() {
 		return y;
 	}
-	public double getHeadX() {
-		return this.headX;
-	}
-	public double getHeadY() {
-		return this.headY;
-	}
-	public void setHeadXY(double headX, double headY) {
-		this.headX = headX;
-		this.headY= headY;
+	public void setColor(Color rgb) {
+		this.rgb = rgb;
 	}
 
-	public double[] position() {
-		double[] position = {this.headX, this.headY};
-		return position;
-	}
-	
-	
 	public void drawShape(GraphicsContext gc) {
-		super.drawShape(gc);
+		gc.setFill(rgb);
+		gc.setStroke(Color.BLACK);
+		gc.setLineWidth(1);
 		gc.fillPolygon(x, y, x.length);;
 		
 	}
@@ -77,19 +68,22 @@ public class Polygon extends Shape {
 	public boolean no_superimposed(Shape s) {
 		return true;
 	}
-	public void rgb(Color rgb) {
-		
-	}
 	public void moveTo(double pos_x, double pos_y) {
-		double x_int = x[0];
-		double y_int = y[0];
+		double x_int = x[1];
+		double y_int = y[1];
 		for(int i = 0; i<this.x.length; i++) {
-			double distance_x= x_int-x[i];
-			double distance_y = y_int-y[i];
-			x[i] = pos_x + distance_x;
-			y[i]= pos_y+distance_y;
+			double distance_x= Math.abs(x_int-x[i]);
+			double distance_y = Math.abs(y_int-y[i]);
+			x[i] = pos_x - distance_x;
+			y[i]= pos_y-distance_y;
 		}
 
+	}
+	public boolean inInside(Planet planet) {
+		return planet.getPlanetShape().isInside(this.getX()[0], this.getY()[0])
+				||planet.getPlanetShape().isInside(this.getX()[1], this.getY()[1])
+				|| planet.getPlanetShape().isInside(this.getX()[2], this.getY()[2]);
+		
 	}
 	
 

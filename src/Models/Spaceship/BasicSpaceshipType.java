@@ -1,8 +1,6 @@
 package Models.Spaceship;
 
-import Models.planet.Planet;
-import Models.shape.Polygon;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class BasicSpaceshipType extends SpaceshipType {
 	

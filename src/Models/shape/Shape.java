@@ -15,48 +15,7 @@ import javafx.scene.paint.Color;
  */
 public abstract class Shape {
 	
-	protected Color rgb;
-	protected double height;
-	
-	public Shape() {
-		this.rgb = Color.BLACK;
-	}
 	public Shape(Color color) {
-		this.rgb = color;
-	}
-	
-	public Shape(Color color, double height) {
-		this.rgb= color;
-		this. height = height;
-	}
-	public double getHeight() {
-		return this.height;
-	}
-	
-
-	public abstract double[] position();
-	public void drawShape(GraphicsContext gc) {
-		gc.setFill(rgb);
-		gc.setStroke(Color.BLACK);
-		gc.setLineWidth(1);
-		
-	}
-	public boolean isInside(double x, double y) {
-		
-		// TODO Auto-generated method stub
-		return false;
-	}
-	public void validPosition(double frameWidth, double frameHeight) {
-		// TODO Auto-generated method stub
-		
-	}
-	public double distance (Shape planetShape) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	public void rgb(Color red) {
-		this.rgb =red;
-		
 	}
 	
 }

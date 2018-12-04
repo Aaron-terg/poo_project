@@ -4,6 +4,7 @@ import java.util.Random;
 
 
 import Models.Player;
+import Models.Spaceship.BasicSpaceshipType;
 import Models.Spaceship.SpaceshipType;
 import Models.shape.Circle;
 import Models.shape.Renderable;
@@ -89,10 +90,11 @@ public class Planet implements Renderable{
 		double frameHeight = TestObject.HEIGHT;
 		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius;
 		double pointY = (frameHeight - radius)*randomNumber.nextDouble() + radius;
-		Color color = Color.LIGHTBLUE;
+		Color color = Color.CORNFLOWERBLUE;
 		this.shipOnPlanet = randomNumber.nextInt(100)+1;
 		this.planetShape = new Circle(pointX, pointY, radius, color);
 		planetShape.validPosition(frameWidth, frameHeight);
+		this.spaceshipType = new BasicSpaceshipType();
 
 	}
 	
@@ -154,7 +156,7 @@ public class Planet implements Renderable{
 	 * @see Planet#spaceshipType
 	 */
 	public SpaceshipType getSpaceShipeType() {
-		return this.spaceshipType;
+		return (new BasicSpaceshipType(this.spaceshipType));
 	}
 	
 	/**
@@ -255,7 +257,7 @@ public class Planet implements Renderable{
 	 * @return
 	 */
 	public boolean superimposed(Planet p) {
-		return ((this.getPlanetShape().distance(p.getPlanetShape()) > 5));
+		return ((this.getPlanetShape().distance(p.getPlanetShape()) > 40));
 	}
 	
 
@@ -304,21 +306,13 @@ public class Planet implements Renderable{
 			if(!(p.getTerritory().contains(this))&& this.shipOnPlanet>0) {
 			this.shipOnPlanet-=1;
 		}else {
+			p.myPlanet(this);
+			
 			this.shipOnPlanet++;
 		}
 		
 	}
-	/**
-	 * check if a planet is lose
-	 * @return
-	 */
-
-	public boolean planetLose() {
-		return (this.shipOnPlanet<0);
-	}
-	public Planet getDestination() {
-		return this;
-	}
+	
 
 	public boolean getIs_destination() {
 		return is_destination;
@@ -327,7 +321,8 @@ public class Planet implements Renderable{
 	public void setIs_destination(boolean is_destination) {
 		this.is_destination = is_destination;
 	}
-	
+
+
 	
 	
 		
