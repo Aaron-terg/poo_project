@@ -105,13 +105,10 @@ public abstract class SpaceshipType implements Renderable{
 			this.spaceshipShape.getX()[i]-=x*speed;
 			this.spaceshipShape.getY()[i]-=y*speed;
 			}
-		this.spaceshipShape.setHeadXY(x, y);
+		//this.spaceshipShape.setHeadXY(x, y);
 		
 	}
-	
-	public  void setPositionAtStart(double x, double y ) {
-		this.spaceshipShape.moveTo(x, y);
-	}
+
 	/**
 	 * Calculate a new point between the ship's actual position && the destination
 	 * Uses vector && distance

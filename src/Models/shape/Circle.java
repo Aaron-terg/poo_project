@@ -55,10 +55,19 @@ public class Circle extends Shape{
 
 	public boolean intersects(Shape shape) {
 		// TODO find the condition
+		if(shape instanceof Circle) {
 			double newRadius  = this.radius + ((Circle)shape).radius();
 			return Math.abs(shape.position()[0] - this.position()[0])  <= newRadius
 					&& Math.abs(shape.position()[1] - this.position()[1])  <= newRadius;
-					
+		}else if(shape instanceof Polygon) {
+			Polygon poly  = (Polygon)shape;
+			boolean result = false;
+			for (int i = 0; i < poly.getX().length; i++) {
+				result |= distPoint(poly.getX()[i], poly.getY()[i]) <= radius;
+			}
+			return result;
+		}
+		return false;
 			//return this.distance(shape) > 0
 		}
 
@@ -105,6 +114,14 @@ public class Circle extends Shape{
 		 return px<=(this.x+this.radius) && px>=(this.x-this.radius)
 				 && py>=(this.y-this.radius) &&py<=(this.y+this.radius);
 		 
+	}
+
+	@Override
+	public void setPosition(double posX, double posY) {
+		// TODO Auto-generated method stub
+		this.x = posX;
+		this.y = posY;
+		
 	}
 }
 	

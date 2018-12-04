@@ -16,7 +16,7 @@ import javafx.scene.paint.Color;
 public abstract class Shape {
 	
 	protected Color rgb;
-	protected double height;
+	protected double height, width;
 	
 	public Shape() {
 		this.rgb = Color.BLACK;
@@ -35,6 +35,9 @@ public abstract class Shape {
 	
 
 	public abstract double[] position();
+	
+	public abstract void setPosition(double posX, double posY);
+	
 	public void drawShape(GraphicsContext gc) {
 		gc.setFill(rgb);
 		gc.setStroke(Color.BLACK);
@@ -46,11 +49,13 @@ public abstract class Shape {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
 	public void validPosition(double frameWidth, double frameHeight) {
 		// TODO Auto-generated method stub
 		
 	}
-	public double distance (Shape planetShape) {
+	
+	public double distance (Shape shape) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

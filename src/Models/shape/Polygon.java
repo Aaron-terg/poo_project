@@ -19,10 +19,8 @@ public class Polygon extends Shape {
 	}
 	
 	public Polygon(double[] x, double[] y) {
-		for(int i = 0; i<x.length; i++) {
-				this.x[i]= x[i];
-				this.y[i]= y[i];
-		}
+		this.x = x;
+		this.y = y;
 	}
 	
 	public Polygon(double[] x, double[] y, Color rgb) {
@@ -74,20 +72,20 @@ public class Polygon extends Shape {
 					this.x[2]>frameWidth ||this.y[2]>frameHeight ||this.x[2]<0 ||this.y[2]<0 );
 	
 	}
-	public boolean no_superimposed(Shape s) {
-		return true;
-	}
+
 	public void rgb(Color rgb) {
 		
 	}
-	public void moveTo(double pos_x, double pos_y) {
+	
+	@Override
+	public void setPosition(double posX, double posY) {
 		double x_int = x[0];
 		double y_int = y[0];
 		for(int i = 0; i<this.x.length; i++) {
 			double distance_x= x_int-x[i];
 			double distance_y = y_int-y[i];
-			x[i] = pos_x + distance_x;
-			y[i]= pos_y+distance_y;
+			x[i] = posX + distance_x;
+			y[i]= posY+distance_y;
 		}
 
 	}

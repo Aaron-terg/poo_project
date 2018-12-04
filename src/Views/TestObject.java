@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import Models.Player;
+import Models.Spacefleet;
 import Models.Universe;
 import Models.Spaceship.BasicSpaceshipType;
 import Models.Spaceship.SpaceshipType;
@@ -46,9 +47,9 @@ public class TestObject extends Application{
 		
 		Universe universe = new Universe(10);
 		Player player = new Player();
-		player.firstPlanet(universe, gc);
+		player.firstPlanet(universe);
 		universe.render(gc);
-		ArrayList<SpaceshipType> listOfShips = new ArrayList<SpaceshipType>();
+		//ArrayList<SpaceshipType> listOfShips = new ArrayList<SpaceshipType>();
 		stage.setScene(scene);
 		stage.show();
 		
@@ -60,11 +61,10 @@ public class TestObject extends Application{
 				for(int i = 0; i<player.getTerritory().size();i++) {
 					Planet p = player.getTerritory().get(i);
 					if(p.getPlanetShape().isInside(e.getX(), e.getY())) {
-						SpaceshipType spaceship= new BasicSpaceshipType();
-						listOfShips.add(spaceship);
-						spaceship.setPositionAtStart(p.getPlanetShape().position()[0],  p.getPlanetShape().position()[1]);
-						spaceship.render(gc);
-						
+						//SpaceshipType spaceship= new BasicSpaceshipType(player, p.getPlanetShape().getX(), p.getPlanetShape().getY());
+						Spacefleet spacefleet = new Spacefleet(5,new BasicSpaceshipType(), p);
+						//listOfShips.add(spaceship);
+						player.newLaunch(spacefleet);
 					}
 
 				}
@@ -73,14 +73,14 @@ public class TestObject extends Application{
 		
 	
 		EventHandler<MouseEvent> click = new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent f) { 
-				if(f.getButton().equals(MouseButton.SECONDARY)) {
+			public void handle(MouseEvent rightClickEvent) { 
+				if(rightClickEvent.getButton().equals(MouseButton.SECONDARY)) {
 					System.out.println("Right click");
 					Iterator<Planet> it = universe.getPlanets().iterator();
 					while (it.hasNext()) {
 						Planet planet = it.next();
-						if(planet.getPlanetShape().isInside(f.getX(), f.getY())) {
-							planet.setIs_destination(true);
+						if(planet.getPlanetShape().isInside(rightClickEvent.getX(), rightClickEvent.getY())) {
+							player.getFleets().get(0).setDestination(planet);
 									
 					}
 				
@@ -99,17 +99,22 @@ public class TestObject extends Application{
 			public void handle(long arg0) {
 				gc.clearRect(0, 0, WIDTH, HEIGHT);
 				universe.render(gc);
-				Iterator<Planet> it = universe.getPlanets().iterator();
-				while (it.hasNext()) {
-					Planet planet = it.next();
-					if((planet.getIs_destination())) {
-						for(int j = 0; j<listOfShips.size();j++) {
-							listOfShips.get(j).goTo(planet);
-							listOfShips.get(j).render(gc);
+				if(player.inAction()) {
+					Iterator<Spacefleet> it = player.getFleets().iterator();
+					while (it.hasNext()) {
+						Spacefleet spacefleet = it.next();
+						for (Iterator iterator = spacefleet.fleet().iterator(); iterator.hasNext();) {
+							SpaceshipType spaceshipType = (SpaceshipType) iterator.next();
+							Planet planet = spacefleet.getDestination();
+							if(planet.getPlanetShape().intersects(spaceshipType.getSpaceshipShape()))
+								iterator.remove();
+							else {
+								spaceshipType.goTo(planet);
+								spaceshipType.render(gc);
+							}
 						}
-						
+							
 					}
-				
 				}
 			}
 	

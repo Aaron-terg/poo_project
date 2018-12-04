@@ -1,10 +1,10 @@
 package Models;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 import Models.planet.Planet;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
@@ -39,43 +39,61 @@ public class Player {
 	private ArrayList<Planet> territory;
 	
 	/**
+	 * The spaceship fleets of the player
+	 */
+	private ArrayList<Spacefleet> spacefleets;
+	/**
 	 * The default constructor, set the player tag to default.
 	 */
 	public Player() {
 		this.playerTag = "default";
 		this.territory= new ArrayList<Planet>();
-		
+		this.spacefleets = new ArrayList<>();
 	}
+	
 	public ArrayList<Planet> getTerritory(){
 		return this.territory;
 	}
 	
+	public ArrayList<Spacefleet> getFleets(){
+		return this.spacefleets;
+	}
 	
 	
 	/**
 	 * Choose the palyer's first planet and fill her with a specified color
 	 * @param u,
-	 * @param gc
 	 */
-	public void firstPlanet(Universe u, GraphicsContext gc) {
+	public void firstPlanet(Universe u) {
 		Random random = new Random();
 		int indexPlanet = random.nextInt(u.getPlanets().size());
 		this.territory.add(u.getPlanets().get(indexPlanet));
 		u.getPlanets().get(indexPlanet).getPlanetShape().rgb(Color.RED);
-		u.getPlanets().get(indexPlanet).getPlanetShape().drawShape(gc);
 	}
 	
 	/**
 	 * add a planet in the list of planet owned by the player
 	 * fill them with the specified color
 	 * @param p
-	 * @param gc
 	 */
-	public void myPlanet(Planet p, GraphicsContext gc) {
+	public void myPlanet(Planet p) {
 		this.territory.add(p);
 		p.getPlanetShape().rgb(Color.RED);
-		p.getPlanetShape().drawShape(gc);
 	}
 	
+	public void newLaunch(Spacefleet s) {
+		this.spacefleets.add(s);
+	}
 	
+	public boolean inAction() {
+		
+		if(getFleets().isEmpty())
+			return false;
+		boolean res = false;
+		for (Iterator iterator = spacefleets.iterator(); iterator.hasNext();) {
+			Spacefleet spacefleet = (Spacefleet) iterator.next();
+			res |= spacefleet.getDestination() != null;
+		}
+		return res;
+	}
 }

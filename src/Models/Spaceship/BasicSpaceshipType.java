@@ -1,8 +1,6 @@
 package Models.Spaceship;
 
-import Models.planet.Planet;
-import Models.shape.Polygon;
-import javafx.scene.canvas.GraphicsContext;
+import Models.Player;
 
 public class BasicSpaceshipType extends SpaceshipType {
 	
@@ -13,6 +11,12 @@ public class BasicSpaceshipType extends SpaceshipType {
 	
 	public BasicSpaceshipType(SpaceshipType spaceship) {
 		super(spaceship);
+	}
+	
+	public BasicSpaceshipType(Player player, double posX, double posY) {
+		super();
+		this.player = player;
+		this.spaceshipShape.setPosition(posX, posY);
 	}
 	
 

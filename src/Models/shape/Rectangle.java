@@ -84,6 +84,11 @@ public class Rectangle extends Shape{
 	public boolean isInside(double px, double py) {
 		return true;
 	}
+	@Override
+	public void setPosition(double posX, double posY) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

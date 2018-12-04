@@ -110,7 +110,7 @@ public class Planet implements Renderable{
 	
 	public Planet(Planet planet) {
 		this(planet.shipOnPlanet, planet.planetShape);
-		this.is_destination = planet.getIs_destination();
+		this.is_destination = planet.isDestination();
 	}
 	/***********************************\
 	 * 								   *
@@ -320,7 +320,7 @@ public class Planet implements Renderable{
 		return this;
 	}
 
-	public boolean getIs_destination() {
+	public boolean isDestination() {
 		return is_destination;
 	}
 
