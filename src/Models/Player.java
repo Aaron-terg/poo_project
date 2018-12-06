@@ -87,7 +87,7 @@ public class Player {
 	
 	public boolean inAction() {
 		
-		if(getFleets().isEmpty())
+		if(this.spacefleets.isEmpty())
 			return false;
 		boolean res = false;
 		for (Iterator iterator = spacefleets.iterator(); iterator.hasNext();) {
@@ -95,5 +95,15 @@ public class Player {
 			res |= spacefleet.getDestination() != null;
 		}
 		return res;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o != null && (o instanceof Player)) {
+			Player player = (Player)o;
+			return this.playerTag == player.playerTag;
+		}
+		return false;
+					
 	}
 }

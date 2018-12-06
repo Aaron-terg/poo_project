@@ -2,7 +2,7 @@ package Models.planet;
 
 import java.util.Random;
 
-
+import Models.GameObject;
 import Models.Player;
 import Models.Spaceship.SpaceshipType;
 import Models.shape.Circle;
@@ -31,7 +31,7 @@ import javafx.scene.paint.Color;
  * @version 2.1
  *
  */
-public class Planet implements Renderable{
+public class Planet extends GameObject implements Renderable{
 
 	/**
 	 * The owner of the planet.
@@ -73,15 +73,11 @@ public class Planet implements Renderable{
 	 * @see Planet#setPlanetShape(PlanetShape)
 	 */
 	private Circle planetShape;
-	private boolean is_destination=false;
 	
-
 	/**
 	 * Planet Constructor
 	 * 
 	 */
-	
-	
 	public Planet() {
 		Random randomNumber = new Random();
 		double radius = randomNumber.nextInt(50)+25;
@@ -93,10 +89,15 @@ public class Planet implements Renderable{
 		this.shipOnPlanet = randomNumber.nextInt(100)+1;
 		this.planetShape = new Circle(pointX, pointY, radius, color);
 		planetShape.validPosition(frameWidth, frameHeight);
+		this.x = pointX;
+		this.y = pointY;
+		this.height = radius;
+		this.width = radius;
 
 	}
 	
 	public Planet(double pointX, double pointY, double radius, Color color) {
+		super(pointX, pointY, radius, radius);
 		this.planetShape = new Circle(pointX, pointY, radius, color);
 		double frameWidth = TestObject.WIDTH;
 		double frameHeight = TestObject.HEIGHT;
@@ -110,7 +111,6 @@ public class Planet implements Renderable{
 	
 	public Planet(Planet planet) {
 		this(planet.shipOnPlanet, planet.planetShape);
-		this.is_destination = planet.isDestination();
 	}
 	/***********************************\
 	 * 								   *
@@ -299,38 +299,28 @@ public class Planet implements Renderable{
 	 * Increase this number if the player has the planet
 	 * @param s
 	 */
-	
-	public void spaceShipEnter(Player p) {
-			if(!(p.getTerritory().contains(this))&& this.shipOnPlanet>0) {
-			this.shipOnPlanet-=1;
-		}else {
+	public void spaceShipEnter(SpaceshipType spaceship) {
+		
+		if(spaceship.getPlayer().equals(this.owner))
 			this.shipOnPlanet++;
+		else 
+			this.shipOnPlanet -= spaceship.getAttPower();
+		if(this.shipOnPlanet < 0) {
+			this.shipOnPlanet -= this.shipOnPlanet;
+			this.owner = spaceship.getPlayer();
+			spaceship.getPlayer().myPlanet(this);
 		}
-		
-	}
-	/**
-	 * check if a planet is lose
-	 * @return
-	 */
-
-	public boolean planetLose() {
-		return (this.shipOnPlanet<0);
-	}
-	public Planet getDestination() {
-		return this;
-	}
-
-	public boolean isDestination() {
-		return is_destination;
-	}
-
-	public void setIs_destination(boolean is_destination) {
-		this.is_destination = is_destination;
+			
 	}
 	
-	
-	
-		
-
+	@Override
+	public boolean equals(Object o) {
+		if(o != null && (o instanceof Planet)) {
+			Planet planet = (Planet)o;
+			return this.x == planet.x && this.y == planet.y;
+		}
+		return false;
+					
+	}
 	
 }

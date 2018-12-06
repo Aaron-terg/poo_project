@@ -2,7 +2,7 @@ package Models.Spaceship;
 
 import java.util.Random;
 
-
+import Models.GameObject;
 import Models.Player;
 import Models.planet.Planet;
 import Models.shape.Polygon;
@@ -28,7 +28,7 @@ import javafx.scene.canvas.GraphicsContext;
  * @author Virginie
  * @version 2.1
  * **/
-public abstract class SpaceshipType implements Renderable{
+public abstract class SpaceshipType extends GameObject implements Renderable{
 	
 	protected int attPower;
 	protected int speed;
@@ -86,6 +86,10 @@ public abstract class SpaceshipType implements Renderable{
 	public Player getPlayer() {
 		return this.player;
 	}
+	
+	public void setPlayer(Player p) {
+		this.player = p;
+	}
 	/**
 	 * Display the ship 
 	 * @see Shape#drawShape(GraphicsContext)
@@ -101,12 +105,12 @@ public abstract class SpaceshipType implements Renderable{
 	 * 
 	 */
 	public void newPosition(double x, double y) {
+		this.x -= x*speed;
+		this.y -= y*speed;
 		for(int i = 0; i<this.spaceshipShape.getX().length; i++) {
 			this.spaceshipShape.getX()[i]-=x*speed;
 			this.spaceshipShape.getY()[i]-=y*speed;
 			}
-		//this.spaceshipShape.setHeadXY(x, y);
-		
 	}
 
 	/**
@@ -123,10 +127,5 @@ public abstract class SpaceshipType implements Renderable{
 		double new_pos_y = dist_y /Math.sqrt((dist_x*dist_x)+(dist_y*dist_y));
 		this.newPosition(new_pos_x, new_pos_y);
 	}
-
-	
-	
-	
-	
 
 }
