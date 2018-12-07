@@ -4,6 +4,7 @@ import java.util.Random;
 
 import Models.GameObject;
 import Models.Player;
+import Models.Spaceship.BasicSpaceshipType;
 import Models.Spaceship.SpaceshipType;
 import Models.shape.Circle;
 import Models.shape.Renderable;
@@ -85,14 +86,16 @@ public class Planet extends GameObject implements Renderable{
 		double frameHeight = TestObject.HEIGHT;
 		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius;
 		double pointY = (frameHeight - radius)*randomNumber.nextDouble() + radius;
-		Color color = Color.LIGHTBLUE;
+		Color color = Color.CORNFLOWERBLUE;
 		this.shipOnPlanet = randomNumber.nextInt(100)+1;
 		this.planetShape = new Circle(pointX, pointY, radius, color);
 		planetShape.validPosition(frameWidth, frameHeight);
+
 		this.x = pointX;
 		this.y = pointY;
 		this.height = radius;
 		this.width = radius;
+
 
 	}
 	
@@ -154,7 +157,7 @@ public class Planet extends GameObject implements Renderable{
 	 * @see Planet#spaceshipType
 	 */
 	public SpaceshipType getSpaceShipeType() {
-		return this.spaceshipType;
+		return (new BasicSpaceshipType(this.spaceshipType));
 	}
 	
 	/**
@@ -255,7 +258,7 @@ public class Planet extends GameObject implements Renderable{
 	 * @return
 	 */
 	public boolean superimposed(Planet p) {
-		return ((this.getPlanetShape().distance(p.getPlanetShape()) > 20));
+		return this.getPlanetShape().distance(p.getPlanetShape()) > 40;
 	}
 	
 
@@ -267,32 +270,6 @@ public class Planet extends GameObject implements Renderable{
 	
 		gc.fillText(""+shipOnPlanet, planetShape.position()[0],planetShape.position()[1]);
 	}
-	
-	 
-	/**
-	 * Add 1 spaceship in the planet according to production time
-	 * @param s spaceship type
-	 * @param gc 
-	 */
-/*	public void production(SpaceshipType s, GraphicsContext gc) {
-		Timer timer = new Timer();
-		TimerTask duplication = new TimerTask() {
-			public void run() {
-				shipOnPlanet++;
-				System.out.println("Nb of ships :"+shipOnPlanet);
-			    gc.fillText("" + shipOnPlanet, planetShape.position()[0],planetShape.position()[1] );
-				
-				
-			}
-			public void stop() {
-				timer.cancel();
-				timer.purge();
-			}
-				
-			};
-				timer.scheduleAtFixedRate(duplication, s.getProductionTime(), s.getProductionTime());
-			
-	}*/
 	
 	/**
 	 * Decrease the number of spaceships on a planet in case of an attack
@@ -322,5 +299,4 @@ public class Planet extends GameObject implements Renderable{
 		return false;
 					
 	}
-	
 }

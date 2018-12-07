@@ -64,7 +64,7 @@ public class Spacefleet {
 		boolean result = false;
 		for (Iterator spaceshipIt = spaceships.iterator(); spaceshipIt.hasNext();) {
 			SpaceshipType spaceship = (SpaceshipType) spaceshipIt.next();
-			result |= spaceship.getSpaceshipShape().isInside(x, y);
+			result |= spaceship.isInside(x, y);
 			if(result)
 				break;
 		}

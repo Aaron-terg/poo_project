@@ -1,13 +1,14 @@
 package Models.shape;
 
 
+import Models.planet.Planet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Polygon extends Shape {
-
+public class Polygon extends Shape{
 	private double headX, headY;
 	private double[] x, y; 
+	private Color rgb;
 
 	
 	
@@ -15,7 +16,7 @@ public class Polygon extends Shape {
 	 * Triangle constructor
 	 */
 	public Polygon() {
-		this(new double[]{100,112.5,125}, new double[]{50, 75 ,50}, Color.BLACK);
+		this(new double[]{0,20,10}, new double[]{0, 0 ,20},Color.BLACK);
 	}
 	
 	public Polygon(double x, double y) {
@@ -27,13 +28,14 @@ public class Polygon extends Shape {
 	}
 	
 	public Polygon(double[] x, double[] y, Color rgb) {
-		super(rgb);
+		this.rgb = rgb;
 		this.x = x;
-		this.headX = x[1];
 		this.y = y;
-		this.headY = y[1];
 	}
-	
+	public Polygon(Polygon polygon) {
+		this(polygon.x, polygon.y, polygon.rgb);
+	}
+
 	/**
 	 * Getter && setter
 	 */
@@ -46,12 +48,6 @@ public class Polygon extends Shape {
 		return y;
 	}
 
-	public double[] position() {
-		double[] position = {this.headX, this.headY};
-		return position;
-	}
-	
-	
 	public void drawShape(GraphicsContext gc) {
 		super.drawShape(gc);
 //		this.x = new double[] {this.headX-12.5, this.headX, this.headX+12.5};
@@ -66,6 +62,12 @@ public class Polygon extends Shape {
 					this.x[1]>frameWidth ||this.y[1]>frameHeight ||this.x[1]<0 ||this.y[1]<0 ||
 					this.x[2]>frameWidth ||this.y[2]>frameHeight ||this.x[2]<0 ||this.y[2]<0 );
 	
+	}
+
+	@Override
+	public double[] position() {
+		// TODO Auto-generated method stub
+		return new double[] {headX, headY};
 	}
 	
 	@Override
@@ -83,7 +85,12 @@ public class Polygon extends Shape {
 
 	}
 	
+	public boolean inInside(Planet planet) {
+		return planet.getPlanetShape().isInside(this.getX()[0], this.getY()[0])
+				||planet.getPlanetShape().isInside(this.getX()[1], this.getY()[1])
+				|| planet.getPlanetShape().isInside(this.getX()[2], this.getY()[2]);
+		
+	}
 
-	
 
 }

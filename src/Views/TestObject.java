@@ -4,6 +4,7 @@ package Views;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Random;
 
 import Models.Player;
 import Models.Spacefleet;
@@ -136,7 +137,6 @@ public class TestObject extends Application{
 					gc.clearRect(0, 0, WIDTH, HEIGHT);
 					universe.render(gc);
 					if(player.inAction()) {
-						Iterator<Spacefleet> it = player.getFleets().iterator();
 						ArrayList<Spacefleet> playersFleet =player.getFleets();
 						for (int indexSpaceFleet = 0; indexSpaceFleet < playersFleet.size(); indexSpaceFleet++) {
 							
@@ -165,7 +165,6 @@ public class TestObject extends Application{
  
 					}
 				}
-
 
 			}.start();
 		

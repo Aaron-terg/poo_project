@@ -9,6 +9,7 @@ import Models.shape.Polygon;
 import Models.shape.Renderable;
 import Models.shape.Shape;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  * <b>SpaceShipType class represent the ship</b>
@@ -47,7 +48,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 		this.productionTime = randomNumber.nextInt(3000)+1000;	
 		this.spaceshipShape = new Polygon();
 	}
-	
+
 	public SpaceshipType(int attPower, int speed, long productionTime, Polygon spaceshipShape, Player player) {
 		this.attPower = attPower;
 		this.speed = speed;
@@ -57,7 +58,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 	}
 	
 	public SpaceshipType(SpaceshipType s) {
-		this(s.attPower, s.speed, s.productionTime, s.spaceshipShape, s.player);
+		this(s.attPower, s.speed, s.productionTime, new Polygon(s.spaceshipShape), s.player);
 	}
 	
 	/***********************************\
@@ -78,7 +79,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 		return this.productionTime;
 	}
 	
-	public Shape getSpaceshipShape() {
+	public Polygon getSpaceshipShape() {
 		return spaceshipShape;
 	}
 	
@@ -115,7 +116,6 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 
 	/**
 	 * Calculate a new point between the ship's actual position && the destination
-	 * Uses vector && distance
 	 * @param destination
 	 * @see SpaceshipType#newPosition(double, double)
 	 */
@@ -127,14 +127,15 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 		double new_pos_y = dist_y /dist;
 		this.newPosition(new_pos_x, new_pos_y);
 	}
+	
 
 	public void get_around(Planet obstacle) {
 		double hypotenuse =obstacle.getPlanetShape().distPoint(this.x, this.y);
-		double opposite = obstacle.getPlanetShape().radius();
+		double opposite = obstacle.getPlanetShape().getRadius();
 		double sinus = opposite / hypotenuse;
 		double cosinus = Math.sqrt(hypotenuse * hypotenuse - opposite * opposite) / hypotenuse;
-		double new_X = obstacle.getX() + obstacle.getPlanetShape().radius()*cosinus;
-		double new_Y = obstacle.getY() + obstacle.getPlanetShape().radius()*sinus;
+		double new_X = obstacle.getX() + obstacle.getPlanetShape().getRadius()*cosinus;
+		double new_Y = obstacle.getY() + obstacle.getPlanetShape().getRadius()*sinus;
 		
 	}
 }

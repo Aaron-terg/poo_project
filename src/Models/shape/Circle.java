@@ -11,17 +11,16 @@ public class Circle extends Shape{
 	 *  Circle constructor
 	 */
 	public Circle() {
-		super();
 		this.x = 0;
 		this.y = 0;
 		this.radius = 1;
 	}
 	
 	public Circle(double x, double y, double radius, Color color) {
-		super(color,radius);
 		this.x = x;
 		this.y = y;
-		this.radius = super.getHeight();
+		this.radius = radius;
+		this.rgb = color;
 		
 	}
 	
@@ -34,7 +33,7 @@ public class Circle extends Shape{
 	 * 
 	 */
 	
-	public double radius() {
+	public double getRadius() {
 		return this.radius;
 	}
 	
@@ -46,8 +45,10 @@ public class Circle extends Shape{
 	public double getY() {
 		return this.y;
 	}
+	public Color getColor() {
+		return this.rgb;
+	}
 	
-	@Override
 	public double[] position() {
 		double[] position = {this.x, this.y};
 		return position;
@@ -56,7 +57,7 @@ public class Circle extends Shape{
 	public boolean intersects(Shape shape) {
 		// TODO find the condition
 		if(shape instanceof Circle) {
-			double newRadius  = this.radius + ((Circle)shape).radius();
+			double newRadius  = this.radius + ((Circle)shape).radius;
 			return Math.abs(shape.position()[0] - this.position()[0])  <= newRadius
 					&& Math.abs(shape.position()[1] - this.position()[1])  <= newRadius;
 		}else if(shape instanceof Polygon) {
@@ -71,11 +72,8 @@ public class Circle extends Shape{
 			//return this.distance(shape) > 0
 		}
 
-	public double distance(Shape shape) {
-		// TODO Auto-generated method stub
-		
-			Circle circle = (Circle)shape;
-			double radiusSum  = this.radius + circle.radius();
+	public double distance(Circle shape) {
+			double radiusSum  = this.radius + shape.getRadius();
 			return this.distPoint(shape.position()[0], shape.position()[1]) - radiusSum;
 		}
 	
@@ -83,9 +81,10 @@ public class Circle extends Shape{
 		return Math.sqrt(Math.pow((p1X - this.x), 2) + Math.pow((p1Y - this.y), 2));
 	}
 
-	@Override
 	public void drawShape(GraphicsContext gc) {
-		super.drawShape(gc);
+		gc.setFill(rgb);
+		gc.setStroke(Color.BLACK);
+		gc.setLineWidth(1);
 		gc.fillOval(x - radius, y - radius, radius*2, radius*2);
 
 	}
@@ -121,7 +120,6 @@ public class Circle extends Shape{
 		// TODO Auto-generated method stub
 		this.x = posX;
 		this.y = posY;
-		
 	}
 }
 	

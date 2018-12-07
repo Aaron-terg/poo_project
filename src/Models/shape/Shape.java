@@ -62,7 +62,6 @@ public abstract class Shape {
 	
 	public void rgb(Color color) {
 		this.rgb =color;
-		
 	}
 	
 }

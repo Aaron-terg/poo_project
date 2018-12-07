@@ -1,4 +1,3 @@
-import Models.planet.Planet;
 
 //								Iterator<Planet> planetIt = universe.getPlanets().iterator();
 //								Planet planetDest = spacefleet.getDestination();
@@ -26,6 +25,12 @@ import Models.planet.Planet;
 //									}
 //								}
 
+
+//								double length = Math.abs(spaceShip.getSpaceshipShape().getY()[0]-spaceShip.getSpaceshipShape().getY()[1]);
+//								if(!(obstacle.getIs_destination()) &&!(player.getTerritory().contains(obstacle))&&
+//									(Math.abs(obstacle.getPlanetShape().distPoint(spaceShip.getSpaceshipShape().getX()[j], spaceShip.getSpaceshipShape().getY()[i]))<=obstacle.getPlanetShape().getRadius()+length+20)){
+//									//spaceShip.get_around(obstacle);
+//								}
 public void goTo(Planet destination) {
 		double dist_x = this.getX()-destination.getX();
 		double dist_y = this.getY()-destination.getY();
