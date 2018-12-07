@@ -120,22 +120,29 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 	 * @see SpaceshipType#newPosition(double, double)
 	 */
 	public void goTo(Planet destination) {
-		double dist_x = this.spaceshipShape.getX()[1]-destination.getPlanetShape().position()[0];
-		double dist_y = this.spaceshipShape.getY()[1]-destination.getPlanetShape().position()[1];
-		double dist = Math.sqrt((dist_x*dist_x)+(dist_y*dist_y));
-		double new_pos_x = dist_x/dist;
-		double new_pos_y = dist_y /dist;
-		this.newPosition(new_pos_x, new_pos_y);
+		double distX = this.spaceshipShape.getX()[1]-destination.getPlanetShape().position()[0];
+		double distY = this.spaceshipShape.getY()[1]-destination.getPlanetShape().position()[1];
+		double dist = Math.sqrt((distX*distX)+(distY*distY));
+		double newPosX = distX/dist;
+		double newPosY = distY /dist;
+		this.newPosition(newPosX, newPosY);
 	}
 	
 
 	public void get_around(Planet obstacle) {
-		double hypotenuse =obstacle.getPlanetShape().distPoint(this.x, this.y);
-		double opposite = obstacle.getPlanetShape().getRadius();
-		double sinus = opposite / hypotenuse;
-		double cosinus = Math.sqrt(hypotenuse * hypotenuse - opposite * opposite) / hypotenuse;
-		double new_X = obstacle.getX() + obstacle.getPlanetShape().getRadius()*cosinus;
-		double new_Y = obstacle.getY() + obstacle.getPlanetShape().getRadius()*sinus;
+		double hypotenuse =obstacle.getPlanetShape().distPoint(this.getSpaceshipShape().getX()[1], this.getSpaceshipShape().getY()[1]);
+		double opposite = obstacle.getPlanetShape().getRadius()+5;
+		double adjacent =Math.sqrt(Math.abs((hypotenuse*hypotenuse)-(opposite*opposite)));
+		double newPosX = adjacent/hypotenuse;
+		double newPosY =opposite/hypotenuse;
+		if(this.getSpaceshipShape().getX()[0]> obstacle.getX() && this.getSpaceshipShape().getY()[0]<= obstacle.getY())
+			this.newPosition(-newPosX, newPosY);
+		else if(this.getSpaceshipShape().getX()[0]>= obstacle.getX() && this.getSpaceshipShape().getY()[0]> obstacle.getY())
+			this.newPosition(-newPosX, -newPosY);
+		else if(this.getSpaceshipShape().getX()[0]< obstacle.getX() && this.getSpaceshipShape().getY()[0]>= obstacle.getY())
+			this.newPosition(newPosX, -newPosY);
+		else if(this.getSpaceshipShape().getX()[0]<= obstacle.getX() && this.getSpaceshipShape().getY()[0]< obstacle.getY())
+			this.newPosition(newPosX, newPosY);
 		
 	}
 }

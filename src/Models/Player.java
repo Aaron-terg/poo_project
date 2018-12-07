@@ -67,8 +67,7 @@ public class Player {
 	public void firstPlanet(Universe u) {
 		Random random = new Random();
 		int indexPlanet = random.nextInt(u.getPlanets().size());
-		this.territory.add(u.getPlanets().get(indexPlanet));
-		u.getPlanets().get(indexPlanet).getPlanetShape().rgb(Color.RED);
+		this.myPlanet(u.getPlanets().get(indexPlanet));
 	}
 	
 	/**
@@ -78,6 +77,7 @@ public class Player {
 	 */
 	public void myPlanet(Planet p) {
 		this.territory.add(p);
+		p.newOwner(this);
 		p.getPlanetShape().rgb(Color.RED);
 	}
 	

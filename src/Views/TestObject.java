@@ -60,7 +60,6 @@ public class TestObject extends Application{
 			public void handle(MouseEvent e) { 	
 				
 				if(e.getButton().equals(MouseButton.PRIMARY)) {
-					System.out.println("<left click");		
 					for(int i = 0; i<player.getTerritory().size();i++) {
 						Planet p = player.getTerritory().get(i);
 						if(!fleetSet && p.getPlanetShape().isInside(e.getX(), e.getY())) {
@@ -94,7 +93,6 @@ public class TestObject extends Application{
 				}
 				
 				if(fleetSet && e.getButton().equals(MouseButton.SECONDARY)) {
-					System.out.println("Right click");
 					Iterator<Planet> it = universe.getPlanets().iterator();
 					while (it.hasNext()) {
 						Planet planet = it.next();
@@ -129,7 +127,8 @@ public class TestObject extends Application{
 					while(accTime >= step) {
 						for (Iterator planetIt = universe.getPlanets().iterator(); planetIt.hasNext();) {
 							Planet planet = (Planet) planetIt.next();
-							planet.nbShipOnPlanet(planet.getProductionRate());
+							if(planet.isOwn())
+								planet.nbShipOnPlanet(planet.getProductionRate());
 						}
 						accTime--;
 					}
@@ -154,7 +153,13 @@ public class TestObject extends Application{
 									planet.spaceShipEnter(spaceshipType);
 									iterator.remove();
 								}
-								else {
+								else{
+									for(Planet obstacle : universe.getPlanets()) {
+										if(obstacle.getPlanetShape().distPoint(spaceshipType.getSpaceshipShape().getX()[0], spaceshipType.getSpaceshipShape().getY()[0])<obstacle.getPlanetShape().getRadius()+15
+												&&!obstacle.equals(planet)) {
+											spaceshipType.get_around(obstacle);
+										}
+									}
 									spaceshipType.goTo(planet);
 									spaceshipType.render(gc);
 								}
