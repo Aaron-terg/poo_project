@@ -1,13 +1,14 @@
 package Models.Spaceship;
 
 import Models.Player;
+import Models.shape.Polygon;
 
 public class BasicSpaceshipType extends SpaceshipType {
 	
 	public BasicSpaceshipType() {
 		super();
 		this.speed = 2;
-		//this.spaceshipShape = new Polygon();
+		//this.spaceshipShape = new Polygon(this.x, this.y);
 	}
 	
 	public BasicSpaceshipType(Player player) {

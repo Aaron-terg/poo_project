@@ -18,9 +18,12 @@ public class Polygon extends Shape {
 		this(new double[]{100,112.5,125}, new double[]{50, 75 ,50}, Color.BLACK);
 	}
 	
-	public Polygon(double[] x, double[] y) {
-		this.x = x;
-		this.y = y;
+	public Polygon(double x, double y) {
+		this(new double[] {x-12.5, x, x+12.5},
+				new double[] {y-25, y, y+25},
+				Color.BLACK);
+		this.headX = x;
+		this.headY = y;
 	}
 	
 	public Polygon(double[] x, double[] y, Color rgb) {
@@ -42,16 +45,6 @@ public class Polygon extends Shape {
 	public double[] getY() {
 		return y;
 	}
-	public double getHeadX() {
-		return this.headX;
-	}
-	public double getHeadY() {
-		return this.headY;
-	}
-	public void setHeadXY(double headX, double headY) {
-		this.headX = headX;
-		this.headY= headY;
-	}
 
 	public double[] position() {
 		double[] position = {this.headX, this.headY};
@@ -61,6 +54,8 @@ public class Polygon extends Shape {
 	
 	public void drawShape(GraphicsContext gc) {
 		super.drawShape(gc);
+//		this.x = new double[] {this.headX-12.5, this.headX, this.headX+12.5};
+//		this.y = new double[] {this.headY-25, this.headY, this.headY+25};
 		gc.fillPolygon(x, y, x.length);;
 		
 	}
@@ -72,13 +67,11 @@ public class Polygon extends Shape {
 					this.x[2]>frameWidth ||this.y[2]>frameHeight ||this.x[2]<0 ||this.y[2]<0 );
 	
 	}
-
-	public void rgb(Color rgb) {
-		
-	}
 	
 	@Override
 	public void setPosition(double posX, double posY) {
+//		this.headX = posX;
+//		this.headY = posY;
 		double x_int = x[0];
 		double y_int = y[0];
 		for(int i = 0; i<this.x.length; i++) {

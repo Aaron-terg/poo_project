@@ -24,8 +24,8 @@ import javafx.stage.Stage;
 
 
 public class TestObject extends Application{
-	public final static double WIDTH = 600;
-	public final static double HEIGHT = 600;
+	public final static double WIDTH = 1200;
+	public final static double HEIGHT = 800;
 
 		
 	public static void main(String[] args) {
@@ -50,10 +50,10 @@ public class TestObject extends Application{
 		player.firstPlanet(universe);
 		
 	
-		 EventHandler<MouseEvent> mouseEvent = new EventHandler<MouseEvent>() {
+		EventHandler<MouseEvent> mouseEvent = new EventHandler<MouseEvent>() {
 			boolean fleetSet = false;
 			int indexSpacefleet = 0;
-			int nbShip = 5;
+			int nbShip = 50;
 			Spacefleet currentSpacefleet;
 			Planet currentPlanet;
 			public void handle(MouseEvent e) { 	
@@ -63,10 +63,15 @@ public class TestObject extends Application{
 					for(int i = 0; i<player.getTerritory().size();i++) {
 						Planet p = player.getTerritory().get(i);
 						if(!fleetSet && p.getPlanetShape().isInside(e.getX(), e.getY())) {
-							//SpaceshipType spaceship= new BasicSpaceshipType(player, p.getPlanetShape().getX(), p.getPlanetShape().getY());
-							indexSpacefleet = player.getFleets().size();
+							nbShip = 50;
+							if(p.nbShipOnPlanet() < nbShip)
+								nbShip = p.nbShipOnPlanet();
+							if(nbShip <= 0)
+								break;
 							
+							indexSpacefleet = player.getFleets().size();
 							currentPlanet = p;
+							
 							Spacefleet spacefleet = new Spacefleet(nbShip, new BasicSpaceshipType(player), p, indexSpacefleet);
 							currentSpacefleet = spacefleet;
 							player.newLaunch(spacefleet);
@@ -111,7 +116,23 @@ public class TestObject extends Application{
 		
 
 			new AnimationTimer() {
-				public void handle(long arg0) {
+				
+				long prevTime = System.nanoTime();
+				double step = 0.0166f, maxStep = 0.005f;
+				double accTime = 0;
+				public void handle(long now) {
+					
+					double elapsedTime = (now - prevTime) / 1E9f;
+					double elapsedTimeCaped = Math.min(elapsedTime, maxStep);
+					accTime += elapsedTimeCaped;
+					while(accTime >= step) {
+						for (Iterator planetIt = universe.getPlanets().iterator(); planetIt.hasNext();) {
+							Planet planet = (Planet) planetIt.next();
+							planet.nbShipOnPlanet(planet.getProductionRate());
+						}
+						accTime--;
+					}
+					
 					gc.clearRect(0, 0, WIDTH, HEIGHT);
 					universe.render(gc);
 					if(player.inAction()) {
@@ -141,25 +162,6 @@ public class TestObject extends Application{
 							if(spacefleet.isArrived())
 								player.getFleets().remove(indexSpaceFleet);
 						}
-/**			
- *						while (it.hasNext()) {
- *							Spacefleet spacefleet = it.next();
- *							for (Iterator iterator = spacefleet.fleet().iterator(); iterator.hasNext();) {
- *								SpaceshipType spaceshipType = (SpaceshipType) iterator.next();
- *								Planet planet = spacefleet.getDestination();
- *								if(spaceshipType == null)
- *									break;
- *								if(planet.getPlanetShape().intersects(spaceshipType.getSpaceshipShape()))
- *									iterator.remove();
- *								else {
- *									spaceshipType.goTo(planet);
- *									spaceshipType.render(gc);
- *								}
- *							}
- *							if(spacefleet.isArrived())
- *								it.remove();
- *						}
- */
  
 					}
 				}

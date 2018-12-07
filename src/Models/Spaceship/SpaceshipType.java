@@ -44,9 +44,8 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 		Random randomNumber = new Random();
 		this.attPower = randomNumber.nextInt(10)+2;
 		this.speed = randomNumber.nextInt(3)+1;
-		this.productionTime = randomNumber.nextInt(3000)+1000;
+		this.productionTime = randomNumber.nextInt(3000)+1000;	
 		this.spaceshipShape = new Polygon();
-		
 	}
 	
 	public SpaceshipType(int attPower, int speed, long productionTime, Polygon spaceshipShape, Player player) {
@@ -107,10 +106,11 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 	public void newPosition(double x, double y) {
 		this.x -= x*speed;
 		this.y -= y*speed;
+//		this.spaceshipShape.setPosition(this.x, this.y);
 		for(int i = 0; i<this.spaceshipShape.getX().length; i++) {
 			this.spaceshipShape.getX()[i]-=x*speed;
 			this.spaceshipShape.getY()[i]-=y*speed;
-			}
+		}
 	}
 
 	/**
@@ -119,13 +119,22 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 	 * @param destination
 	 * @see SpaceshipType#newPosition(double, double)
 	 */
-	
 	public void goTo(Planet destination) {
 		double dist_x = this.spaceshipShape.getX()[1]-destination.getPlanetShape().position()[0];
 		double dist_y = this.spaceshipShape.getY()[1]-destination.getPlanetShape().position()[1];
-		double new_pos_x = dist_x/Math.sqrt((dist_x*dist_x)+(dist_y*dist_y));
-		double new_pos_y = dist_y /Math.sqrt((dist_x*dist_x)+(dist_y*dist_y));
+		double dist = Math.sqrt((dist_x*dist_x)+(dist_y*dist_y));
+		double new_pos_x = dist_x/dist;
+		double new_pos_y = dist_y /dist;
 		this.newPosition(new_pos_x, new_pos_y);
 	}
 
+	public void get_around(Planet obstacle) {
+		double hypotenuse =obstacle.getPlanetShape().distPoint(this.x, this.y);
+		double opposite = obstacle.getPlanetShape().radius();
+		double sinus = opposite / hypotenuse;
+		double cosinus = Math.sqrt(hypotenuse * hypotenuse - opposite * opposite) / hypotenuse;
+		double new_X = obstacle.getX() + obstacle.getPlanetShape().radius()*cosinus;
+		double new_Y = obstacle.getY() + obstacle.getPlanetShape().radius()*sinus;
+		
+	}
 }

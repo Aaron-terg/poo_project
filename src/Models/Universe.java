@@ -30,7 +30,7 @@ public class Universe implements Renderable{
 				Planet prevPlanet = planets.get(j);
 				superImposedTest &= planet.superimposed(prevPlanet);
 				j--;
-				}
+			}
 			if(superImposedTest) {
 				planets.add(planet);
 				

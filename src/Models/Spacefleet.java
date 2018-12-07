@@ -15,10 +15,17 @@ public class Spacefleet {
 	
 	public Spacefleet(int nbShip, SpaceshipType spaceshipType,Planet start, int index) {
 		this.spaceships = new ArrayList<>();
+		double radius = start.width;
+		double angle = 100000/radius;
+		double[] spaceport = new double[2];
 		while(nbShip > 0) {
 			try {
+				
+				spaceport[0] = radius*Math.cos(nbShip*angle*Math.PI /180) + start.x;
+				spaceport[1] = -radius*Math.sin(nbShip*angle*Math.PI /180) + start.y;
+				
 				SpaceshipType spaceship = spaceshipType.getClass().newInstance();
-				spaceship.getSpaceshipShape().setPosition(start.getPlanetShape().getX(), start.getPlanetShape().getY());
+				spaceship.getSpaceshipShape().setPosition(spaceport[0], spaceport[1]);
 				spaceship.setPlayer(spaceshipType.getPlayer());
 				spaceships.add(spaceship);
 			} catch (InstantiationException | IllegalAccessException e) {

@@ -56,7 +56,7 @@ public class Planet extends GameObject implements Renderable{
 	 * 
 	 * @see Planet#getProductionRate()
 	 */
-	private int productionRate = 0;
+	private int productionRate = 15;
 	
 	/**
 	 * The number of spaceship on the planet
@@ -80,7 +80,7 @@ public class Planet extends GameObject implements Renderable{
 	 */
 	public Planet() {
 		Random randomNumber = new Random();
-		double radius = randomNumber.nextInt(50)+25;
+		double radius = randomNumber.nextInt(100)+25;
 		double frameWidth = TestObject.WIDTH;
 		double frameHeight = TestObject.HEIGHT;
 		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius;
@@ -255,7 +255,7 @@ public class Planet extends GameObject implements Renderable{
 	 * @return
 	 */
 	public boolean superimposed(Planet p) {
-		return ((this.getPlanetShape().distance(p.getPlanetShape()) > 5));
+		return ((this.getPlanetShape().distance(p.getPlanetShape()) > 20));
 	}
 	
 

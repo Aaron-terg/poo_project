@@ -59,8 +59,9 @@ public abstract class Shape {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	public void rgb(Color red) {
-		this.rgb =red;
+	
+	public void rgb(Color color) {
+		this.rgb =color;
 		
 	}
 	
