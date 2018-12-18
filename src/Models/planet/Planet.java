@@ -81,7 +81,7 @@ public class Planet extends GameObject implements Renderable{
 	 */
 	public Planet() {
 		Random randomNumber = new Random();
-		double radius = randomNumber.nextInt(100)+25;
+		double radius = randomNumber.nextInt(80)+30;
 		double frameWidth = TestObject.WIDTH;
 		double frameHeight = TestObject.HEIGHT;
 		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius;

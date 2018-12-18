@@ -9,7 +9,6 @@ import Models.shape.Polygon;
 import Models.shape.Renderable;
 import Models.shape.Shape;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 /**
  * <b>SpaceShipType class represent the ship</b>
@@ -131,18 +130,23 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 
 	public void get_around(Planet obstacle) {
 		double hypotenuse =obstacle.getPlanetShape().distPoint(this.getSpaceshipShape().getX()[1], this.getSpaceshipShape().getY()[1]);
-		double opposite = obstacle.getPlanetShape().getRadius()+5;
+		double opposite = obstacle.getPlanetShape().getRadius()+15;
 		double adjacent =Math.sqrt(Math.abs((hypotenuse*hypotenuse)-(opposite*opposite)));
 		double newPosX = adjacent/hypotenuse;
 		double newPosY =opposite/hypotenuse;
-		if(this.getSpaceshipShape().getX()[0]> obstacle.getX() && this.getSpaceshipShape().getY()[0]<= obstacle.getY())
+		if(this.getSpaceshipShape().getX()[0]>= obstacle.getX() && this.getSpaceshipShape().getY()[0]<= obstacle.getY()) {
+			
 			this.newPosition(-newPosX, newPosY);
-		else if(this.getSpaceshipShape().getX()[0]>= obstacle.getX() && this.getSpaceshipShape().getY()[0]> obstacle.getY())
+		}else if(this.getSpaceshipShape().getX()[0]> obstacle.getX() && this.getSpaceshipShape().getY()[0]>= obstacle.getY()){
+		
 			this.newPosition(-newPosX, -newPosY);
-		else if(this.getSpaceshipShape().getX()[0]< obstacle.getX() && this.getSpaceshipShape().getY()[0]>= obstacle.getY())
+		}else if(this.getSpaceshipShape().getX()[0]<= obstacle.getX() && this.getSpaceshipShape().getY()[0]> obstacle.getY()) {
 			this.newPosition(newPosX, -newPosY);
-		else if(this.getSpaceshipShape().getX()[0]<= obstacle.getX() && this.getSpaceshipShape().getY()[0]< obstacle.getY())
+	
+		}else {
 			this.newPosition(newPosX, newPosY);
+		
+			}
 		
 	}
 }

@@ -42,6 +42,7 @@ public class Player {
 	 * The spaceship fleets of the player
 	 */
 	private ArrayList<Spacefleet> spacefleets;
+	private Color color;
 	/**
 	 * The default constructor, set the player tag to default.
 	 */
@@ -49,6 +50,12 @@ public class Player {
 		this.playerTag = "default";
 		this.territory= new ArrayList<Planet>();
 		this.spacefleets = new ArrayList<>();
+		this.color= Color.RED;
+	}
+	public Player(String name) {
+		this();
+		this.playerTag = name;
+		this.color = Color.GREEN;
 	}
 	
 	public ArrayList<Planet> getTerritory(){
@@ -68,6 +75,7 @@ public class Player {
 		Random random = new Random();
 		int indexPlanet = random.nextInt(u.getPlanets().size());
 		this.myPlanet(u.getPlanets().get(indexPlanet));
+		
 	}
 	
 	/**
@@ -78,7 +86,9 @@ public class Player {
 	public void myPlanet(Planet p) {
 		this.territory.add(p);
 		p.newOwner(this);
-		p.getPlanetShape().rgb(Color.RED);
+		p.getPlanetShape().rgb(color);
+		
+
 	}
 	
 	public void newLaunch(Spacefleet s) {
@@ -104,6 +114,9 @@ public class Player {
 			return this.playerTag == player.playerTag;
 		}
 		return false;
-					
+			
+		
 	}
+		
+	
 }

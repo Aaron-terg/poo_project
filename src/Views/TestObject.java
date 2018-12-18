@@ -4,7 +4,6 @@ package Views;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Random;
 
 import Models.Player;
 import Models.Spacefleet;
@@ -19,14 +18,17 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 
 public class TestObject extends Application{
 	public final static double WIDTH = 1200;
 	public final static double HEIGHT = 800;
+	public static int percent=10;
 
 		
 	public static void main(String[] args) {
@@ -49,30 +51,35 @@ public class TestObject extends Application{
 		Universe universe = new Universe(10);
 		Player player = new Player();
 		player.firstPlanet(universe);
+		Player ia = new Player("IA");
+		ia.firstPlanet(universe);
 		
+		EventHandler<KeyEvent> keyEvent = new EventHandler<KeyEvent>() {
+			public void handle(KeyEvent e) { 
+				if(e.isShiftDown()&&percent<100) 
+					percent+=5;
+				
+				if(e.isControlDown()&&percent>0) 
+					percent-=5;
+
+				
+			}
+			
+		};
+		scene.setOnKeyPressed(keyEvent);
 	
 		EventHandler<MouseEvent> mouseEvent = new EventHandler<MouseEvent>() {
 			boolean fleetSet = false;
 			int indexSpacefleet = 0;
-			int nbShip = 50;
 			Spacefleet currentSpacefleet;
 			Planet currentPlanet;
 			public void handle(MouseEvent e) { 	
-				
 				if(e.getButton().equals(MouseButton.PRIMARY)) {
-					for(int i = 0; i<player.getTerritory().size();i++) {
-						Planet p = player.getTerritory().get(i);
+					for(Planet p : player.getTerritory()) {	
 						if(!fleetSet && p.getPlanetShape().isInside(e.getX(), e.getY())) {
-							nbShip = 50;
-							if(p.nbShipOnPlanet() < nbShip)
-								nbShip = p.nbShipOnPlanet();
-							if(nbShip <= 0)
-								break;
-							
 							indexSpacefleet = player.getFleets().size();
 							currentPlanet = p;
-							
-							Spacefleet spacefleet = new Spacefleet(nbShip, new BasicSpaceshipType(player), p, indexSpacefleet);
+							Spacefleet spacefleet = new Spacefleet(percent, new BasicSpaceshipType(player), p, indexSpacefleet);
 							currentSpacefleet = spacefleet;
 							player.newLaunch(spacefleet);
 							fleetSet = true;
@@ -101,7 +108,7 @@ public class TestObject extends Application{
 							if(indexSpacefleet >= player.getFleets().size())
 								currentSpacefleet.setIndex(--indexSpacefleet);
 							player.getFleets().get(indexSpacefleet).setDestination(planet);
-							currentPlanet.nbShipOnPlanet(-nbShip);
+							currentPlanet.nbShipOnPlanet(-(int)percent*currentPlanet.nbShipOnPlanet()/100);
 							fleetSet = false;
 
 						}
@@ -125,7 +132,7 @@ public class TestObject extends Application{
 					double elapsedTimeCaped = Math.min(elapsedTime, maxStep);
 					accTime += elapsedTimeCaped;
 					while(accTime >= step) {
-						for (Iterator planetIt = universe.getPlanets().iterator(); planetIt.hasNext();) {
+						for (Iterator<Planet> planetIt = universe.getPlanets().iterator(); planetIt.hasNext();) {
 							Planet planet = (Planet) planetIt.next();
 							if(planet.isOwn())
 								planet.nbShipOnPlanet(planet.getProductionRate());
@@ -135,6 +142,8 @@ public class TestObject extends Application{
 					
 					gc.clearRect(0, 0, WIDTH, HEIGHT);
 					universe.render(gc);
+					
+					
 					if(player.inAction()) {
 						ArrayList<Spacefleet> playersFleet =player.getFleets();
 						for (int indexSpaceFleet = 0; indexSpaceFleet < playersFleet.size(); indexSpaceFleet++) {
@@ -162,6 +171,8 @@ public class TestObject extends Application{
 									}
 									spaceshipType.goTo(planet);
 									spaceshipType.render(gc);
+							
+									
 								}
 							}
 							if(spacefleet.isArrived())
@@ -169,7 +180,12 @@ public class TestObject extends Application{
 						}
  
 					}
+					String txt = "Ships to send: "+percent +"%";
+					gc.fillText(txt, 1, 20);
+					gc.strokeText(txt, 1, 20);
+					gc.setTextAlign(TextAlignment.LEFT);
 				}
+				
 
 			}.start();
 		

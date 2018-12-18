@@ -12,17 +12,19 @@ public class Spacefleet {
 	private Planet start, destination; 
 	private double[][] checkpoint; // tableau de point
 	private int index;
+	private int shipToSend;
 	
 	public Spacefleet(int nbShip, SpaceshipType spaceshipType,Planet start, int index) {
 		this.spaceships = new ArrayList<>();
 		double radius = start.width;
 		double angle = 100000/radius;
+		this.shipToSend= (int)(nbShip*start.nbShipOnPlanet())/100;
 		double[] spaceport = new double[2];
-		while(nbShip > 0) {
+		while(shipToSend > 0) {
 			try {
 				
-				spaceport[0] = radius*Math.cos(nbShip*angle*Math.PI /180) + start.x;
-				spaceport[1] = -radius*Math.sin(nbShip*angle*Math.PI /180) + start.y;
+				spaceport[0] = (radius+15)*Math.cos(shipToSend*angle*Math.PI/180) + start.x;
+				spaceport[1] = -(radius+15)*Math.sin(shipToSend*angle*angle*Math.PI/180) + start.y;
 				
 				SpaceshipType spaceship = spaceshipType.getClass().newInstance();
 				spaceship.getSpaceshipShape().setPosition(spaceport[0], spaceport[1]);
@@ -32,12 +34,15 @@ public class Spacefleet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}finally {
-				nbShip--;
+				shipToSend--;
 			}
 		}
 		this.start = start;
 		this.index = index;
 		//this.destination = destination;
+	}
+	public int getshipToSend() {
+		return this.shipToSend;
 	}
 	
 	public int getIndex() {
