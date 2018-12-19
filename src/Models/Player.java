@@ -43,7 +43,7 @@ public class Player {
 	 */
 	private ArrayList<Spacefleet> spacefleets;
 	private Color color;
-	public int percent=10;
+	public int percent=100;
 	/**
 	 * The default constructor, set the player tag to default.
 	 */
@@ -98,11 +98,12 @@ public class Player {
 
 	}
 	
-	public void newLaunch(int percent, Planet start) {
+	public Spacefleet newLaunch(int percent, Planet start) {
 		int nbShip = (int)(percent*start.nbShipOnPlanet())/100;
 		int indexSpacefleet = getFleets().size();
 		Spacefleet spacefleet = new Spacefleet(nbShip, start, indexSpacefleet);
 		this.spacefleets.add(spacefleet);
+		return spacefleet;
 	}
 	
 	public boolean inAction() {

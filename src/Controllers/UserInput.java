@@ -56,11 +56,12 @@ public class UserInput {
 						Planet p = planetIt.next();
 						if(p.getPlanetShape().isInside(e.getX(), e.getY())) {
 							currentPlanet = p;
-							user.newLaunch(user.percent, p);
-							indexSpacefleet = user.getFleets().size() -1;
-							currentSpacefleet = user.getFleets().get(indexSpacefleet);
+							if(fleetSet && currentPlanet.equals(p))
+								user.getFleets().remove(currentSpacefleet);
 							fleetSet = true;
 							isFound = true;
+							currentPlanet.isSelected();
+							System.out.println(indexSpacefleet);
 						}
 					}
 					if(!isFound) {
@@ -81,9 +82,12 @@ public class UserInput {
 					while (it.hasNext()) {
 						Planet planet = it.next();
 						if(planet.getPlanetShape().isInside(e.getX(), e.getY())) {
+							
+							currentSpacefleet = user.newLaunch(user.percent, currentPlanet);
 							indexSpacefleet = currentSpacefleet.getIndex();
 							if(indexSpacefleet >= user.getFleets().size())
 								currentSpacefleet.setIndex(--indexSpacefleet);
+							
 							currentSpacefleet.setDestination(planet); //user.getFleets().get(indexSpacefleet)
 							currentPlanet.nbShipOnPlanet(-currentSpacefleet.fleetSize());
 							fleetSet = false;

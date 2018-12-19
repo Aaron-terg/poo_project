@@ -3,12 +3,14 @@ package Models;
 public class GameObject {
 	protected double x, y;
 	protected double height, width;
+	protected static GameObject selected;
 	
 	public GameObject() {
 		this.x = 0;
 		this.y = 0;
 		this.height = 0;
 		this.width = 0;
+		this.selected = null;
 	}
 	
 	public GameObject(double x, double y, double height, double width) {
@@ -16,6 +18,7 @@ public class GameObject {
 		this.y = y - height/2;
 		this.height = height;
 		this.width = width;
+		this.selected = null;
 	}
 	
 	public double getX() {
@@ -26,6 +29,10 @@ public class GameObject {
 		return y;
 	}
 
+	public void isSelected() {
+		selected = this;
+	}
+	
 	public boolean isInside(double x, double y) {
 		
 		return x <= (this.x + this.width) && x >= (this.x - this.width)

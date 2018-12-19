@@ -12,7 +12,7 @@ public class BasicSpaceshipType extends SpaceshipType {
 	}
 	
 	public BasicSpaceshipType(Player player) {
-		this();
+		this(); 
 		this.player = player;
 	}
 	public BasicSpaceshipType(SpaceshipType spaceship) {

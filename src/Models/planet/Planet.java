@@ -111,7 +111,7 @@ public class Planet extends GameObject implements Renderable{
 	public Planet(int shipOnPlanet, Circle planetShape) {
 		this.shipOnPlanet = shipOnPlanet;
 		this.planetShape = planetShape;
-		this.spaceshipType = new BasicSpaceshipType();
+		this.spaceshipType = new BasicSpaceshipType(); 
 	}
 	
 	public Planet(Planet planet) {
@@ -270,10 +270,17 @@ public class Planet extends GameObject implements Renderable{
 	
 	@Override
 	public void render(GraphicsContext gc) {
+		if(this.equals(selected))
+			gc.setLineWidth(5f);
+		else
+			gc.setLineWidth(1f);
+
 		this.planetShape.drawShape(gc);
+		
 		gc.setFill(Color.BLACK);
-	
+		
 		gc.fillText(""+shipOnPlanet, planetShape.position()[0],planetShape.position()[1]);
+		
 	}
 	
 	/**

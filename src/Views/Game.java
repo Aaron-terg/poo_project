@@ -90,22 +90,25 @@ public class Game extends Application {
 						if(planet.isOwn())
 							planet.nbShipOnPlanet(planet.getProductionRate());
 					}
+					
 					accTime--;
 				}
 				
 				gc.clearRect(0, 0, WIDTH, HEIGHT);
-				
-				universe.render(gc);
 				update();
+				universe.render(gc);
+				//update();
 				int nbPlayers = players.size();
 				String txt = "";
 				if(nbPlayers > 1) {
 					txt = "Ships to send: "+user.percent +"%\n"
-							+ "nb players: "+ nbPlayers;
+							+ "nb players: "+ nbPlayers+ "\n";
 					
 				}
 				else
-					txt = "winner: " + players.toString(); 
+					txt = "winner: " + players.toString()+ "\n"; 
+				
+				txt += user.getFleets().size() + "\n";
 				gc.fillText(txt, 1, 20);
 				gc.strokeText(txt, 1, 20);
 				gc.setTextAlign(TextAlignment.LEFT);
@@ -127,6 +130,8 @@ public class Game extends Application {
 						
 						Spacefleet spacefleet =	playersFleet.get(indexSpaceFleet);
 						spacefleet.setIndex(indexSpaceFleet);
+						if(spacefleet.getNbWave() > 0)
+							spacefleet.takeOff();
 						
 						for (Iterator iterator = spacefleet.fleet().iterator(); iterator.hasNext();) {
 							
@@ -134,7 +139,7 @@ public class Game extends Application {
 
 							Planet planet = spacefleet.getDestination();
 							if(planet == null)
-								break;
+								continue;
 							if(planet.getPlanetShape().intersects(spaceshipType.getSpaceshipShape())) {
 								planet.spaceShipEnter(spaceshipType);
 								iterator.remove();
