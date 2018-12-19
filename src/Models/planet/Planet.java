@@ -8,7 +8,7 @@ import Models.Spaceship.BasicSpaceshipType;
 import Models.Spaceship.SpaceshipType;
 import Models.shape.Circle;
 import Models.shape.Renderable;
-import Views.TestObject;
+import Views.Game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -82,15 +82,15 @@ public class Planet extends GameObject implements Renderable{
 	public Planet() {
 		Random randomNumber = new Random();
 		double radius = randomNumber.nextInt(80)+30;
-		double frameWidth = TestObject.WIDTH;
-		double frameHeight = TestObject.HEIGHT;
+		double frameWidth = Game.WIDTH;
+		double frameHeight = Game.HEIGHT;
 		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius;
 		double pointY = (frameHeight - radius)*randomNumber.nextDouble() + radius;
 		Color color = Color.CORNFLOWERBLUE;
 		this.shipOnPlanet = randomNumber.nextInt(100)+1;
 		this.planetShape = new Circle(pointX, pointY, radius, color);
 		planetShape.validPosition(frameWidth, frameHeight);
-
+		this.spaceshipType = new BasicSpaceshipType();
 		this.x = pointX;
 		this.y = pointY;
 		this.height = radius;
@@ -102,14 +102,16 @@ public class Planet extends GameObject implements Renderable{
 	public Planet(double pointX, double pointY, double radius, Color color) {
 		super(pointX, pointY, radius, radius);
 		this.planetShape = new Circle(pointX, pointY, radius, color);
-		double frameWidth = TestObject.WIDTH;
-		double frameHeight = TestObject.HEIGHT;
+		double frameWidth = Game.WIDTH;
+		double frameHeight = Game.HEIGHT;
 		planetShape.validPosition(frameWidth, frameHeight);
+		this.spaceshipType = new BasicSpaceshipType();
 		
 	}
 	public Planet(int shipOnPlanet, Circle planetShape) {
 		this.shipOnPlanet = shipOnPlanet;
 		this.planetShape = planetShape;
+		this.spaceshipType = new BasicSpaceshipType();
 	}
 	
 	public Planet(Planet planet) {
@@ -145,7 +147,10 @@ public class Planet extends GameObject implements Renderable{
 	 * @see Planet#planetState
 	 */
 	public void newOwner(Player player) {
+		if(isOwn())
+			owner.getTerritory().remove(this);
 		this.owner = player;
+		planetShape.rgb(player.getColor());
 	}
 	
 	/**
@@ -284,8 +289,7 @@ public class Planet extends GameObject implements Renderable{
 			this.shipOnPlanet -= spaceship.getAttPower();
 		if(this.shipOnPlanet < 0) {
 			this.shipOnPlanet -= this.shipOnPlanet;
-			this.owner = spaceship.getPlayer();
-			spaceship.getPlayer().myPlanet(this);
+			spaceship.getPlayer().myPlanet(this);;
 		}
 			
 	}

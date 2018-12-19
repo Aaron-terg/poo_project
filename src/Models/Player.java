@@ -43,6 +43,7 @@ public class Player {
 	 */
 	private ArrayList<Spacefleet> spacefleets;
 	private Color color;
+	public int percent=10;
 	/**
 	 * The default constructor, set the player tag to default.
 	 */
@@ -66,7 +67,13 @@ public class Player {
 		return this.spacefleets;
 	}
 	
+	public boolean hasTerritory() {
+		return territory.size() != 0;
+	}
 	
+	public Color getColor() {
+		return this.color;
+	}
 	/**
 	 * Choose the palyer's first planet and fill her with a specified color
 	 * @param u,
@@ -74,6 +81,8 @@ public class Player {
 	public void firstPlanet(Universe u) {
 		Random random = new Random();
 		int indexPlanet = random.nextInt(u.getPlanets().size());
+		while(u.getPlanets().get(indexPlanet).isOwn())
+			indexPlanet = random.nextInt(u.getPlanets().size());
 		this.myPlanet(u.getPlanets().get(indexPlanet));
 		
 	}
@@ -86,13 +95,14 @@ public class Player {
 	public void myPlanet(Planet p) {
 		this.territory.add(p);
 		p.newOwner(this);
-		p.getPlanetShape().rgb(color);
-		
 
 	}
 	
-	public void newLaunch(Spacefleet s) {
-		this.spacefleets.add(s);
+	public void newLaunch(int percent, Planet start) {
+		int nbShip = (int)(percent*start.nbShipOnPlanet())/100;
+		int indexSpacefleet = getFleets().size();
+		Spacefleet spacefleet = new Spacefleet(nbShip, start, indexSpacefleet);
+		this.spacefleets.add(spacefleet);
 	}
 	
 	public boolean inAction() {
@@ -116,6 +126,11 @@ public class Player {
 		return false;
 			
 		
+	}
+	
+	@Override
+	public String toString() {
+		return this.playerTag;
 	}
 		
 	

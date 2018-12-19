@@ -9,42 +9,39 @@ import Models.planet.Planet;
 public class Spacefleet {
 	
 	private ArrayList<SpaceshipType> spaceships;
-	private Planet start, destination; 
-	private double[][] checkpoint; // tableau de point
+	private Planet destination; 
 	private int index;
-	private int shipToSend;
+	private int nbShip;
 	
-	public Spacefleet(int nbShip, SpaceshipType spaceshipType,Planet start, int index) {
+	public Spacefleet(int nbShip, Planet start, int index) {
 		this.spaceships = new ArrayList<>();
+		this.nbShip = nbShip;
 		double radius = start.width;
 		double angle = 100000/radius;
-		this.shipToSend= (int)(nbShip*start.nbShipOnPlanet())/100;
 		double[] spaceport = new double[2];
-		while(shipToSend > 0) {
+		while(nbShip > 0) {
 			try {
 				
-				spaceport[0] = (radius+15)*Math.cos(shipToSend*angle*Math.PI/180) + start.x;
-				spaceport[1] = -(radius+15)*Math.sin(shipToSend*angle*angle*Math.PI/180) + start.y;
+				spaceport[0] = (radius+15)*Math.cos(nbShip*angle*Math.PI/180) + start.x;
+				spaceport[1] = -(radius+15)*Math.sin(nbShip*angle*angle*Math.PI/180) + start.y;
 				
-				SpaceshipType spaceship = spaceshipType.getClass().newInstance();
+				SpaceshipType spaceship = start.getSpaceShipeType().getClass().newInstance();
 				spaceship.getSpaceshipShape().setPosition(spaceport[0], spaceport[1]);
-				spaceship.setPlayer(spaceshipType.getPlayer());
+				spaceship.setPlayer(start.owner());
 				spaceships.add(spaceship);
 			} catch (InstantiationException | IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}finally {
-				shipToSend--;
+				nbShip--;
 			}
 		}
-		this.start = start;
 		this.index = index;
-		//this.destination = destination;
-	}
-	public int getshipToSend() {
-		return this.shipToSend;
 	}
 	
+	public int fleetSize() {
+		return nbShip;
+	}
 	public int getIndex() {
 		return this.index;
 	}
@@ -67,11 +64,10 @@ public class Spacefleet {
 	
 	public boolean inside(double x, double y) {
 		boolean result = false;
-		for (Iterator spaceshipIt = spaceships.iterator(); spaceshipIt.hasNext();) {
-			SpaceshipType spaceship = (SpaceshipType) spaceshipIt.next();
-			result |= spaceship.isInside(x, y);
-			if(result)
-				break;
+		Iterator<SpaceshipType> spaceshipIt = spaceships.iterator();
+		while(spaceshipIt.hasNext() && !result) {
+			SpaceshipType spaceship = spaceshipIt.next();
+			result = spaceship.isInside(x, y);
 		}
 		return result;
 	}
