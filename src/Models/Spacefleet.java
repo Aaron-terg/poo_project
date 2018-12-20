@@ -3,12 +3,10 @@ package Models;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.event.CellEditorListener;
-
 import Models.Spaceship.SpaceshipType;
 import Models.planet.Planet;
 
-public class Spacefleet {
+public class Spacefleet extends GameObject {
 	
 	private ArrayList<SpaceshipType> spaceships;
 	private Planet start, destination; 
@@ -75,13 +73,17 @@ public class Spacefleet {
 		while(spaceshipIt.hasNext() && !result) {
 			SpaceshipType spaceship = spaceshipIt.next();
 			result = spaceship.isInside(x, y);
+			if(result) {
+				this.x = spaceship.x;
+				this.y = spaceship.y;
+			}
+				
 		}
 		return result;
 	}
 	
 	public void takeOff() {
 		if(nbWave > 0) {
-			System.out.println("takeOff");
 			double[] spaceport = new double[2];
 			double radius = start.width;
 			

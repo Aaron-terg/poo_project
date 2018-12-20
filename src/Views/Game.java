@@ -45,7 +45,7 @@ public class Game extends Application {
 
 		Player user = new Player();
 		
-		userIn = new UserInput(scene, user);
+		userIn = new UserInput(scene, user, gc);
 		
 		
 		
@@ -95,9 +95,10 @@ public class Game extends Application {
 				}
 				
 				gc.clearRect(0, 0, WIDTH, HEIGHT);
-				update();
+				
 				universe.render(gc);
-				//update();
+				update();
+				
 				int nbPlayers = players.size();
 				String txt = "";
 				if(nbPlayers > 1) {
@@ -118,6 +119,8 @@ public class Game extends Application {
 	}
 	
 	public void update() {
+		
+		
 		// loop over players
 		for (Iterator playerIt = players.iterator(); playerIt.hasNext();) {
 			Player player = (Player) playerIt.next();
@@ -167,6 +170,8 @@ public class Game extends Application {
 				playerIt.remove();
 		}
 		
+		if(userIn.action)
+			userIn.lineJoint.drawShape(gc);
 	
 	}
 	

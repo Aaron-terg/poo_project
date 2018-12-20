@@ -3,7 +3,7 @@ package Models;
 public class GameObject {
 	protected double x, y;
 	protected double height, width;
-	protected static GameObject selected;
+	public static GameObject selected;
 	
 	public GameObject() {
 		this.x = 0;

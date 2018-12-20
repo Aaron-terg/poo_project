@@ -82,8 +82,7 @@ public class Circle extends Shape{
 	}
 
 	public void drawShape(GraphicsContext gc) {
-		gc.setFill(rgb);
-		gc.setStroke(Color.BLACK);
+		super.drawShape(gc);
 		gc.strokeOval(x - radius, y - radius, radius*2, radius*2);
 		gc.fillOval(x - radius, y - radius, radius*2, radius*2);
 	}

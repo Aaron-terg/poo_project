@@ -29,6 +29,13 @@ public abstract class Shape {
 		this.rgb= color;
 		this. height = height;
 	}
+	
+	public Shape(double width, double height, Color rgb) {
+		this.width = width;
+		this.height = height;
+		this.rgb = rgb;
+	}
+	
 	public double getHeight() {
 		return this.height;
 	}
@@ -41,9 +48,9 @@ public abstract class Shape {
 	public void drawShape(GraphicsContext gc) {
 		gc.setFill(rgb);
 		gc.setStroke(Color.BLACK);
-		gc.setLineWidth(1);
 		
 	}
+	
 	public boolean isInside(double x, double y) {
 		
 		// TODO Auto-generated method stub

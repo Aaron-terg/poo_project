@@ -8,8 +8,6 @@ import javafx.scene.paint.Color;
 public class Polygon extends Shape{
 	private double headX, headY;
 	private double[] x, y; 
-	private Color rgb;
-
 	
 	
 	/**
@@ -20,15 +18,15 @@ public class Polygon extends Shape{
 	}
 	
 	public Polygon(double x, double y) {
-		this(new double[] {x-12.5, x, x+12.5},
-				new double[] {y-25, y, y+25},
+		this(new double[] {x-12.5, x+12.5, x},
+				new double[] {y-25, y-25, y},
 				Color.BLACK);
 		this.headX = x;
 		this.headY = y;
 	}
 	
 	public Polygon(double[] x, double[] y, Color rgb) {
-		this.rgb = rgb;
+		super(x[1], y[2], rgb);
 		this.x = x;
 		this.y = y;
 	}

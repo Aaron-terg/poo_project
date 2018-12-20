@@ -276,7 +276,7 @@ public class Planet extends GameObject implements Renderable{
 			gc.setLineWidth(1f);
 
 		this.planetShape.drawShape(gc);
-		
+		gc.setLineWidth(1f);
 		gc.setFill(Color.BLACK);
 		
 		gc.fillText(""+shipOnPlanet, planetShape.position()[0],planetShape.position()[1]);
