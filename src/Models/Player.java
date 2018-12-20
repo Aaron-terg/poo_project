@@ -100,8 +100,7 @@ public class Player {
 	
 	public Spacefleet newLaunch(int percent, Planet start) {
 		int nbShip = (int)(percent*start.nbShipOnPlanet())/100;
-		int indexSpacefleet = getFleets().size();
-		Spacefleet spacefleet = new Spacefleet(nbShip, start, indexSpacefleet);
+		Spacefleet spacefleet = new Spacefleet(nbShip, start);
 		this.spacefleets.add(spacefleet);
 		return spacefleet;
 	}
@@ -113,11 +112,11 @@ public class Player {
 		boolean res = false;
 		for (Iterator iterator = spacefleets.iterator(); iterator.hasNext();) {
 			Spacefleet spacefleet = (Spacefleet) iterator.next();
-			res |= spacefleet.getDestination() != null;
+			res |= spacefleet.hasDestination();
 		}
 		return res;
 	}
-	
+	 
 	@Override
 	public boolean equals(Object o) {
 		if(o != null && (o instanceof Player)) {

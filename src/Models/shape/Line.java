@@ -37,7 +37,6 @@ public class Line extends Shape{
 		gc.setLineWidth(2f);
 		gc.strokeLine(x, y, width, height);
 		gc.setLineWidth(1f);
-		System.out.println("drawned");
 	}
 
 }

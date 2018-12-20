@@ -25,6 +25,7 @@ public class Game extends Application {
 	private UserInput userIn;
 	private Universe universe;
 	private ArrayList<Player> players;
+	private AnimationTimer loop;
 		
 	public static void main(String[] args) {
 		
@@ -45,10 +46,8 @@ public class Game extends Application {
 
 		Player user = new Player();
 		
-		userIn = new UserInput(scene, user, gc);
-		
-		
-		
+		players = new ArrayList<Player>();
+		userIn = new UserInput(scene, user);
 		
 		stage.setScene(scene);
 		stage.show();
@@ -58,32 +57,38 @@ public class Game extends Application {
 	}
 	
 	public void initGame() {
+		
 		universe = new Universe(10);
 		
 		Player user = userIn.getUser();
-		userIn.gameControl(universe);
-		user.firstPlanet(universe);
-		
 		Player ia = new Player("IA");
+		user.firstPlanet(universe);
 		ia.firstPlanet(universe);
-		
-		players = new ArrayList<Player>();
 		players.add(user);
 		players.add(ia);
 		
+		userIn.gameControl(universe);
 		
+		gameRenderer();
 		
+	}
+	
+	public void gameRenderer() {
 		
-		new AnimationTimer() {
-			
+		loop = new AnimationTimer() {			
 			long prevTime = System.nanoTime();
-			double step = 0.0166f, maxStep = 0.005f;
-			double accTime = 0;
+			double step = 0.0166f, maxStep = 0.05f;
+			double accTime = 0, accTimeFrameRate = 0, accTimeLaunch=0;
 			public void handle(long now) {
 				
 				double elapsedTime = (now - prevTime) / 1E9f;
 				double elapsedTimeCaped = Math.min(elapsedTime, maxStep);
 				accTime += elapsedTimeCaped;
+				accTimeFrameRate += elapsedTimeCaped;
+				accTimeLaunch += elapsedTimeCaped;
+				prevTime =now;
+				
+				// update every seconds
 				while(accTime >= step) {
 					for (Iterator<Planet> planetIt = universe.getPlanets().iterator(); planetIt.hasNext();) {
 						Planet planet = (Planet) planetIt.next();
@@ -91,96 +96,150 @@ public class Game extends Application {
 							planet.nbShipOnPlanet(planet.getProductionRate());
 					}
 					
-					accTime--;
+					accTime-= step*60; 
+				}
+				
+				//bond the frame rate
+				while(accTimeFrameRate >= step) {
+					update(accTimeFrameRate);
+					accTimeFrameRate-=step;
+				}
+				
+				// send ship every 1/3 seconds
+				while(accTimeLaunch >= step) {
+					for (Iterator<Player> playerIt = players.iterator(); playerIt.hasNext();) {
+						Player player = playerIt.next();
+
+						if(player.hasTerritory()) {
+							for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
+								Spacefleet spacefleet = fleetIt.next();
+
+								if(spacefleet.hasDestination() && spacefleet.getNbWave() > 0) {
+									spacefleet.takeOff();
+									System.out.println("takeoffupdate: "+ accTime);
+								}
+							}
+						}
+					}
+
+					accTimeLaunch -= step*20; 
 				}
 				
 				gc.clearRect(0, 0, WIDTH, HEIGHT);
 				
-				universe.render(gc);
-				update();
-				
-				int nbPlayers = players.size();
-				String txt = "";
-				if(nbPlayers > 1) {
-					txt = "Ships to send: "+user.percent +"%\n"
-							+ "nb players: "+ nbPlayers+ "\n";
+				// End the game if their is no more player
+				if(players.size() <= 1)
+					endGame();
+				else {
+					universe.render(gc);
 					
+					//rendering of spaceships
+					for (Iterator playerIt = players.iterator(); playerIt.hasNext();) {
+						Player player = (Player) playerIt.next();
+						for (Iterator fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
+							Spacefleet spacefleet = (Spacefleet) fleetIt.next();
+							for (Iterator spaceShipIt = spacefleet.fleet().iterator(); spaceShipIt.hasNext();) {
+								SpaceshipType spaceship = (SpaceshipType) spaceShipIt.next();
+								spaceship.render(gc);
+							}
+						}
+					}
+					
+					// drag'n drop utilities
+					if(userIn.action)
+						userIn.lineJoint.drawShape(gc);
+					
+					// status of the game
+					String gameStatusText = gameStatus();
+					gc.fillText(gameStatusText, 1, 20);
+					gc.strokeText(gameStatusText, 1, 20);
+					gc.setTextAlign(TextAlignment.LEFT);
 				}
-				else
-					txt = "winner: " + players.toString()+ "\n"; 
-				
-				txt += user.getFleets().size() + "\n";
-				gc.fillText(txt, 1, 20);
-				gc.strokeText(txt, 1, 20);
-				gc.setTextAlign(TextAlignment.LEFT);
 			}
+	
+		};
+		
+		loop.start();
+		
 
-		}.start();
 	}
 	
-	public void update() {
-		
+	public void update(double timer) {
 		
 		// loop over players
-		for (Iterator playerIt = players.iterator(); playerIt.hasNext();) {
-			Player player = (Player) playerIt.next();
+		for (Iterator<Player> playerIt = players.iterator(); playerIt.hasNext();) {
+			Player player = playerIt.next();
 			
-			if(player.hasTerritory()) {
+			// test if the player can play
+			if(player.hasTerritory()) { 
 			
-				if(player.inAction()) {
-					ArrayList<Spacefleet> playersFleet = player.getFleets();
-					for (int indexSpaceFleet = 0; indexSpaceFleet < playersFleet.size(); indexSpaceFleet++) {
+				// player have spacefleet ready to be sent?
+				if(player.inAction()) { 
+
+					for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
+						Spacefleet spacefleet = fleetIt.next();
 						
-						Spacefleet spacefleet =	playersFleet.get(indexSpaceFleet);
-						spacefleet.setIndex(indexSpaceFleet);
-						if(spacefleet.getNbWave() > 0)
+						// launch the first wave of a spacefleet
+						if(spacefleet.fleetSize() == 0)
 							spacefleet.takeOff();
 						
-						for (Iterator iterator = spacefleet.fleet().iterator(); iterator.hasNext();) {
+						for (Iterator<SpaceshipType> iterator = spacefleet.fleet().iterator(); iterator.hasNext();) {
 							
-							SpaceshipType spaceshipType = (SpaceshipType) iterator.next();
+							SpaceshipType spaceshipType = iterator.next();
 
 							Planet planet = spacefleet.getDestination();
-							if(planet == null)
-								continue;
+							
+							if(planet == null) //exit if the spaceship doesn't have destination
+								break;
+							
+							// spaceship collision with planet
 							if(planet.getPlanetShape().intersects(spaceshipType.getSpaceshipShape())) {
 								planet.spaceShipEnter(spaceshipType);
 								iterator.remove();
 							}
 							else{
 								for(Planet obstacle : universe.getPlanets()) {
-									if(obstacle.getPlanetShape().distPoint(spaceshipType.getSpaceshipShape().getX()[0], spaceshipType.getSpaceshipShape().getY()[0])<obstacle.getPlanetShape().getRadius()+15
-											&&!obstacle.equals(planet)) {
+									if(obstacle.getPlanetShape().distPoint(spaceshipType.getSpaceshipShape().getX()[0], spaceshipType.getSpaceshipShape().getY()[0])
+											< obstacle.getPlanetShape().getRadius()+15 && !obstacle.equals(planet)) {
 										spaceshipType.get_around(obstacle);
 									}
 								}
 								spaceshipType.goTo(planet);
-								spaceshipType.render(gc);
-						
-								
 							}
 						}
 						if(spacefleet.isArrived())
-							player.getFleets().remove(indexSpaceFleet);
+							fleetIt.remove();
 					}
-
 				}
 			}
-			else
+			else {
 				playerIt.remove();
+			}
 		}
-		
-		if(userIn.action)
-			userIn.lineJoint.drawShape(gc);
+	}
 	
+	public String gameStatus() {
+		int nbPlayers = players.size();
+		Player user = userIn.getUser();
+		String txt = "";
+		if(nbPlayers > 1) {
+			txt = "Ships to send: "+user.percent +"%\n"
+					+ "nb players: "+ nbPlayers+ "\n";
+		}
+		else if(nbPlayers == 1)
+			txt = "winner: " + players.toString()+ "\n"; 
+		else
+			txt = "draw \n";
+		return txt + user.getFleets().size() + "\n";
 	}
 	
 	public void endGame() {
-		try {
-			stop();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			loop.stop();
+			gc.clearRect(0, 0, WIDTH, HEIGHT);
+			String txt = "winner: " + players.toString()+ "\n"; 
+			gc.setTextAlign(TextAlignment.CENTER);
+			gc.fillText(txt, WIDTH/2, (HEIGHT - 20)/2 );
+			gc.strokeText(txt, WIDTH/2, (HEIGHT - 20)/2 );
+			
 	}
 }

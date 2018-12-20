@@ -46,6 +46,8 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 		this.speed = randomNumber.nextInt(3)+1;
 		this.productionTime = randomNumber.nextInt(3000)+1000;	
 		this.spaceshipShape = new Polygon();
+		this.width = 20;
+		this.height = 20;
 	}
 
 	public SpaceshipType(int attPower, int speed, long productionTime, Polygon spaceshipShape, Player player) {

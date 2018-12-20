@@ -5,23 +5,24 @@ import java.util.Iterator;
 
 import Models.Spaceship.SpaceshipType;
 import Models.planet.Planet;
+import javafx.scene.canvas.GraphicsContext;
 
 public class Spacefleet extends GameObject {
 	
 	private ArrayList<SpaceshipType> spaceships;
 	private Planet start, destination; 
-	private int index, nbShip, nbWave, nbShipToSend, nbShipSend = 0;
+	private int nbShip, nbWave, nbShipToSend, nbShipSend;
 	private double angle;
 	
-	public Spacefleet(int nbShip, Planet start, int index) {
+	public Spacefleet(int nbShip, Planet start) {
 		this.spaceships = new ArrayList<>();
 		this.nbShip = nbShip;
-		this.index = index;
 		this.start = start;
 		double radius = start.width;
 		angle = 0;
 		nbShipToSend = 0;
-
+		nbShipSend = 0;
+		
 		if(radius <= 10) {
 			nbShipToSend = 4;
 			angle = 90;
@@ -40,15 +41,7 @@ public class Spacefleet extends GameObject {
 	}
 	
 	public int fleetSize() {
-		return nbShip;
-	}
-	
-	public int getIndex() {
-		return this.index;
-	}
-	
-	public void setIndex(int index) {
-		this.index = index;
+		return nbShipSend;
 	}
 	
 	public int getNbWave() {
@@ -67,6 +60,10 @@ public class Spacefleet extends GameObject {
 		this.destination = planet;
 	}
 	
+	public boolean hasDestination() {
+		return destination != null;
+	}
+	
 	public boolean inside(double x, double y) {
 		boolean result = false;
 		Iterator<SpaceshipType> spaceshipIt = spaceships.iterator();
@@ -83,27 +80,33 @@ public class Spacefleet extends GameObject {
 	}
 	
 	public void takeOff() {
+		System.out.println("takeOff: " + nbWave);
 		if(nbWave > 0) {
+			
+
 			double[] spaceport = new double[2];
 			double radius = start.width;
 			
-			nbShipToSend = (nbShipSend + nbShipToSend > nbShip)? nbShip - nbShipSend : nbShipToSend;
-			nbShipSend += nbShipToSend;
-			while(nbShipToSend > 0) {
+			int ShipToSend = (nbShipSend + nbShipToSend > nbShip)? nbShip - nbShipSend : nbShipToSend;
+			nbShipSend += ShipToSend;
+			start.nbShipOnPlanet(-ShipToSend);
+			while(ShipToSend > 0) {
 				try {
 					
-					spaceport[0] = (radius+15)*Math.cos(nbShipToSend*angle) + start.x;
-					spaceport[1] = -(radius+15)*Math.sin(nbShipToSend*angle*angle) + start.y;
+					spaceport[0] = (radius+15)*Math.cos(ShipToSend*angle) + start.x;
+					spaceport[1] = -(radius+15)*Math.sin(ShipToSend*angle*angle) + start.y;
 					
 					SpaceshipType spaceship = start.getSpaceShipeType().getClass().newInstance();
 					spaceship.getSpaceshipShape().setPosition(spaceport[0], spaceport[1]);
 					spaceship.setPlayer(start.owner());
 					spaceships.add(spaceship);
+					
+
 				} catch (InstantiationException | IllegalAccessException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}finally {
-					nbShipToSend--;
+					ShipToSend--;
 				}
 			}
 			nbWave--;
@@ -113,6 +116,14 @@ public class Spacefleet extends GameObject {
 	
 	public boolean isArrived() {
 		return spaceships.isEmpty();
+	}
+	
+	public void render(GraphicsContext gc) {
+		for (Iterator<SpaceshipType> spaceshipsIt = spaceships.iterator(); spaceshipsIt.hasNext();) {
+			SpaceshipType spaceship =spaceshipsIt.next();
+			spaceship.render(gc);
+			
+		}
 	}
 	
 }
