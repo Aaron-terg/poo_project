@@ -186,7 +186,7 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 					
 					//Positioned the gate around the planet
 					spaceport[0] = (radius+15)*Math.cos(ShipToSend*angle) + start.getX();
-					spaceport[1] = -(radius+15)*Math.sin(ShipToSend*angle*angle) + start.getY();
+					spaceport[1] = -(radius+15)*Math.sin(ShipToSend*angle) + start.getY();
 					
 					// instantiate a new spaceship from the type of the departure planet
 					SpaceshipType spaceship = start.getSpaceShipeType().getClass().newInstance();
