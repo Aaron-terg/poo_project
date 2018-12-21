@@ -23,7 +23,6 @@ import Models.Spaceship.SpaceshipType;
 import Models.planet.Planet;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -31,6 +30,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -362,7 +362,7 @@ public class Game extends Application{
 			scene.setOnMousePressed(userIn.mousePressed());
 			scene.setOnMouseDragged(userIn.mouseDragged());
 			scene.setOnMouseReleased(userIn.mouseReleased(universe));
-//			System.out.println(userIn.lineJoint);
+			System.out.println("check ! ");
 //			for (Iterator<Planet> playIt = universe.getPlanets().iterator(); playIt.hasNext();) {
 //
 //				System.out.println(playIt.next());
@@ -370,14 +370,14 @@ public class Game extends Application{
 		}catch(FileNotFoundException e) {
 			System.out.println("no file found");
 			gameState = GameState.STARTED;
-			e.printStackTrace();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			System.out.println(e1.getMessage());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally {
+			System.out.println(e.getMessage());
+		}
+		finally {
 			System.out.println("load");
 			gameState = (gameState.equals(GameState.LOADED))? GameState.RUNNING : GameState.STARTED;
 		}
