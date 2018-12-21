@@ -8,17 +8,24 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * <b>The shape interface contain basic function of a shape</b>
- * 
+ * <b>The shape abstract class contains basics functions of a shape</b>
+ * A Shape has the following properties : 
+ * <p>
+ * <ul>
+
+ * 		<li> a height && a width </li>
+ * </p>
  * @see Planet
  * @see SpaceshipType
- * @author meryl
- * @version 1.2
+ * @author meryl,Virginie
+ * @version 2.1
  */
 public abstract class Shape implements Serializable {
 	
 	protected double height, width;
-	
+	/**
+	 * Shape constructors
+	 */
 	public Shape() {
 	}
 	
@@ -26,43 +33,59 @@ public abstract class Shape implements Serializable {
 		this.width = width;
 		this. height = height;
 	}
-	
+	/***********************************\
+	 * 								   *
+	 * 			Getter/Setter		   *
+	 * 								   *
+	\***********************************/
+	/**
+	 * return the height of the shape.
+	 * @return
+	 */
 	public double getHeight() {
 		return this.height;
 	}
+
+	/**
+	 * 
+	 * @return the width of the shape
+	 */
+	public double width() {
+		return width;
+	}
+
 	
+	
+	/***********************************\
+	 * 								   *
+	 * 				Method			   *
+	 * 								   *
+	\***********************************/
+	
+	/**
+	 * Get the actual position of the shape 
+	 * @return a table of Coordinates
+	 */
 
 	public abstract double[] position();
 	
+
+	/**
+	 * Set the shape at a specific position
+	 * @param posX : the X coordinate of the new position
+	 * @param posY : the Y coordinate of the new position
+	 */	
 	public abstract void setPosition(double posX, double posY);
 	
+
+	/**
+	 * This method permits to draw the shape on the window
+	 * @param gc
+	 */
 	public void drawShape(GraphicsContext gc, Color rgb) {
 		gc.setFill(rgb);
 		gc.setStroke(Color.BLACK);
 		
 	}
-	
-	public boolean isInside(double x, double y) {
-		
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	public void validPosition(double frameWidth, double frameHeight) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public double distance (Shape shape) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	public double width() {
-		return width;
-	}
-	public double height() {
-		return height;
-	}
-	
+
 }

@@ -1,6 +1,8 @@
-#Projet POO
+Projet POO
+-
 
-##Welcome on the game 
+
+Welcome on the game 
 
 Instruction manual
 --
@@ -15,9 +17,9 @@ Instruction manual
 - There are other planets around you, your mission, conquer them! Send your ships on them to destroy their base and possess it.
 
 - Stay up to date and manage your troop during the battle thanks to the user interface
- - The first line written on the left top is the percentage of ships to send from your planet.
- - The second one is the number of players still active in the game.
- - The last one is the number of fleet flying through space. 
+  - The first line written on the left top is the percentage of ships to send from your planet.
+  - The second one is the number of players still active in the game.
+  - The last one is the number of fleet flying through space. 
 
 - Your objective is to send your ships on the other planets and more especially on the other player's planet. You gain a planet when you destroy all the ships on it.
 
@@ -32,8 +34,8 @@ Controls
 --
 Before getting to the  front, here is some useful information to control your fleets.
 
-###Troop movement
-
+Troop movement
+--
 When you want to send flying some spaceship use the percentage at the top left of the screen with the key Alt or Shift (shift will increase the number of ships to send while alt will decrease it).
   
     Press The SHIFT key or the ALT key to increase or decrease of 5% respectively
@@ -42,22 +44,23 @@ When you want to send flying some spaceship use the percentage at the top left o
 The troop movement is done in three step:
 
  1. Select your planet with a LEFT click of your mouse. The selected planet will have bigger outline.
- 2. Choose your percentage (you can do switch order with the first one).
+ 2. Choose your percentage (you can do switch order with the first one
  3. Select the planet you want to send your fleet to. There is two way to do so:
-*  attack or recharge with a drag and release.
-* if the planet is yours, you can press the CTRL key while LEFT clicking on the planet.
+    *  attack or recharge with a drag and release.
+    * if the planet is yours, you can press the CTRL key while LEFT clicking on the planet.
 
  /!\   The drag'n release start from the departure planet to the arriving one. 
 
-###Keyboard features
-####CTRL + S: Save your game
-You can save your game by pushing the "S" key while holding the CTRL key.
+Keyboard features
+--
+CTRL + S: Save your game
+ You can save your game by pushing the "S" key while holding the CTRL key.
 
-####CTRL + P: Load your previously saved game
+CTRL + P: Load your previously saved game
  You can load your game by pushing the p key while holding the CTRL key.
 
-####P or ESCAPE: become a time master
-You can pause the game by pressing the ESCAPE key or P key to rethink your strategies.
+P or ESCAPE: become a time master
+ You can pause the game by pressing the ESCAPE key or P key to rethink your strategies.
 
-####CTRL + Q: Rage quit
-quit the game by pushing the Q key plus the CTRL key... I know you want to.
+CTRL + Q: Rage quit
+ quit the game by pushing the Q key plus the CTRL key... I know you want to.

@@ -3,9 +3,19 @@ package Models.shape;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
+/**
+ * The class Polygon extends the class Shape and represents a polygon
+ * <p>
+ * 	 A polygon has the following properties : 
+ * <ul>
+ * 		<li>A table of points which represent the coordinates of the polygon's tops</li>
+ * 	</li>
+ * </p>
+ * @author virginie
+ *
+ */
 public class Polygon extends Shape{
-	private double headX, headY;
+
 	private double[] x, y; 
 	
 	
@@ -19,8 +29,7 @@ public class Polygon extends Shape{
 	public Polygon(double x, double y) {
 		this(new double[] {x-12.5, x+12.5, x},
 				new double[] {y-25, y-25, y});
-		this.headX = x;
-		this.headY = y;
+
 	}
 	
 	public Polygon(double[] x, double[] y) {
@@ -31,37 +40,55 @@ public class Polygon extends Shape{
 	public Polygon(Polygon polygon) {
 		this(polygon.x, polygon.y);
 	}
- 
-	/**
-	 * Getter && setter
-	 */
+	/***********************************\
+	 * 								   *
+	 * 			Getter && Setter	   *
+	 * 								   *
+	\***********************************/
 	
+	/**
+	 * 
+	 * @return the table of X polygon's coordinates
+	 */
 	public double[] getX() {
 		return x;
 	}
-
+	/**
+	 * 
+	 * @return the table of Y polygon's coordinates
+	 */
 	public double[] getY() {
 		return y;
 	}
 
+
+	/***********************************\
+	 * 								   *
+	 * 				Method			   *
+	 * 								   *
+	\***********************************/
+	@Override
+
 	public void drawShape(GraphicsContext gc, Color rgb) {
 		super.drawShape(gc, rgb);
-//		this.x = new double[] {this.headX-12.5, this.headX, this.headX+12.5};
-//		this.y = new double[] {this.headY-25, this.headY, this.headY+25};
+
 		gc.fillPolygon(x, y, x.length);;
 		
 	}
 
+
 	@Override
 	public double[] position() {
-		// TODO Auto-generated method stub
-		return new double[] {headX, headY};
+		return (new double[]{this.x[0],y.clone()[0]});
 	}
 	
 	@Override
+	/**
+	 * set a point of the polygon at a specified position and calculate the others new positions;
+	 * @param posX : the X coordinate of the new position
+	 * @param posY : the Y coordinate of the new position
+	 */
 	public void setPosition(double posX, double posY) {
-//		this.headX = posX;
-//		this.headY = posY;
 		double x_int = x[0];
 		double y_int = y[0];
 		for(int i = 0; i<this.x.length; i++) {

@@ -236,7 +236,6 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return "starting point: \n\t" + start
 				+ "destination: \n\t" + destination
 				+"nbSp: " + nbShip + "\n";
