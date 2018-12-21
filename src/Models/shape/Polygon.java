@@ -31,9 +31,9 @@ public class Polygon extends Shape{
 		this.y = y;
 	}
 	public Polygon(Polygon polygon) {
-		this(polygon.x, polygon.y, polygon.rgb);
+		this(polygon.x, polygon.y, polygon.rgb());
 	}
-
+ 
 	/**
 	 * Getter && setter
 	 */

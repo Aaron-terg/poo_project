@@ -1,5 +1,6 @@
 package Models.Spaceship;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import Models.GameObject;
@@ -28,7 +29,7 @@ import javafx.scene.canvas.GraphicsContext;
  * @author Virginie
  * @version 2.1
  * **/
-public abstract class SpaceshipType extends GameObject implements Renderable{
+public abstract class SpaceshipType extends GameObject implements Renderable, Serializable{
 	
 	protected int attPower;
 	protected int speed;
@@ -148,7 +149,13 @@ public abstract class SpaceshipType extends GameObject implements Renderable{
 		}else {
 			this.newPosition(newPosX, newPosY);
 		
-			}
+			} 
 		
+	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "spaceship owner: " + player;
 	}
 }

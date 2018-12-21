@@ -1,5 +1,6 @@
 package Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -7,7 +8,7 @@ import Models.Spaceship.SpaceshipType;
 import Models.planet.Planet;
 import javafx.scene.canvas.GraphicsContext;
 
-public class Spacefleet extends GameObject {
+public class Spacefleet extends GameObject implements Serializable {
 	
 	private ArrayList<SpaceshipType> spaceships;
 	private Planet start, destination; 
@@ -15,6 +16,7 @@ public class Spacefleet extends GameObject {
 	private double angle;
 	
 	public Spacefleet(int nbShip, Planet start) {
+		super(start.x, start.y, 0, 0);
 		this.spaceships = new ArrayList<>();
 		this.nbShip = nbShip;
 		this.start = start;
@@ -70,7 +72,10 @@ public class Spacefleet extends GameObject {
 		while(spaceshipIt.hasNext() && !result) {
 			SpaceshipType spaceship = spaceshipIt.next();
 			result = spaceship.isInside(x, y);
+			
 			if(result) {
+				System.out.println("bug not here!");
+
 				this.x = spaceship.x;
 				this.y = spaceship.y;
 			}
@@ -80,7 +85,7 @@ public class Spacefleet extends GameObject {
 	}
 	
 	public void takeOff() {
-		System.out.println("takeOff: " + nbWave);
+		
 		if(nbWave > 0) {
 			
 
@@ -100,8 +105,6 @@ public class Spacefleet extends GameObject {
 					spaceship.getSpaceshipShape().setPosition(spaceport[0], spaceport[1]);
 					spaceship.setPlayer(start.owner());
 					spaceships.add(spaceship);
-					
-
 				} catch (InstantiationException | IllegalAccessException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -126,4 +129,11 @@ public class Spacefleet extends GameObject {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "starting point: \n\t" + start
+				+ "destination: \n\t" + destination
+				+"nbSp: " + nbShip + "\n";
+	}
 }

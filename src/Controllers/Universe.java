@@ -1,5 +1,6 @@
-package Models;
+package Controllers;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -7,9 +8,34 @@ import Models.planet.Planet;
 import Models.shape.Renderable;
 import javafx.scene.canvas.GraphicsContext;
 
-public class Universe implements Renderable{
+/**
+ * 
+ * <b>Universe</b>
+ * <p>
+ * 		Universe class is the manager. its tasks are:
+ * 		<ul>
+ * 			<li>Create a set of planet</li>
+ * 			<li>Check if the planets respect a minimum distance</li>
+ * 			<li>give information about them</li>
+ * 			<li>render them<li>
+ * 
+ * @see Planet
+ * 
+ * @author meryl
+ * @version 1.5
+ *
+ */
+public class Universe implements Renderable, Serializable{
 	
+	/**
+	 * The set of planet.
+	 * 
+	 * @see Planet
+	 * @see Universe#getPlanets()
+	 * @see Universe#render(GraphicsContext)
+	 */
 	private ArrayList<Planet> planets;
+	
 	
 	public Universe(int nbPlanets) {
 		// Making of a set of planet
@@ -44,7 +70,17 @@ public class Universe implements Renderable{
 			planet.render(gc);
 		}
 
-		
+	}
+	
+	@Override
+	public String toString() {
+		String result = "";
+		for (Iterator<Planet> iterator = planets.iterator(); iterator.hasNext();) {
+			Planet planet = iterator.next();
+			if(planet.isOwn())
+				result +=  planet + "\n";
+		}
+		return result;
 	}
 	
 }

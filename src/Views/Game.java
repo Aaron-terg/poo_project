@@ -1,32 +1,50 @@
 package Views;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import Controllers.Universe;
 import Controllers.UserInput;
+import Models.GameState;
 import Models.Player;
 import Models.Spacefleet;
-import Models.Universe;
 import Models.Spaceship.SpaceshipType;
 import Models.planet.Planet;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-public class Game extends Application {
+public class Game extends Application{
 	public final static double WIDTH = 1200;
 	public final static double HEIGHT = 800;
 	private GraphicsContext gc;
+	private Scene scene;
 	private UserInput userIn;
 	private Universe universe;
 	private ArrayList<Player> players;
-	private AnimationTimer loop;
+	public static GameState gameState;
 		
+	
 	public static void main(String[] args) {
 		
 		launch(args);
@@ -38,49 +56,51 @@ public class Game extends Application {
 		stage.setResizable(false);
 		
 		Group root = new Group();
-		Scene scene = new Scene(root);
+		scene = new Scene(root);
 		Canvas canvas = new Canvas(WIDTH, HEIGHT);
 		gc = canvas.getGraphicsContext2D();
-		
 		root.getChildren().add(canvas);
-
-		Player user = new Player();
 		
-		players = new ArrayList<Player>();
-		userIn = new UserInput(scene, user);
-		
+		gameState = GameState.STARTED;
 		stage.setScene(scene);
 		stage.show();
 		
+		Player user = new Player("Aaron Terg", Color.RED);
+		
 
-		initGame();
-	}
-	
-	public void initGame() {
-		
+		players = new ArrayList<Player>();
+		userIn = new UserInput(user);
 		universe = new Universe(10);
-		
-		Player user = userIn.getUser();
-		Player ia = new Player("IA");
+
+		Player ia = new Player("IA", Color.GREEN);
 		user.firstPlanet(universe);
 		ia.firstPlanet(universe);
 		players.add(user);
 		players.add(ia);
 		
-		userIn.gameControl(universe);
-		
+		gameState = GameState.RUNNING;
+		scene.setOnMouseClicked(UserInput.mouseClicked());
+		scene.setOnKeyPressed(userIn.keyPressed());
+		scene.setOnMousePressed(userIn.mousePresse());
+		scene.setOnMouseDragged(userIn.moouseDragged());
+		scene.setOnMouseReleased(userIn.mouseReleased(universe));
 		gameRenderer();
-		
 	}
 	
+	
 	public void gameRenderer() {
-		
-		loop = new AnimationTimer() {			
+
+		new AnimationTimer() {	
+			
 			long prevTime = System.nanoTime();
 			double step = 0.0166f, maxStep = 0.05f;
 			double accTime = 0, accTimeFrameRate = 0, accTimeLaunch=0;
+			
 			public void handle(long now) {
-				
+				gc.clearRect(0, 0, WIDTH, HEIGHT);
+
+				if(gameState.equals(GameState.RUNNING)) {
+
 				double elapsedTime = (now - prevTime) / 1E9f;
 				double elapsedTimeCaped = Math.min(elapsedTime, maxStep);
 				accTime += elapsedTimeCaped;
@@ -114,23 +134,16 @@ public class Game extends Application {
 							for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
 								Spacefleet spacefleet = fleetIt.next();
 
-								if(spacefleet.hasDestination() && spacefleet.getNbWave() > 0) {
+								if(spacefleet.hasDestination() && spacefleet.getNbWave() > 0)
 									spacefleet.takeOff();
-									System.out.println("takeoffupdate: "+ accTime);
-								}
 							}
 						}
 					}
 
-					accTimeLaunch -= step*20; 
+					accTimeLaunch -= step*40; 
 				}
 				
-				gc.clearRect(0, 0, WIDTH, HEIGHT);
 				
-				// End the game if their is no more player
-				if(players.size() <= 1)
-					endGame();
-				else {
 					universe.render(gc);
 					
 					//rendering of spaceships
@@ -146,7 +159,7 @@ public class Game extends Application {
 					}
 					
 					// drag'n drop utilities
-					if(userIn.action)
+					if(userIn.action && userIn.lineJoint != null)
 						userIn.lineJoint.drawShape(gc);
 					
 					// status of the game
@@ -154,12 +167,22 @@ public class Game extends Application {
 					gc.fillText(gameStatusText, 1, 20);
 					gc.strokeText(gameStatusText, 1, 20);
 					gc.setTextAlign(TextAlignment.LEFT);
+					if(players.size() <= 1)
+						gameState = GameState.ENDED;
+					
 				}
+				// End the game if their is no more player
+				else if(gameState.equals(GameState.ENDED) || players.size() <= 1)
+					endGame(this);
+				else if(gameState.equals(GameState.PAUSED))
+					pause();
+				else if(gameState.equals(GameState.SAVED))
+					saveGame();
+				else if(gameState.equals(GameState.LOADED))
+					loadGame();
 			}
 	
-		};
-		
-		loop.start();
+		}.start();
 		
 
 	}
@@ -233,13 +256,79 @@ public class Game extends Application {
 		return txt + user.getFleets().size() + "\n";
 	}
 	
-	public void endGame() {
+	public void pause() {
+		String txt = "Game paused\n"; 
+		gc.setTextAlign(TextAlignment.CENTER);
+		gc.setFont(Font.font(18));
+		gc.fillText(txt, WIDTH/2, (HEIGHT - 40)/2 );
+		gc.strokeText(txt, WIDTH/2, (HEIGHT - 40)/2 );
+		
+	}
+	
+	public void endGame(AnimationTimer loop) {
 			loop.stop();
-			gc.clearRect(0, 0, WIDTH, HEIGHT);
-			String txt = "winner: " + players.toString()+ "\n"; 
+			String txt = "winner:\n" + players.get(0).toString()+ "\n"; 
 			gc.setTextAlign(TextAlignment.CENTER);
-			gc.fillText(txt, WIDTH/2, (HEIGHT - 20)/2 );
-			gc.strokeText(txt, WIDTH/2, (HEIGHT - 20)/2 );
+			gc.setFont(Font.font(18));
+			gc.fillText(txt, WIDTH/2, (HEIGHT - 40)/2 );
+			gc.strokeText(txt, WIDTH/2, (HEIGHT - 40)/2 );
 			
 	}
+	
+	public void saveGame() {
+		try(ObjectOutputStream oos =
+				new ObjectOutputStream(
+						new BufferedOutputStream(
+								new FileOutputStream(
+										new File("Saved_data.txt"))))
+		){
+			
+			oos.writeObject(this.universe);
+			oos.writeObject(players);
+			oos.writeObject(userIn);
+			oos.writeObject(gameState);
+			
+		}catch(FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}finally {
+			System.out.println("saved");
+			gameState = GameState.RUNNING;
+		}
+	}
+	
+	public void loadGame() {
+		try(ObjectInputStream ois = new ObjectInputStream(
+              		new BufferedInputStream(
+              			new FileInputStream(
+          					new File("saved_data.txt")))))
+		{
+			universe = (Universe)ois.readObject();
+			players = (ArrayList<Player>)ois.readObject();
+			userIn = (UserInput)ois.readObject();
+			scene.setOnMouseClicked(UserInput.mouseClicked());
+			scene.setOnKeyPressed(userIn.keyPressed());
+			scene.setOnMousePressed(userIn.mousePresse());
+			scene.setOnMouseDragged(userIn.moouseDragged());
+			scene.setOnMouseReleased(userIn.mouseReleased(universe));
+//			System.out.println(userIn.lineJoint);
+//			for (Iterator<Planet> playIt = universe.getPlanets().iterator(); playIt.hasNext();) {
+//
+//				System.out.println(playIt.next());
+//			}
+		}catch(FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			System.out.println("load");
+			gameState = GameState.RUNNING;
+		}
+	} 
 }

@@ -2,18 +2,15 @@ package Models.shape;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 public class Rectangle extends Shape{
 
 	private double x, y;
 	
 	public Rectangle() {
+		super(50,50, Color.BLACK);
 		this.x = 0;
 		this.y = 0;
-		this.width = 50;
-		this.height = 50;
-		this.rgb = Color.BLACK;
 	}
 	public Rectangle(double x, double y, double width, double height, int r, int g, int b, double a) {
 		super(width, height, Color.rgb(r, g, b, a));
@@ -35,12 +32,6 @@ public class Rectangle extends Shape{
 	 * 								   *
 	\***********************************/
 
-	public double width() {
-		return width;
-	}
-	public double height() {
-		return height;
-	}
 	
 	@Override
 	public double[] position() {

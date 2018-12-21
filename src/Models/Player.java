@@ -1,9 +1,11 @@
 package Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import Controllers.Universe;
 import Models.planet.Planet;
 import javafx.scene.paint.Color;
 
@@ -24,7 +26,7 @@ import javafx.scene.paint.Color;
  * @version 1.0
  *
  */
-public class Player {
+public class Player implements Serializable{
 
 	/**
 	 * The player tag
@@ -42,7 +44,7 @@ public class Player {
 	 * The spaceship fleets of the player
 	 */
 	private ArrayList<Spacefleet> spacefleets;
-	private Color color;
+	private double[] color;
 	public int percent=100;
 	/**
 	 * The default constructor, set the player tag to default.
@@ -51,12 +53,20 @@ public class Player {
 		this.playerTag = "default";
 		this.territory= new ArrayList<Planet>();
 		this.spacefleets = new ArrayList<>();
-		this.color= Color.RED;
+		this.color= new double[] {
+				Color.RED.getRed(),
+				Color.RED.getGreen(),
+				Color.RED.getBlue()
+		};
 	}
-	public Player(String name) {
+	public Player(String name, Color color) {
 		this();
 		this.playerTag = name;
-		this.color = Color.GREEN;
+		this.color = new double[] {
+				color.getRed(),
+				color.getGreen(),
+				color.getBlue()
+		};
 	}
 	
 	public ArrayList<Planet> getTerritory(){
@@ -72,7 +82,7 @@ public class Player {
 	}
 	
 	public Color getColor() {
-		return this.color;
+		return Color.color(color[0], color[1], color[2]);
 	}
 	/**
 	 * Choose the palyer's first planet and fill her with a specified color
@@ -130,7 +140,9 @@ public class Player {
 	
 	@Override
 	public String toString() {
-		return this.playerTag;
+		return this.playerTag + "\n"
+				+ "Color : \nred: " + color[0] + ", green: "+ color[1] +", blue: " + color[2] + "\n"
+				+ "nb conquered planet: " + territory.size();
 	}
 		
 	

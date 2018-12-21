@@ -1,9 +1,11 @@
 package Models.shape;
 
+import java.io.Serializable;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Line extends Shape{
+public class Line extends Shape implements Serializable{
 	
 	private double x, y;
 	

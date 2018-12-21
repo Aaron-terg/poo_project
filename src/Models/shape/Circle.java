@@ -17,15 +17,14 @@ public class Circle extends Shape{
 	}
 	
 	public Circle(double x, double y, double radius, Color color) {
+		super(color);
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
-		this.rgb = color;
-		
 	}
 	
 	public Circle(Circle c) {
-		this(c.x, c.y, c.radius, c.rgb);
+		this(c.x, c.y, c.radius, c.rgb());
 	}
 	
 	/**
@@ -44,9 +43,6 @@ public class Circle extends Shape{
 	
 	public double getY() {
 		return this.y;
-	}
-	public Color getColor() {
-		return this.rgb;
 	}
 	
 	public double[] position() {

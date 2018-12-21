@@ -1,5 +1,6 @@
 package Models.planet;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import Models.GameObject;
@@ -32,7 +33,7 @@ import javafx.scene.paint.Color;
  * @version 2.1
  *
  */
-public class Planet extends GameObject implements Renderable{
+public class Planet extends GameObject implements Renderable, Serializable{
 
 	/**
 	 * The owner of the planet.
@@ -309,5 +310,16 @@ public class Planet extends GameObject implements Renderable{
 		}
 		return false;
 					
+	}
+	
+	@Override
+	public String toString() {
+		return "**************************\n"
+				+ "\tPlanet\n"
+				+ "**************************\n\n"
+				+ "\towner: \n\t" + owner + "\n--------------------------\n"
+				+ "\n shipOnPlanet: " + shipOnPlanet+ "\n production rate: "+ productionRate + "\n"
+//				+ super.toString() + "\n spaceshipType: "+ spaceshipType
+				+ "\n shape: \n\t" + planetShape + "\n";
 	}
 }
