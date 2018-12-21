@@ -60,4 +60,4 @@ You can save your game by pushing the "S" key while holding the CTRL key.
 You can pause the game by pressing the ESCAPE key or P key to rethink your strategies.
 
 ####CTRL + Q: Rage quit
-quit the game by pushing the q key plus the CTRL key... I know you want to.
+quit the game by pushing the Q key plus the CTRL key... I know you want to.

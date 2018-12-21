@@ -40,7 +40,7 @@ public class Player implements Serializable{
 	 * @see Player#getTerritory()
 	 * @see Planet
 	 */
-	private ArrayList<Planet> territory;
+	protected ArrayList<Planet> territory;
 	
 	/**
 	 * all the fleets of the player
@@ -48,14 +48,14 @@ public class Player implements Serializable{
 	 * @see Player#getFleets()
 	 * @see Spacefleet
 	 */
-	private ArrayList<Spacefleet> spacefleets;
+	protected ArrayList<Spacefleet> spacefleets;
 	
 	/**
 	 * The color of the player
 	 * 
 	 * @see Player#getColor()
 	 */
-	private double[] color;
+	protected double[] color;
 	
 	/**
 	 * the percentage of spaceship to send from a selected planet.
@@ -217,7 +217,6 @@ public class Player implements Serializable{
 	@Override
 	public String toString() {
 		return this.playerTag + "\n"
-				+ "Color : \nred: " + color[0] + ", green: "+ color[1] +", blue: " + color[2] + "\n"
 				+ "nb conquered planet: " + territory.size();
 	}
 		

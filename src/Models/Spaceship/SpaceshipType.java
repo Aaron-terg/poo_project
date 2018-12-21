@@ -113,7 +113,6 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	public void newPosition(double x, double y) {
 		this.x = getX() - x*speed;
 		this.y = getY() - y*speed;
-//		this.spaceshipShape.setPosition(this.x, this.y);
 		for(int i = 0; i<this.spaceshipShape.getX().length; i++) {
 			this.spaceshipShape.getX()[i]-=x*speed;
 			this.spaceshipShape.getY()[i]-=y*speed;
@@ -122,7 +121,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 
 	/**
 	 * Calculate a new point between the ship's actual position and the destination
-	 * @param destination
+	 * @param destination The planet the ship go to
 	 * @see SpaceshipType#newPosition(double, double)
 	 */
 	public void goTo(Planet destination) {

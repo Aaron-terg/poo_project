@@ -51,7 +51,6 @@ public class UserInput implements Serializable{
 	 * @see UserInput#mouseDragged()
 	 */
 	public Line lineJoint;
-	public GameObject boundaries;
 	/**
 	 * UserInput constructor
 	 * 
@@ -138,12 +137,14 @@ public class UserInput implements Serializable{
 				
 				if(e.getButton().equals(MouseButton.PRIMARY)) {
 					
+					//iterate over territory
 					Iterator<Planet> planetIt = user.getTerritory().iterator();
 					while(planetIt.hasNext() && !action) {
 						
 						Planet planet = planetIt.next();
 						if(planet.isInside(e.getX(), e.getY())) {
 
+							// special shortcut for user planet only
 							if(e.isControlDown()) {
 
 								if(GameObject.selected instanceof Planet) {
@@ -167,8 +168,6 @@ public class UserInput implements Serializable{
 					} 
 
 					if(!action) {
-						// TODO create square bound to select ship 
-						boundaries = new GameObject(e.getX(), e.getY(), 0, 0);
 						Iterator<Spacefleet> spacefleetIt = user.getFleets().iterator();
 						while(spacefleetIt.hasNext() && !action) {
 							Spacefleet spacefleet = spacefleetIt.next();
@@ -184,7 +183,17 @@ public class UserInput implements Serializable{
 				}
 				
 				if(e.getButton().equals(MouseButton.SECONDARY)) {
-					
+					Iterator<Spacefleet> spacefleetIt = user.getFleets().iterator();
+					while(spacefleetIt.hasNext() && !action) {
+						Spacefleet spacefleet = spacefleetIt.next();
+						if(spacefleet.inside(e.getX(), e.getY())) {
+							
+							System.out.println("inside! wouhouuu");
+							spacefleet.isSelected();
+							lineJoint = new Line(spacefleet.getX(), spacefleet.getY());
+							action = true;
+						}
+					}
 				}
 			}
 		};
@@ -205,10 +214,6 @@ public class UserInput implements Serializable{
 
 					if(action) {
 						lineJoint.setPosition(e.getX(), e.getY());
-					}else {
-						double width = e.getX() - boundaries.getX(),
-								height = e.getY() - boundaries.getY();
-						boundaries.resize(width, height);
 					}
 				}	
 			}
@@ -259,24 +264,7 @@ public class UserInput implements Serializable{
 						}
 
 					}
-				}else if(boundaries != null){
-					for (Iterator spaceFleetIt = user.getFleets().iterator(); spaceFleetIt.hasNext();) {
-						Spacefleet spacefleet = (Spacefleet) spaceFleetIt.next();
-						Iterator<SpaceshipType> spaceshipIt = spacefleet.fleet().iterator();
-						while(spaceshipIt.hasNext() && !action) {
-							SpaceshipType spaceship = spaceshipIt.next();
-							if(boundaries.isInside(spaceship.getX(), spaceship.getY())) {
-								System.out.println("done");
-								spacefleet.isSelected();
-								System.out.println(boundaries + "\n petit batard: ("
-								+ spaceship.getX() + ", " + spaceship.getY() + ")");
-//								action = true;
-							}
-						}
-						
-					}
 				}
-//				boundaries = null;
 				action = false;
 				if(e.getButton().equals(MouseButton.SECONDARY)) {
 					Iterator<Planet> it = universe.getPlanets().iterator();
@@ -286,7 +274,8 @@ public class UserInput implements Serializable{
 						if(planet.isInside(e.getX(), e.getY())) {
 							if(GameObject.selected instanceof Spacefleet) {
 								((Spacefleet)GameObject.selected).setDestination(planet);
-							}else if(GameObject.selected instanceof Planet)
+							}else // show information about the planet 
+								if(GameObject.selected instanceof Planet)
 							System.out.println(planet);
 
 						}

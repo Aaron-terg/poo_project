@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import Controllers.AI;
 import Controllers.Universe;
 import Controllers.UserInput;
 import Models.GameObject;
@@ -30,7 +31,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -38,7 +38,7 @@ import javafx.stage.Stage;
 
 /**
  * <b>The Game application</b>
- * <p>the updating and rendering are manage in this class
+ * <p>the updating and rendering of spaceship and view are manage in this class<p>
  * 
  * @author meryl, Virginie
  * @version src_basic
@@ -46,15 +46,47 @@ import javafx.stage.Stage;
  *
  */
 public class Game extends Application{
-	public final static double WIDTH = 1200;
-	public final static double HEIGHT = 800;
+	/**
+	 * The dimension of the window application
+	 */
+	public final static double WIDTH = 1400;
+	public final static double HEIGHT = 900;
+	
+	/**
+	 * Canvas context to be draw on
+	 */
 	private GraphicsContext gc;
+	
+	/**
+	 * the scene of the application need for the loading
+	 * @see Game#loadGame()
+	 */
 	private Scene scene;
+	
+	/**
+	 * user controller setting every mouse movement or keyEvent for the player
+	 */
 	private UserInput userIn;
-	private Universe universe;
+	/**
+	 * The universe of the game for playing with.
+	 * COntain a set of planet.
+	 */
+	private static Universe universe;
+	
+	/**
+	 * An arrayList of player. containing all the player
+	 */
 	private ArrayList<Player> players;
+	
+	/**
+	 * an enumeration of gameState. Allow communication between the different loop and controller.
+	 */
 	public static GameState gameState;
-		
+	
+	/**
+	 * user interface, (more view to come in an update)
+	 */
+	private UserInterface ui;
 	
 	public static void main(String[] args) {
 		
@@ -75,9 +107,9 @@ public class Game extends Application{
 		
 		stage.setScene(scene);
 		stage.show();
-		UserInterface ui = new SplashScreen();
+		ui = new SplashScreen();
 		
-		// Basic interaction
+		// Basic interaction for the user
 		scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -112,23 +144,25 @@ public class Game extends Application{
 					players = new ArrayList<Player>();
 					userIn = new UserInput(user);
 					universe = new Universe(10);
-					Player ia = new Player("IA", Color.GREEN);
+					Player ia = new AI(universe, "AI", Color.GREEN);
+					Player ia2 = new AI(universe, "IA2", Color.ALICEBLUE);
+
 					user.firstPlanet(universe);
 					ia.firstPlanet(universe);
 					players.add(user);
 					players.add(ia);
+					players.add(ia2);
 					
 					// setting of the controller for the player
-					scene.setOnMouseClicked(UserInput.mouseClicked());
+//					scene.setOnMouseClicked(UserInput.mouseClicked());
 					scene.setOnKeyPressed(userIn.keyPressed());
 					scene.setOnMousePressed(userIn.mousePressed());
 					scene.setOnMouseDragged(userIn.mouseDragged());
 					scene.setOnMouseReleased(userIn.mouseReleased(universe));
 					gameState = gameState.RUNNING;
-					
 				}else if(gameState.equals(GameState.LOADED))
 					loadGame();		
-				
+				//start the game rendering
 				if(gameState.equals(GameState.RUNNING))
 					this.stop();gameRenderer();
 				
@@ -139,7 +173,6 @@ public class Game extends Application{
 	
 	public void gameRenderer() {
 
-		
 		AnimationTimer loop = new AnimationTimer() {	
 			
 			long prevTime = System.nanoTime();
@@ -148,7 +181,7 @@ public class Game extends Application{
 			
 			public void handle(long now) {
 				gc.clearRect(0, 0, WIDTH, HEIGHT);
-
+				ui.render(gc);
 				if(gameState.equals(GameState.RUNNING)) {
 
 				double elapsedTime = (now - prevTime) / 1E9f;
@@ -166,12 +199,12 @@ public class Game extends Application{
 							planet.nbShipOnPlanet(planet.getProductionRate());
 					}
 					
-					accTime-= step*60; 
+					accTime-= step*60; //tweak that value to change the frequency 60 = 1s, 30 = 0.5s, etc...
 				}
 				
 				//bond the frame rate
 				while(accTimeFrameRate >= step) {
-					update(accTimeFrameRate);
+					update();
 					accTimeFrameRate-=step;
 				}
 				
@@ -190,7 +223,7 @@ public class Game extends Application{
 						}
 					}
 
-					accTimeLaunch -= step*40; 
+					accTimeLaunch -= step*40; //same here
 				}
 				
 				
@@ -208,8 +241,7 @@ public class Game extends Application{
 					// drag'n drop utilities
 					if(userIn.action && userIn.lineJoint != null)
 						userIn.lineJoint.drawShape(gc, Color.BLACK);
-					if(userIn.boundaries != null)
-						userIn.boundaries.render(gc);
+					
 					// status of the game
 					String gameStatusText = gameStatus();
 					gc.fillText(gameStatusText, 1, 20);
@@ -231,12 +263,19 @@ public class Game extends Application{
 			}
 	
 		};
-		
-		if(gameState.equals(GameState.RUNNING))
+		//start the rendering loop when the gameStep is Runnning
+		if(gameState.equals(GameState.RUNNING)) {
+			ui = new UniverseSetting();
 			loop.start();
+		}
 	}
 	
-	public void update(double timer) {
+	/**
+	 * update all the game object
+	 * if their is the need
+	 * 
+	 */
+	public void update() {
 		
 		// loop over players
 		for (Iterator<Player> playerIt = players.iterator(); playerIt.hasNext();) {
@@ -290,6 +329,17 @@ public class Game extends Application{
 		}
 	}
 	
+	/**
+	 * Information about the current state of the user.
+	 * <ul>
+	 * It display:
+	 * <li>	the user actual percentage.</li>
+	 * <li>the number of player left</li>
+	 * 	<li>the number of spacefleet send by the user</li>
+	 * 	
+	 * </ul>
+	 * @return
+	 */
 	public String gameStatus() {
 		int nbPlayers = players.size();
 		Player user = userIn.getUser();
@@ -305,6 +355,9 @@ public class Game extends Application{
 		return txt + user.getFleets().size() + "\n";
 	}
 	
+	/**
+	 * Set the game to pause, and display the pause menu (to be implemented)
+	 */
 	public void pause() {
 		String txt = "Game paused\n"; 
 		gc.setTextAlign(TextAlignment.CENTER);
@@ -314,6 +367,11 @@ public class Game extends Application{
 		
 	}
 	
+	/**
+	 * Stop the rendering loop when the game has reached the end.
+	 * Display the winner of the game
+	 * @param loop the animationTier loop to be stop
+	 */
 	public void endGame(AnimationTimer loop) {
 			loop.stop();
 			String txt = "winner:\n" + players.get(0).toString()+ "\n"; 
@@ -324,6 +382,9 @@ public class Game extends Application{
 			
 	}
 	
+	/**
+	 * Save the current state to a file and set the game state to RUNNING
+	 */
 	public void saveGame() {
 		try(ObjectOutputStream oos =
 				new ObjectOutputStream(
@@ -348,6 +409,9 @@ public class Game extends Application{
 		}
 	}
 	
+	/**
+	 * The game loader, it reload the previous save and set the gameState to RUNNING
+	 */
 	public void loadGame() {
 		try(ObjectInputStream ois = new ObjectInputStream(
               		new BufferedInputStream(
@@ -356,8 +420,16 @@ public class Game extends Application{
 		{
 			universe = (Universe)ois.readObject();
 			players = (ArrayList<Player>)ois.readObject();
+			for (Iterator playIt = players.iterator(); playIt.hasNext();) {
+				Player player = (Player) playIt.next();
+				if (player instanceof AI) {
+					AI ai = (AI) player;
+					ai.universe = universe;
+					
+				}
+			}
 			userIn = (UserInput)ois.readObject();
-			scene.setOnMouseClicked(UserInput.mouseClicked());
+//			scene.setOnMouseClicked(UserInput.mouseClicked());
 			scene.setOnKeyPressed(userIn.keyPressed());
 			scene.setOnMousePressed(userIn.mousePressed());
 			scene.setOnMouseDragged(userIn.mouseDragged());

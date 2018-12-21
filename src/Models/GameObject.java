@@ -156,7 +156,7 @@ public class GameObject implements Renderable, Serializable{
 	
 	public void validPosition(double frameWidth, double frameHeight) {
 		double offset = this.width + 5;
-		if(this.x + this.width >= frameWidth) 
+		if(this.x + this.width >= frameWidth-200) 
 			this.x -= offset;	
 		
 		if(this.x <= 0)
