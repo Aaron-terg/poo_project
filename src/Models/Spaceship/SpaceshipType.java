@@ -5,6 +5,7 @@ import java.util.Random;
 
 import Models.GameObject;
 import Models.Player;
+import Models.Spacefleet;
 import Models.planet.Planet;
 import Models.shape.Polygon;
 import Models.shape.Renderable;
@@ -131,26 +132,56 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	}
 	
 
-	public void get_around(Planet obstacle) {
-		double hypotenuse =obstacle.getPlanetShape().distPoint(this.getSpaceshipShape().getX()[1], this.getSpaceshipShape().getY()[1]);
-		double opposite = obstacle.getPlanetShape().getRadius()+15;
-		double adjacent =Math.sqrt(Math.abs((hypotenuse*hypotenuse)-(opposite*opposite)));
-		double newPosX = adjacent/hypotenuse;
-		double newPosY =opposite/hypotenuse;
-		if(this.getSpaceshipShape().getX()[0]>= obstacle.getX() && this.getSpaceshipShape().getY()[0]<= obstacle.getY()) {
+	/**
+	 * Find && calculate a path around a circle
+	 * @param obstacle, the circle to avoid
+	 * @param fleet
+	 * @see SpaceshipType#newPosition(double, double)
+	 */
+	public void getAround(Planet obstacle, Spacefleet fleet) {
+		/*
+		 * Consider a planet with a larger radius than obstacle
+		 * 
+		 * 
+		 */
+		Planet destination = fleet.getDestination();
+		double cos=0, sin=0;
+		double a = (destination.getY()-obstacle.getY())/(destination.getX()-obstacle.getX());
+		double b = destination.getY()-a*destination.getX()+15;
+		double line = a*this.spaceshipShape.getX()[1]+b;
+		boolean destinationisDown = destination.getY()>= obstacle.getY();
+		boolean destinationisOnLeft = destination.getX()<=obstacle.getX();
+		
+		//"Cut" the obstacle in four parts and choose in each part the calculation to apply
+		if(this.getSpaceshipShape().getX()[1]> obstacle.getX() && this.getSpaceshipShape().getY()[1]<= obstacle.getY()) {
 			
-			this.newPosition(-newPosX, newPosY);
-		}else if(this.getSpaceshipShape().getX()[0]> obstacle.getX() && this.getSpaceshipShape().getY()[0]>= obstacle.getY()){
+			//Check where is the ship compared to the line between obstacle's center && destination's center
+			
+			if(destinationisOnLeft && destinationisDown&& this.spaceshipShape.getY()[1]>=line||!destinationisOnLeft && destinationisDown){//spread the ship away from the planet
+				cos=-1;
+			}else 
+				sin=1;
+			
+		}else if(this.getSpaceshipShape().getX()[1]>obstacle.getX() && this.getSpaceshipShape().getY()[1]>=obstacle.getY()){
+			if(destinationisOnLeft && !destinationisDown && this.spaceshipShape.getY()[1]<=line ||!destinationisDown && !destinationisOnLeft) {
+				cos = -1;
+			}else 
+				sin = -1;
+		}else if(this.getSpaceshipShape().getX()[1]<= obstacle.getX() && this.getSpaceshipShape().getY()[1]>obstacle.getY()) {
+			
+			if(!destinationisOnLeft && !destinationisDown&& this.spaceshipShape.getY()[1]<=line|| destinationisOnLeft && !destinationisDown){
+				cos =1;
+			}else 
+				sin = -1;
 		
-			this.newPosition(-newPosX, -newPosY);
-		}else if(this.getSpaceshipShape().getX()[0]<= obstacle.getX() && this.getSpaceshipShape().getY()[0]> obstacle.getY()) {
-			this.newPosition(newPosX, -newPosY);
-	
 		}else {
-			this.newPosition(newPosX, newPosY);
-		
-			} 
-		
+			if(!destinationisOnLeft && destinationisDown&& this.spaceshipShape.getY()[1]<=line &&  this.spaceshipShape.getY()[1]!=obstacle.getY()||(!destinationisOnLeft && !destinationisDown)) {
+					sin = 1;
+			}else
+				cos=1;
+
+		}	
+		this.newPosition(cos, sin);
 	}
 	
 	@Override
