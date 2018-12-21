@@ -23,22 +23,22 @@ public class Polygon extends Shape{
 	 * Triangle constructor
 	 */
 	public Polygon() {
-		this(new double[]{0,20,10}, new double[]{0, 0 ,20},Color.BLACK);
+		this(new double[]{0,20,10}, new double[]{0, 0 ,20});
 	}
 	
 	public Polygon(double x, double y) {
 		this(new double[] {x-12.5, x+12.5, x},
-				new double[] {y-25, y-25, y},
-				Color.BLACK);
+				new double[] {y-25, y-25, y});
+
 	}
 	
-	public Polygon(double[] x, double[] y, Color rgb) {
-		super(x[1], y[2], rgb);
+	public Polygon(double[] x, double[] y) {
+		super(x[1], y[2]);
 		this.x = x;
 		this.y = y;
 	}
 	public Polygon(Polygon polygon) {
-		this(polygon.x, polygon.y, polygon.rgb());
+		this(polygon.x, polygon.y);
 	}
 	/***********************************\
 	 * 								   *
@@ -61,14 +61,17 @@ public class Polygon extends Shape{
 		return y;
 	}
 
+
 	/***********************************\
 	 * 								   *
 	 * 				Method			   *
 	 * 								   *
 	\***********************************/
 	@Override
-	public void drawShape(GraphicsContext gc) {
-		super.drawShape(gc);
+
+	public void drawShape(GraphicsContext gc, Color rgb) {
+		super.drawShape(gc, rgb);
+
 		gc.fillPolygon(x, y, x.length);;
 		
 	}

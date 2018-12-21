@@ -9,15 +9,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import Controllers.Universe;
 import Controllers.UserInput;
+import Models.GameObject;
 import Models.GameState;
 import Models.Player;
 import Models.Spacefleet;
+import Models.UserInterface;
 import Models.Spaceship.SpaceshipType;
 import Models.planet.Planet;
 import javafx.animation.AnimationTimer;
@@ -29,6 +30,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -63,7 +65,7 @@ public class Game extends Application{
 	public void start(Stage stage) throws Exception {
 		
 		// setting of the application
-		stage.setTitle("Render TestObject");
+		stage.setTitle("Space Game");
 		stage.setResizable(false);
 		Group root = new Group();
 		scene = new Scene(root);
@@ -71,40 +73,74 @@ public class Game extends Application{
 		gc = canvas.getGraphicsContext2D();
 		root.getChildren().add(canvas);
 		
-		
-		gameState = GameState.STARTED;
 		stage.setScene(scene);
 		stage.show();
+		UserInterface ui = new SplashScreen();
 		
-		Player user = new Player("Aaron Terg", Color.RED);
+		// Basic interaction
+		scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if(event.getButton().equals(MouseButton.PRIMARY)){
+					for (Iterator clickIt = ui.getClickable().iterator(); clickIt.hasNext();) {
+						GameObject gameObject = (GameObject) clickIt.next();
+						if(gameObject.isInside(event.getX(), event.getY())) {
+							if(gameObject.label() == "Exit")
+								System.exit(0);
+							if(gameObject.label() == "Init")
+								gameState = GameState.STARTED;
+							if(gameObject.label() == "Continue")
+								gameState = GameState.LOADED;
+						}
+					}
+				}
+				
+			}
+				
+		});
 		
+		// SplashScreen renderer
+		gameState = GameState.PAUSED;
+		new AnimationTimer() {
+			@Override
+			public void handle(long arg0) {
+				gc.clearRect(0, 0, WIDTH, HEIGHT);
+				ui.render(gc);
+				if(gameState.equals(GameState.STARTED)) {
+					Player user = new Player("Aaron Terg", Color.RED);
 
-		players = new ArrayList<Player>();
-		userIn = new UserInput(user);
-		universe = new Universe(10);
-
-		Player ia = new Player("IA", Color.GREEN);
-		user.firstPlanet(universe);
-		ia.firstPlanet(universe);
-		players.add(user);
-		players.add(ia);
-		
-		gameState = GameState.RUNNING;
-		
-		// setting of the controller for the player
-		scene.setOnMouseClicked(UserInput.mouseClicked());
-		scene.setOnKeyPressed(userIn.keyPressed());
-		scene.setOnMousePressed(userIn.mousePressed());
-		scene.setOnMouseDragged(userIn.mouseDragged());
-		scene.setOnMouseReleased(userIn.mouseReleased(universe));
-		
-		gameRenderer();
+					players = new ArrayList<Player>();
+					userIn = new UserInput(user);
+					universe = new Universe(10);
+					Player ia = new Player("IA", Color.GREEN);
+					user.firstPlanet(universe);
+					ia.firstPlanet(universe);
+					players.add(user);
+					players.add(ia);
+					
+					// setting of the controller for the player
+					scene.setOnMouseClicked(UserInput.mouseClicked());
+					scene.setOnKeyPressed(userIn.keyPressed());
+					scene.setOnMousePressed(userIn.mousePressed());
+					scene.setOnMouseDragged(userIn.mouseDragged());
+					scene.setOnMouseReleased(userIn.mouseReleased(universe));
+					gameState = gameState.RUNNING;
+					
+				}else if(gameState.equals(GameState.LOADED))
+					loadGame();		
+				
+				if(gameState.equals(GameState.RUNNING))
+					this.stop();gameRenderer();
+				
+			}
+		}.start();
 	}
 	
 	
 	public void gameRenderer() {
 
-		new AnimationTimer() {	
+		
+		AnimationTimer loop = new AnimationTimer() {	
 			
 			long prevTime = System.nanoTime();
 			double step = 0.0166f, maxStep = 0.05f;
@@ -171,8 +207,9 @@ public class Game extends Application{
 					
 					// drag'n drop utilities
 					if(userIn.action && userIn.lineJoint != null)
-						userIn.lineJoint.drawShape(gc);
-					
+						userIn.lineJoint.drawShape(gc, Color.BLACK);
+					if(userIn.boundaries != null)
+						userIn.boundaries.render(gc);
 					// status of the game
 					String gameStatusText = gameStatus();
 					gc.fillText(gameStatusText, 1, 20);
@@ -193,9 +230,10 @@ public class Game extends Application{
 					loadGame();
 			}
 	
-		}.start();
+		};
 		
-
+		if(gameState.equals(GameState.RUNNING))
+			loop.start();
 	}
 	
 	public void update(double timer) {
@@ -324,22 +362,24 @@ public class Game extends Application{
 			scene.setOnMousePressed(userIn.mousePressed());
 			scene.setOnMouseDragged(userIn.mouseDragged());
 			scene.setOnMouseReleased(userIn.mouseReleased(universe));
-//			System.out.println(userIn.lineJoint);
+			System.out.println("check ! ");
 //			for (Iterator<Planet> playIt = universe.getPlanets().iterator(); playIt.hasNext();) {
 //
 //				System.out.println(playIt.next());
 //			}
 		}catch(FileNotFoundException e) {
-			e.printStackTrace();
+			System.out.println("no file found");
+			gameState = GameState.STARTED;
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			System.out.println(e1.getMessage());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}finally {
+			System.out.println(e.getMessage());
+		}
+		finally {
 			System.out.println("load");
-			gameState = GameState.RUNNING;
+			gameState = (gameState.equals(GameState.LOADED))? GameState.RUNNING : GameState.STARTED;
 		}
 	} 
 }

@@ -8,24 +8,17 @@ public class Rectangle extends Shape{
 	private double x, y;
 	
 	public Rectangle() {
-		super(50,50, Color.BLACK);
+		super(50,50);
 		this.x = 0;
 		this.y = 0;
 	}
-	public Rectangle(double x, double y, double width, double height, int r, int g, int b, double a) {
-		super(width, height, Color.rgb(r, g, b, a));
+	public Rectangle(double x, double y, double width, double height) {
+		super(width, height);
 		this.x = x;
 		this.y = y;
 		
 	}
 	
-	public Rectangle(double x, double y, double width, double height, int r, int g, int b) {
-		this(x, y, width, height, r, g, b, 1);
-	}
-	
-	public Rectangle(double x, double y, double width, double height, int[] rgb) {
-		this(x, y, width, height, rgb[0], rgb[1], rgb[2], 1);
-	}
 	/***********************************\
 	 * 								   *
 	 * 			Getter/Setter		   *
@@ -43,8 +36,8 @@ public class Rectangle extends Shape{
 	}
 
 	@Override
-	public void drawShape(GraphicsContext gc) {
-		super.drawShape(gc);
+	public void drawShape(GraphicsContext gc, Color rgb) {
+		super.drawShape(gc, rgb);
 		gc.fillRect(x, y, width, height);
 	}
 	

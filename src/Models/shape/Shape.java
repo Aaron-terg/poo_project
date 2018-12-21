@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
  * A Shape has the following properties : 
  * <p>
  * <ul>
- * 		<li> A specified color </li>
+
  * 		<li> a height && a width </li>
  * </p>
  * @see Planet
@@ -22,24 +22,14 @@ import javafx.scene.paint.Color;
  */
 public abstract class Shape implements Serializable {
 	
-	protected double[] color;
 	protected double height, width;
 	/**
 	 * Shape constructors
 	 */
 	public Shape() {
-		this.color = new double[] {0,0,0};
-	}
-	public Shape(Color color) {
-		this.color = new double[] {
-				color.getRed(),
-				color.getGreen(),
-				color.getBlue()
-		};
 	}
 	
-	public Shape(double width, double height, Color rgb) {
-		this(rgb);
+	public Shape(double width, double height) {
 		this.width = width;
 		this. height = height;
 	}
@@ -55,6 +45,7 @@ public abstract class Shape implements Serializable {
 	public double getHeight() {
 		return this.height;
 	}
+
 	/**
 	 * 
 	 * @return the width of the shape
@@ -62,29 +53,7 @@ public abstract class Shape implements Serializable {
 	public double width() {
 		return width;
 	}
-	/**
-	 * Set the specified color to the shape
-	 * @param color : the color to apply
-	 */
-	public void rgb(Color color) {
-		this.color[0] = color.getRed();
-		this.color[1] = color.getGreen();
-		this.color[2] = color.getBlue();
-	}
-	/**
-	 * 
-	 * @return the actual color of the shape
-	 */
-	public Color rgb() {
-		return Color.color(color[0], color[1], color[2]);
 
-	}
-	/**
-	 * Get the actual position of the shape 
-	 * @return a table of Coordinates
-	 */
-	public abstract double[] position();
-	
 	
 	
 	/***********************************\
@@ -93,6 +62,14 @@ public abstract class Shape implements Serializable {
 	 * 								   *
 	\***********************************/
 	
+	/**
+	 * Get the actual position of the shape 
+	 * @return a table of Coordinates
+	 */
+
+	public abstract double[] position();
+	
+
 	/**
 	 * Set the shape at a specific position
 	 * @param posX : the X coordinate of the new position
@@ -105,8 +82,8 @@ public abstract class Shape implements Serializable {
 	 * This method permits to draw the shape on the window
 	 * @param gc
 	 */
-	public void drawShape(GraphicsContext gc) {
-		gc.setFill(rgb());
+	public void drawShape(GraphicsContext gc, Color rgb) {
+		gc.setFill(rgb);
 		gc.setStroke(Color.BLACK);
 		
 	}

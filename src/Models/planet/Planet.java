@@ -87,7 +87,6 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		double frameHeight = Game.HEIGHT;
 		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius;
 		double pointY = (frameHeight - radius)*randomNumber.nextDouble() + radius;
-		Color color = Color.CORNFLOWERBLUE;
 		this.shipOnPlanet = randomNumber.nextInt(100)+1;
 		
 		
@@ -98,12 +97,12 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		this.height = radius*2;
 		this.width = this.height;
 		validPosition(frameWidth, frameHeight);
-		this.planetShape = new Circle(this.x + radius, this.y + radius, radius, color);
+		this.planetShape = new Circle(this.x + radius, this.y + radius, radius);
 	}
 	
 	public Planet(double pointX, double pointY, double radius, Color color) {
 		super(pointX, pointY, radius*2, radius*2);
-		this.planetShape = new Circle(pointX, pointY, radius, color);
+		this.planetShape = new Circle(pointX, pointY, radius);
 		double frameWidth = Game.WIDTH;
 		double frameHeight = Game.HEIGHT;
 		validPosition(frameWidth, frameHeight);
@@ -144,7 +143,6 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		if(isOwn())
 			owner.getTerritory().remove(this);
 		this.owner = player;
-		planetShape.rgb(player.getColor());
 	}
 	
 	/**
@@ -306,7 +304,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		else
 			gc.setLineWidth(1f);
 
-		this.planetShape.drawShape(gc);
+		this.planetShape.drawShape(gc, (isOwn())? owner.getColor() : Color.CORNFLOWERBLUE);
 		gc.setLineWidth(1f);
 		gc.setFill(Color.BLACK);
 		
