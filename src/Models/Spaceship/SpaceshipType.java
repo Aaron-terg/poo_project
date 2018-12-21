@@ -21,7 +21,8 @@ import javafx.scene.paint.Color;
  *         <li>The power of its attack</li>
  *         <li>The speed </li>
  *         <li>The necessary time for its production</li>
- *         <li>The shape</li>
+ *         <li>The shape of the ship</li>
+ *         <li> His own player 
  *         
  *     </li>
  * </p>
@@ -138,14 +139,14 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 
 	/**
 	 * Find && calculate a path around a circle
-	 * Move away the ship from the planet && calculate the line between the new position of the ship &&the destination
+	 * Move away the ship from the planet and find the new position thanks to this.newPosition
 	 * @param obstacle, the planet to avoid
 	 * @param fleet : to know which planet is the destination of the ships
 	 * @see SpaceshipType#newPosition(double, double)
 	 */
 	public void getAround(Planet obstacle, Spacefleet fleet) {
 		Planet destination = fleet.getDestination();
-		double cos=0, sin=0; //consider an angle 
+		double cos=0, sin=0; 
 		double a = (destination.getY()-obstacle.getY())/(destination.getX()-obstacle.getX());//the coefficient of the line a*x+b
 		double b = destination.getY()-a*destination.getX()+15;
 		double line = a*this.spaceshipShape.getX()[1]+b;
