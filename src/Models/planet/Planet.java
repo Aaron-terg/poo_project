@@ -89,35 +89,28 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		double pointY = (frameHeight - radius)*randomNumber.nextDouble() + radius;
 		Color color = Color.CORNFLOWERBLUE;
 		this.shipOnPlanet = randomNumber.nextInt(100)+1;
-		this.planetShape = new Circle(pointX, pointY, radius, color);
-		planetShape.validPosition(frameWidth, frameHeight);
+		
+		
 		this.spaceshipType = new BasicSpaceshipType();
-		this.x = pointX;
-		this.y = pointY;
-		this.height = radius;
-		this.width = radius;
-
-
+		
+		this.x = pointX - radius;
+		this.y = pointY - radius;
+		this.height = radius*2;
+		this.width = this.height;
+		validPosition(frameWidth, frameHeight);
+		this.planetShape = new Circle(this.x + radius, this.y + radius, radius, color);
 	}
 	
 	public Planet(double pointX, double pointY, double radius, Color color) {
-		super(pointX, pointY, radius, radius);
+		super(pointX, pointY, radius*2, radius*2);
 		this.planetShape = new Circle(pointX, pointY, radius, color);
 		double frameWidth = Game.WIDTH;
 		double frameHeight = Game.HEIGHT;
-		planetShape.validPosition(frameWidth, frameHeight);
+		validPosition(frameWidth, frameHeight);
 		this.spaceshipType = new BasicSpaceshipType();
 		
 	}
-	public Planet(int shipOnPlanet, Circle planetShape) {
-		this.shipOnPlanet = shipOnPlanet;
-		this.planetShape = planetShape;
-		this.spaceshipType = new BasicSpaceshipType(); 
-	}
 	
-	public Planet(Planet planet) {
-		this(planet.shipOnPlanet, planet.planetShape);
-	}
 	/***********************************\
 	 * 								   *
 	 * 			Getter/Setter		   *
@@ -264,26 +257,10 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 * @return
 	 */
 	public boolean superimposed(Planet p) {
-		return this.getPlanetShape().distance(p.getPlanetShape()) > 40;
+		return this.getPlanetShape().distance(p.getPlanetShape()) <= 40;
 	}
 	
 
-	
-	@Override
-	public void render(GraphicsContext gc) {
-		if(this.equals(selected))
-			gc.setLineWidth(5f);
-		else
-			gc.setLineWidth(1f);
-
-		this.planetShape.drawShape(gc);
-		gc.setLineWidth(1f);
-		gc.setFill(Color.BLACK);
-		
-		gc.fillText(""+shipOnPlanet, planetShape.position()[0],planetShape.position()[1]);
-		
-	}
-	
 	/**
 	 * Decrease the number of spaceships on a planet in case of an attack
 	 * Increase this number if the player has the planet
@@ -319,7 +296,22 @@ public class Planet extends GameObject implements Renderable, Serializable{
 				+ "**************************\n\n"
 				+ "\towner: \n\t" + owner + "\n--------------------------\n"
 				+ "\n shipOnPlanet: " + shipOnPlanet+ "\n production rate: "+ productionRate + "\n"
-//				+ super.toString() + "\n spaceshipType: "+ spaceshipType
 				+ "\n shape: \n\t" + planetShape + "\n";
 	}
+	
+	@Override
+	public void render(GraphicsContext gc) {
+		if(this.equals(selected))
+			gc.setLineWidth(5f);
+		else
+			gc.setLineWidth(1f);
+
+		this.planetShape.drawShape(gc);
+		gc.setLineWidth(1f);
+		gc.setFill(Color.BLACK);
+		
+		gc.fillText(""+shipOnPlanet, getX(),getY());
+		
+	}
+	
 }

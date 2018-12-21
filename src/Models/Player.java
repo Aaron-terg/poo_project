@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import Controllers.Universe;
+import Controllers.UserInput;
 import Models.planet.Planet;
 import javafx.scene.paint.Color;
 
@@ -22,8 +23,8 @@ import javafx.scene.paint.Color;
  * @see Planet
  * @see SpaceShip
  * 
- * @author meryl
- * @version 1.0
+ * @author meryl, Virginie
+ * @version src_basic
  *
  */
 public class Player implements Serializable{
@@ -34,20 +35,39 @@ public class Player implements Serializable{
 	public String playerTag;
 	
 	/**
-	 * The planet owned
+	 * a set of planet owned by the player
 	 * 
+	 * @see Player#getTerritory()
 	 * @see Planet
 	 */
 	private ArrayList<Planet> territory;
 	
 	/**
-	 * The spaceship fleets of the player
+	 * all the fleets of the player
+	 * 
+	 * @see Player#getFleets()
+	 * @see Spacefleet
 	 */
 	private ArrayList<Spacefleet> spacefleets;
-	private double[] color;
-	public int percent=100;
+	
 	/**
-	 * The default constructor, set the player tag to default.
+	 * The color of the player
+	 * 
+	 * @see Player#getColor()
+	 */
+	private double[] color;
+	
+	/**
+	 * the percentage of spaceship to send from a selected planet.
+	 * by default: 50
+	 * it can be augmented with the SHIFT key and regress with the ALT key
+	 * 
+	 * @see UserInput#keyPressed()
+	 */
+	public int percent=50;
+	
+	/**
+	 * Default Player constructor, set the player tag to default. and the color to red
 	 */
 	public Player() {
 		this.playerTag = "default";
@@ -59,6 +79,12 @@ public class Player implements Serializable{
 				Color.RED.getBlue()
 		};
 	}
+	
+	/**
+	 * Player constructor 
+	 * @param name the player tag of the player
+	 * @param color his color for the game
+	 */
 	public Player(String name, Color color) {
 		this();
 		this.playerTag = name;
@@ -69,24 +95,60 @@ public class Player implements Serializable{
 		};
 	}
 	
+	/***********************************\
+	 * 								   *
+	 * 			Getter/Setter		   *
+	 * 								   *
+	\***********************************/
+	
+	/**
+	 * Get the set of planet owned by the player
+	 * 
+	 * @return the set of planet owned by the player
+	 * @see Player#territory
+	 * @see Planet
+	 */
 	public ArrayList<Planet> getTerritory(){
 		return this.territory;
 	}
 	
+	/**
+	 * Get the fleets of the player
+	 * 
+	 * @return the set of planet owned by the player
+	 * @see Player#spacefleets
+	 * @see Spacefleet
+	 */
 	public ArrayList<Spacefleet> getFleets(){
 		return this.spacefleets;
 	}
 	
+	/**
+	 * Get the color of Player
+	 * @return the color of the player
+	 * @see Player#color
+	 */
+	public Color getColor() {
+		return Color.color(color[0], color[1], color[2]);
+	}
+	
+	/***********************************\
+	 * 								   *
+	 * 				Method			   *
+	 * 								   *
+	\***********************************/
+
+	/**
+	 * Check if the player can still playing
+	 * @return true if the number of planet owned by the player is greater than 0
+	 */
 	public boolean hasTerritory() {
 		return territory.size() != 0;
 	}
 	
-	public Color getColor() {
-		return Color.color(color[0], color[1], color[2]);
-	}
 	/**
-	 * Choose the palyer's first planet and fill her with a specified color
-	 * @param u,
+	 * Choose the player's first planet and fill her with a specified color
+	 * @param u the universe to choose the planet from
 	 */
 	public void firstPlanet(Universe u) {
 		Random random = new Random();
@@ -98,9 +160,13 @@ public class Player implements Serializable{
 	}
 	
 	/**
-	 * add a planet in the list of planet owned by the player
-	 * fill them with the specified color
-	 * @param p
+	 * Add a planet in the list of planet owned by the player
+	 * and set the owner of the planet
+	 * @param p the planet conquered
+	 * 
+	 * @see Player#territory
+	 * @see Planet#owner()
+	 * @see Planet#newOwner(Player)
 	 */
 	public void myPlanet(Planet p) {
 		this.territory.add(p);
@@ -108,6 +174,12 @@ public class Player implements Serializable{
 
 	}
 	
+	/**
+	 * Prepare a new fleet and add it to the {@link Player#spacefleets}
+	 * @param percent percentage of ship to send
+	 * @param start the planet of departure
+	 * @return a new Spacefleet ready to be sent
+	 */
 	public Spacefleet newLaunch(int percent, Planet start) {
 		int nbShip = (int)(percent*start.nbShipOnPlanet())/100;
 		Spacefleet spacefleet = new Spacefleet(nbShip, start);
@@ -115,6 +187,10 @@ public class Player implements Serializable{
 		return spacefleet;
 	}
 	
+	/**
+	 * Check if the player has fleet in action
+	 * @return true if the player has a fleet with a destination set
+	 */
 	public boolean inAction() {
 		
 		if(this.spacefleets.isEmpty())

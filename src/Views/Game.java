@@ -34,6 +34,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+/**
+ * <b>The Game application</b>
+ * <p>the updating and rendering are manage in this class
+ * 
+ * @author meryl, Virginie
+ * @version src_basic
+ * @since src_basic
+ *
+ */
 public class Game extends Application{
 	public final static double WIDTH = 1200;
 	public final static double HEIGHT = 800;
@@ -52,14 +61,16 @@ public class Game extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
+		
+		// setting of the application
 		stage.setTitle("Render TestObject");
 		stage.setResizable(false);
-		
 		Group root = new Group();
 		scene = new Scene(root);
 		Canvas canvas = new Canvas(WIDTH, HEIGHT);
 		gc = canvas.getGraphicsContext2D();
 		root.getChildren().add(canvas);
+		
 		
 		gameState = GameState.STARTED;
 		stage.setScene(scene);
@@ -79,11 +90,14 @@ public class Game extends Application{
 		players.add(ia);
 		
 		gameState = GameState.RUNNING;
+		
+		// setting of the controller for the player
 		scene.setOnMouseClicked(UserInput.mouseClicked());
 		scene.setOnKeyPressed(userIn.keyPressed());
-		scene.setOnMousePressed(userIn.mousePresse());
-		scene.setOnMouseDragged(userIn.moouseDragged());
+		scene.setOnMousePressed(userIn.mousePressed());
+		scene.setOnMouseDragged(userIn.mouseDragged());
 		scene.setOnMouseReleased(userIn.mouseReleased(universe));
+		
 		gameRenderer();
 	}
 	
@@ -151,10 +165,7 @@ public class Game extends Application{
 						Player player = (Player) playerIt.next();
 						for (Iterator fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
 							Spacefleet spacefleet = (Spacefleet) fleetIt.next();
-							for (Iterator spaceShipIt = spacefleet.fleet().iterator(); spaceShipIt.hasNext();) {
-								SpaceshipType spaceship = (SpaceshipType) spaceShipIt.next();
-								spaceship.render(gc);
-							}
+							spacefleet.render(gc);
 						}
 					}
 					
@@ -310,8 +321,8 @@ public class Game extends Application{
 			userIn = (UserInput)ois.readObject();
 			scene.setOnMouseClicked(UserInput.mouseClicked());
 			scene.setOnKeyPressed(userIn.keyPressed());
-			scene.setOnMousePressed(userIn.mousePresse());
-			scene.setOnMouseDragged(userIn.moouseDragged());
+			scene.setOnMousePressed(userIn.mousePressed());
+			scene.setOnMouseDragged(userIn.mouseDragged());
 			scene.setOnMouseReleased(userIn.mouseReleased(universe));
 //			System.out.println(userIn.lineJoint);
 //			for (Iterator<Planet> playIt = universe.getPlanets().iterator(); playIt.hasNext();) {

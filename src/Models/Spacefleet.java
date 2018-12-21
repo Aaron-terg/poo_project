@@ -6,20 +6,59 @@ import java.util.Iterator;
 
 import Models.Spaceship.SpaceshipType;
 import Models.planet.Planet;
+import Models.shape.Renderable;
 import javafx.scene.canvas.GraphicsContext;
 
-public class Spacefleet extends GameObject implements Serializable {
+/**
+ * <b>A commando of spaceship braving the universe to conquer planets</b>
+ * 
+ * @author meryl, Virginie
+ * @since src_basic
+ *
+ */
+public class Spacefleet extends GameObject implements Renderable, Serializable {
 	
+	/**
+	 * the set of spaceship of the fleet
+	 * @see SpaceshipType
+	 */
 	private ArrayList<SpaceshipType> spaceships;
-	private Planet start, destination; 
-	private int nbShip, nbWave, nbShipToSend, nbShipSend;
-	private double angle;
 	
+	/**
+	 * THe planet of departure and the destination of the fleet
+	 * 
+	 * @see Planet
+	 */
+	private Planet start, destination; 
+	
+	/**
+	 * <ul>
+	 * <li>nbShip: the total number of spaceship defined by the percentage</li>
+	 * <li>nbWave: the number of launch needed to send nbShipToSend in order to reach the nbShip</li>
+	 * <li>nbShipToSend: the number of ship to send by wave defined with the raidus of the starting planet</li>
+	 * <li>nbShipSend: the number of ship sent </li>
+	 * </ul>
+	 */
+	private int nbShip, nbWave, nbShipToSend, nbShipSend;
+	
+	/**
+	 * the angle between each gate of the starting planet defined by its radius.
+	 */
+	private double angle; 
+	
+	/**
+	 * Spacefleet constructor.<br/>
+	 * set a new fleet with a total of ship and a starting planet
+	 * @param nbShip the number of spaceship to be send (bound by the number of spaceship on the starting planet)
+	 * @param start  planet of departure
+	 */
 	public Spacefleet(int nbShip, Planet start) {
-		super(start.x, start.y, 0, 0);
+		super(start.getX(), start.getY(), 0, 0);
 		this.spaceships = new ArrayList<>();
-		this.nbShip = nbShip;
+		this.nbShip = Math.min(nbShip, start.nbShipOnPlanet());
 		this.start = start;
+		start.nbShipOnPlanet(-this.nbShip);
+		
 		double radius = start.width;
 		angle = 0;
 		nbShipToSend = 0;
@@ -39,33 +78,74 @@ public class Spacefleet extends GameObject implements Serializable {
 			nbShipToSend = 12;
 		}
 		angle*=Math.PI/180;
-		nbWave = Math.round(nbShip / nbShipToSend);
+		nbWave = Math.round(this.nbShip / nbShipToSend);
 	}
 	
+	/***********************************\
+	 * 								   *
+	 * 				Method			   *
+	 * 								   *
+	\***********************************/
+
+	/**
+	 * Get the current number of ship already send
+	 * @return the current number of ship in the fleet
+	 */
 	public int fleetSize() {
 		return nbShipSend;
 	}
 	
+	/**
+	 * @return the number of wave left
+	 */
 	public int getNbWave() {
 		return this.nbWave;
 	}
 	
+	/**
+	 * Get the set of spaceship sent
+	 * @return an ArrayList of spaceship
+	 */
 	public ArrayList<SpaceshipType> fleet(){
 		return spaceships;
 	}
 	
+	/**
+	 * Get the destination of the fleet
+	 * @return A planet
+	 */
 	public Planet getDestination() {
 		return destination;
 	}
 	
+	/**
+	 * Set the new destination of the fleet
+	 * @param planet the new destination of the fleet
+	 */
 	public void setDestination(Planet planet) {
 		this.destination = planet;
 	}
 	
+	/***********************************\
+	 * 								   *
+	 * 				Method			   *
+	 * 								   *
+	\***********************************/
+
+	/**
+	 * Check if the fleet has a destination
+	 * @return true if the spaceship destination is set
+	 */
 	public boolean hasDestination() {
 		return destination != null;
 	}
 	
+	/**
+	 * Check if the couple of coordinate are inside one the spaceship
+	 * @param x the x coordinate 
+	 * @param y the y coordinate
+	 * @return true if the couple of coordinate is inside one the spaceship
+	 */
 	public boolean inside(double x, double y) {
 		boolean result = false;
 		Iterator<SpaceshipType> spaceshipIt = spaceships.iterator();
@@ -76,32 +156,41 @@ public class Spacefleet extends GameObject implements Serializable {
 			if(result) {
 				System.out.println("bug not here!");
 
-				this.x = spaceship.x;
-				this.y = spaceship.y;
+				this.x = spaceship.getX();
+				this.y = spaceship.getY();
 			}
 				
 		}
 		return result;
 	}
 	
+	/**
+	 * Send a number of ship defined in the constructor every time the method is called and the number of wave left is >0.
+	 * The spaceship are sent from "gate" around the planet.
+	 * 
+	 */
 	public void takeOff() {
 		
 		if(nbWave > 0) {
 			
-
+			// create the gate for the departure of the spaceship
 			double[] spaceport = new double[2];
-			double radius = start.width;
+			double radius = start.width / 2;
 			
 			int ShipToSend = (nbShipSend + nbShipToSend > nbShip)? nbShip - nbShipSend : nbShipToSend;
 			nbShipSend += ShipToSend;
-			start.nbShipOnPlanet(-ShipToSend);
+			
 			while(ShipToSend > 0) {
 				try {
 					
-					spaceport[0] = (radius+15)*Math.cos(ShipToSend*angle) + start.x;
-					spaceport[1] = -(radius+15)*Math.sin(ShipToSend*angle*angle) + start.y;
+					//Positioned the gate around the planet
+					spaceport[0] = (radius+15)*Math.cos(ShipToSend*angle) + start.getX();
+					spaceport[1] = -(radius+15)*Math.sin(ShipToSend*angle*angle) + start.getY();
 					
+					// instantiate a new spaceship from the type of the departure planet
 					SpaceshipType spaceship = start.getSpaceShipeType().getClass().newInstance();
+					spaceship.x = spaceport[0];
+					spaceship.y = spaceport[1];
 					spaceship.getSpaceshipShape().setPosition(spaceport[0], spaceport[1]);
 					spaceship.setPlayer(start.owner());
 					spaceships.add(spaceship);
@@ -117,10 +206,17 @@ public class Spacefleet extends GameObject implements Serializable {
 		}
 	}
 	
+	/**
+	 * Check if the fleet is arrived to destination
+	 * @return true of the spaceship is empty
+	 */
 	public boolean isArrived() {
 		return spaceships.isEmpty();
 	}
 	
+	/**
+	 * Render the spaceship of the fleet
+	 */
 	public void render(GraphicsContext gc) {
 		for (Iterator<SpaceshipType> spaceshipsIt = spaceships.iterator(); spaceshipsIt.hasNext();) {
 			SpaceshipType spaceship =spaceshipsIt.next();

@@ -83,12 +83,4 @@ public class Polygon extends Shape{
 
 	}
 	
-	public boolean inInside(Planet planet) {
-		return planet.getPlanetShape().isInside(this.getX()[0], this.getY()[0])
-				||planet.getPlanetShape().isInside(this.getX()[1], this.getY()[1])
-				|| planet.getPlanetShape().isInside(this.getX()[2], this.getY()[2]);
-		
-	}
-
-
 }

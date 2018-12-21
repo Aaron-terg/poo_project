@@ -7,6 +7,7 @@ public class Circle extends Shape{
 	
 	private double x, y;
 	private double radius;
+	
 	/**
 	 *  Circle constructor
 	 */
@@ -83,26 +84,6 @@ public class Circle extends Shape{
 		gc.fillOval(x - radius, y - radius, radius*2, radius*2);
 	}
 	
-	
-	public void validPosition(double frameWidth, double frameHeight) {
-		double offset = this.radius + 5;
-		if(this.x + this.radius >= frameWidth) 
-			this.x -= offset;	
-		
-		if(this.x - this.radius <= 0)
-			this.x += offset;
-		
-		if(this.y + this.radius >= frameHeight)
-			this.y -= offset;
-		
-		if(this.y - this.radius <= 0)
-			this.y += offset;
-		
-	}
-	public boolean outOfWindow(double frameWidth, double frameHeight) {
-		return x+radius> frameWidth || x-radius <0 || y+radius > frameHeight || y-radius <0;
-	}
-
 	public boolean isInside(double px, double py) {
 		 return px<=(this.x+this.radius) && px>=(this.x-this.radius)
 				 && py>=(this.y-this.radius) &&py<=(this.y+this.radius);

@@ -36,11 +36,11 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	protected long productionTime;
 	protected Polygon spaceshipShape;
 	protected Player player;
+	
 	/**
 	 * SpaceshipType constructor
 	 * 
 	 */
-	
 	public SpaceshipType() {
 		Random randomNumber = new Random();
 		this.attPower = randomNumber.nextInt(10)+2;
@@ -107,8 +107,8 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 * 
 	 */
 	public void newPosition(double x, double y) {
-		this.x -= x*speed;
-		this.y -= y*speed;
+		this.x = getX() - x*speed;
+		this.y = getY() - y*speed;
 //		this.spaceshipShape.setPosition(this.x, this.y);
 		for(int i = 0; i<this.spaceshipShape.getX().length; i++) {
 			this.spaceshipShape.getX()[i]-=x*speed;
@@ -117,7 +117,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	}
 
 	/**
-	 * Calculate a new point between the ship's actual position && the destination
+	 * Calculate a new point between the ship's actual position and the destination
 	 * @param destination
 	 * @see SpaceshipType#newPosition(double, double)
 	 */

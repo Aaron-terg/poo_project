@@ -22,13 +22,13 @@ import javafx.scene.canvas.GraphicsContext;
  * @see Planet
  * 
  * @author meryl
- * @version 1.5
+ * @version src_basic
  *
  */
 public class Universe implements Renderable, Serializable{
 	
 	/**
-	 * The set of planet.
+	 * <b>The set of planet.</b>
 	 * 
 	 * @see Planet
 	 * @see Universe#getPlanets()
@@ -36,33 +36,51 @@ public class Universe implements Renderable, Serializable{
 	 */
 	private ArrayList<Planet> planets;
 	
-	
+	/**
+	 * <b>Universe constructor</b>
+	 * <p> create a set of planet randomly generated.
+	 * 
+	 * @param nbPlanets the number of planet to create bond within 0 and 20
+	 */
 	public Universe(int nbPlanets) {
-		// Making of a set of planet
 		
+		
+		nbPlanets = Math.min(20, nbPlanets);
+		nbPlanets = Math.max(0, nbPlanets);
+		
+		// Making of a set of planet
 		planets = new ArrayList<Planet>();
 		boolean superImposedTest = true;
 		while(planets.size() < nbPlanets) {
 			
+			//check if the planet is not over an other planet
 			Planet planet = new Planet();
 			int j = planets.size() - 1;
 			while(j >= 0) {
 				Planet prevPlanet = planets.get(j);
-				superImposedTest &= planet.superimposed(prevPlanet);
+				superImposedTest &= !planet.superimposed(prevPlanet);
 				j--;
 			}
-			if(superImposedTest) {
+			if(superImposedTest) 
 				planets.add(planet);
 				
-			}
 			superImposedTest = true;
 		}	
 	}
 
+	/**
+	 * <b>Get the planet set</b>
+	 * 
+	 * @return an ArrayList of planet
+	 */
 	public ArrayList<Planet> getPlanets() {
 		return planets;
 	}
 
+	/**
+	 * render each planet of the planet set
+	 * 
+	 */
 	@Override
 	public void render(GraphicsContext gc) {
 		for (Iterator<Planet> iterator = planets.iterator(); iterator.hasNext();) {
