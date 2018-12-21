@@ -10,6 +10,7 @@ import Models.shape.Polygon;
 import Models.shape.Renderable;
 import Models.shape.Shape;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  * <b>SpaceShipType class represent the ship</b>
@@ -97,7 +98,9 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 * @see Shape#drawShape(GraphicsContext)
 	 */
 	public void render(GraphicsContext gc) {
-		this.spaceshipShape.drawShape(gc);
+		gc.setStroke(player.getColor());
+		this.spaceshipShape.drawShape(gc, Color.BLACK);
+		gc.setStroke(Color.BLACK);
 	}
 	/**
 	 * Update the position of the ship

@@ -3,11 +3,8 @@ package Models;
 import java.io.Serializable;
 
 import Controllers.UserInput;
-import Models.shape.Circle;
-import Models.shape.Polygon;
-import Models.shape.Shape;
-import Views.Game;
-import javafx.scene.AmbientLight;
+import Models.shape.Renderable;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  * <b>The GameObject is the basis of every element the user will interact with</b>
@@ -15,7 +12,9 @@ import javafx.scene.AmbientLight;
  * @author meryl, Virginie
  * @since src_basic
  */
-public class GameObject implements Serializable{
+public class GameObject implements Renderable, Serializable{
+	
+	protected String label;
 	/**
 	 * x and y are the position of the game object in the canvas
 	 * @see GameObject#getX()
@@ -46,6 +45,7 @@ public class GameObject implements Serializable{
 		this.y = 0;
 		this.height = 0;
 		this.width = 0;
+		label = "GameObject";
 	}
 	
 	/**
@@ -55,11 +55,20 @@ public class GameObject implements Serializable{
 	 * @param height the height of the GameObject
 	 * @param width the width of the GameObject
 	 */
-	public GameObject(double x, double y, double height, double width) {
+	public GameObject(double x, double y, double width, double height) {
 		this.x = x - width/2;
 		this.y = y - height/2;
 		this.height = height;
 		this.width = width;
+		label = "GameObject";
+	}
+	
+	public GameObject(double x, double y, double width, double height, String label) {
+		this.x = x - width/2;
+		this.y = y - height/2;
+		this.height = height;
+		this.width = width;
+		this.label = label;
 	}
 	
 
@@ -79,18 +88,28 @@ public class GameObject implements Serializable{
 		return y + height/2;
 	}
 
-	/***********************************\
-	 * 								   *
-	 * 				Method			   *
-	 * 								   *
-	\***********************************/
-	
 	public double height() {
 		return height;
 	}
 
 	public double width() {
 		return width;
+	}
+	
+	public String label() {
+		return label;
+	}
+	
+	/***********************************\
+	 * 								   *
+	 * 				Method			   *
+	 * 								   *
+	\***********************************/
+	
+	
+	public void resize(double w, double h) {
+		width = w;
+		height = h;
 	}
 
 	/**
@@ -157,5 +176,15 @@ public class GameObject implements Serializable{
 		return "x :" + x + ", y: "+ y
 				+ ", height: "+ height +", width: " + width +"\n"
 				+ ", object selected :" + selected + "\n";
+	}
+	
+	@Override
+	public void render(GraphicsContext gc) {
+		gc.strokeLine(x, y, x, y+height);
+		gc.strokeLine(x, y+height, x+width, y + height);
+		gc.strokeLine(x+width, y + height, x+width, y);
+		gc.strokeLine(x+width, y, x, y);
+		gc.stroke();
+		
 	}
 }

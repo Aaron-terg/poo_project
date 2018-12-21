@@ -17,15 +17,14 @@ public class Circle extends Shape{
 		this.radius = 1;
 	}
 	
-	public Circle(double x, double y, double radius, Color color) {
-		super(color);
+	public Circle(double x, double y, double radius) {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
 	}
 	
 	public Circle(Circle c) {
-		this(c.x, c.y, c.radius, c.rgb());
+		this(c.x, c.y, c.radius);
 	}
 	
 	/**
@@ -78,8 +77,8 @@ public class Circle extends Shape{
 		return Math.sqrt(Math.pow((p1X - this.x), 2) + Math.pow((p1Y - this.y), 2));
 	}
 
-	public void drawShape(GraphicsContext gc) {
-		super.drawShape(gc);
+	public void drawShape(GraphicsContext gc, Color rgb) {
+		super.drawShape(gc, rgb);
 		gc.strokeOval(x - radius, y - radius, radius*2, radius*2);
 		gc.fillOval(x - radius, y - radius, radius*2, radius*2);
 	}

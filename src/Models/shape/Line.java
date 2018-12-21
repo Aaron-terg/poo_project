@@ -10,15 +10,11 @@ public class Line extends Shape implements Serializable{
 	private double x, y;
 	
 	public Line(double originX, double originY) {
-		this(originX, originY, originX, originY, Color.BLACK);
+		this(originX, originY, originX, originY);
 	}
 	
 	public Line(double originX, double originY, double x, double y) {
-		this(originX, originY, x, y, Color.BLACK);
-	}
-	
-	public Line(double originX, double originY, double x, double y, Color rgb) {
-		super(x, y, rgb);
+		super(x, y);
 		this.x = originX;
 		this.y = originY;
 	}
@@ -34,8 +30,8 @@ public class Line extends Shape implements Serializable{
 		this.height += posY - this.height;
 	}
 	
-	public void drawShape(GraphicsContext gc) {
-		super.drawShape(gc);
+	public void drawShape(GraphicsContext gc, Color rgb) {
+		super.drawShape(gc, rgb);
 		gc.setLineWidth(2f);
 		gc.strokeLine(x, y, width, height);
 		gc.setLineWidth(1f);

@@ -8,6 +8,7 @@ import Models.Spaceship.SpaceshipType;
 import Models.planet.Planet;
 import Models.shape.Renderable;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  * <b>A commando of spaceship braving the universe to conquer planets</b>
@@ -218,11 +219,19 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	 * Render the spaceship of the fleet
 	 */
 	public void render(GraphicsContext gc) {
+		if(this.equals(selected)) {
+			gc.setLineWidth(5f);
+			gc.setStroke(Color.BLACK);
+		}
+		else
+			gc.setLineWidth(1f);
+		
 		for (Iterator<SpaceshipType> spaceshipsIt = spaceships.iterator(); spaceshipsIt.hasNext();) {
 			SpaceshipType spaceship =spaceshipsIt.next();
 			spaceship.render(gc);
 			
 		}
+		gc.setLineWidth(1f);
 	}
 	
 	@Override
