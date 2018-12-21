@@ -103,26 +103,27 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	/**
 	 * Update the position of the ship
 	 * Do a translation of the ship's position according to the parameters
-	 * @param x :x coordinate's for the translation
-	 * @param y : y coordinate's translation
+	 * @param dx :x coordinate's for the translation
+	 * @param dy : y coordinate's translation
 	 * 
 	 */
-	public void newPosition(double x, double y) {
-		this.x = getX() - x*speed;
-		this.y = getY() - y*speed;
+	public void newPosition(double dx, double dy) {
+		this.x = getX() - dx*speed;
+		this.y = getY() - dy*speed;
 //		this.spaceshipShape.setPosition(this.x, this.y);
 		for(int i = 0; i<this.spaceshipShape.getX().length; i++) {
-			this.spaceshipShape.getX()[i]-=x*speed;
-			this.spaceshipShape.getY()[i]-=y*speed;
+			this.spaceshipShape.getX()[i]-=dx*speed;
+			this.spaceshipShape.getY()[i]-=dy*speed;
 		}
 	}
 
 	/**
-	 * Calculate a new point between the ship's actual position and the destination
-	 * @param destination
+	 * Calculate the director vector of the line between the ship's actual position and the destination
+	 * @param destination 
 	 * @see SpaceshipType#newPosition(double, double)
 	 */
 	public void goTo(Planet destination) {
+		
 		double distX = this.spaceshipShape.getX()[1]-destination.getPlanetShape().position()[0];
 		double distY = this.spaceshipShape.getY()[1]-destination.getPlanetShape().position()[1];
 		double dist = Math.sqrt((distX*distX)+(distY*distY));
@@ -134,19 +135,15 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 
 	/**
 	 * Find && calculate a path around a circle
-	 * @param obstacle, the circle to avoid
-	 * @param fleet
+	 * Move away the ship from the planet && calculate the line between the new position of the ship &&the destination
+	 * @param obstacle, the planet to avoid
+	 * @param fleet : to know which planet is the destination of the ships
 	 * @see SpaceshipType#newPosition(double, double)
 	 */
 	public void getAround(Planet obstacle, Spacefleet fleet) {
-		/*
-		 * Consider a planet with a larger radius than obstacle
-		 * 
-		 * 
-		 */
 		Planet destination = fleet.getDestination();
-		double cos=0, sin=0;
-		double a = (destination.getY()-obstacle.getY())/(destination.getX()-obstacle.getX());
+		double cos=0, sin=0; //consider an angle 
+		double a = (destination.getY()-obstacle.getY())/(destination.getX()-obstacle.getX());//the coefficient of the line a*x+b
 		double b = destination.getY()-a*destination.getX()+15;
 		double line = a*this.spaceshipShape.getX()[1]+b;
 		boolean destinationisDown = destination.getY()>= obstacle.getY();
@@ -158,7 +155,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 			//Check where is the ship compared to the line between obstacle's center && destination's center
 			
 			if(destinationisOnLeft && destinationisDown&& this.spaceshipShape.getY()[1]>=line||!destinationisOnLeft && destinationisDown){//spread the ship away from the planet
-				cos=-1;
+				cos=-1; //move away from the circle
 			}else 
 				sin=1;
 			
@@ -186,7 +183,6 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return "spaceship owner: " + player;
 	}
 }

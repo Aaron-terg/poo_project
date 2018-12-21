@@ -2,13 +2,24 @@ package Models.Spaceship;
 
 import Models.Player;
 import Models.shape.Polygon;
-
+/**
+ * <b>BasicSpaceShipType class represent the basicship</b>
+ * <p>
+ *     The BasicSpaceShip class extends the SpaceshipType class
+ * </p>
+ * 
+ *
+ * @see SpaceshipType
+ * @author Virginie
+ * @version 2.1
+ * **/
 public class BasicSpaceshipType extends SpaceshipType {
-	
+	/**
+	 * Constructors
+	 */
 	public BasicSpaceshipType() {
 		super();
 		this.speed = 2;
-		//this.spaceshipShape = new Polygon(this.x, this.y);
 	}
 	
 	public BasicSpaceshipType(Player player) {

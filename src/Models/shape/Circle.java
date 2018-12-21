@@ -1,15 +1,33 @@
 package Models.shape;
 
+import Models.planet.Planet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+/**
+ * 
+ * <b>Circle</b>
+ * <p>
+ * 		Circle class represents the shape of the planet. A circle has the following properties:
+ * 		<ul>
+ * 			<li>The coordinates of its center : x & y;</li>
+ * 			<li> the radius</li>
+ * </li>
+ * 
+ * 	<p>	
+ * @see Planet
+ * 
+ * @author meryl,Virginie
+ * @version src_basic
+ *
+ */
 public class Circle extends Shape{
 	
 	private double x, y;
 	private double radius;
 	
 	/**
-	 *  Circle constructor
+	 *  Circle constructor, default constructor
 	 */
 	public Circle() {
 		this.x = 0;
@@ -28,31 +46,54 @@ public class Circle extends Shape{
 		this(c.x, c.y, c.radius, c.rgb());
 	}
 	
-	/**
-	 * Getter && setter
-	 * 
-	 */
+	/***********************************\
+	 * 								   *
+	 * 			Getter/Setter		   *
+	 * 								   *
+	\***********************************/
 	
+	/**
+	 * Return the radius of the circle
+	 * @return
+	 */
 	public double getRadius() {
 		return this.radius;
 	}
-	
-	public double getX()
-	{
+	/**
+	 * return the X coordinate of the circle's center
+	 * @return
+	 */
+	public double getX(){
 		return this.x;
 	}
-	
+	/**
+	 * return the Y coordinate of the circle's center
+	 * @return
+	 */
 	public double getY() {
 		return this.y;
 	}
-	
+	/**
+	 * Return a table which contains the coordinates of the circle's center 
+	 * @return a table 
+	 */
 	public double[] position() {
 		double[] position = {this.x, this.y};
 		return position;
 	}
-
+	/***********************************\
+	 * 								   *
+	 * 				Method			   *
+	 * 								   *
+	\***********************************/
+	
+/**
+ * Check if a shape intersects the circle; 
+ * return true if there is a collision
+ * @param shape
+ * @return
+ */
 	public boolean intersects(Shape shape) {
-		// TODO find the condition
 		if(shape instanceof Circle) {
 			double newRadius  = this.radius + ((Circle)shape).radius;
 			return Math.abs(shape.position()[0] - this.position()[0])  <= newRadius
@@ -66,24 +107,40 @@ public class Circle extends Shape{
 			return result;
 		}
 		return false;
-			//return this.distance(shape) > 0
 		}
-
+	/**
+	 * Calculate the distance between two circles.
+	 * @param shape : the second circle
+	 * @return the distance
+	 */
 	public double distance(Circle shape) {
 			double radiusSum  = this.radius + shape.getRadius();
 			return this.distPoint(shape.position()[0], shape.position()[1]) - radiusSum;
 		}
-	
+	/**
+	 * Calculate the distance between a circle and a point
+	 * @param p1X : the X coordinate of the point
+	 * @param p1Y : the Y cooridnate of the point
+	 * @return a distance (double)
+	 */
 	public double distPoint(double p1X, double p1Y) {
 		return Math.sqrt(Math.pow((p1X - this.x), 2) + Math.pow((p1Y - this.y), 2));
 	}
-
+	/**
+	 * Draw the shape on the window 
+	 * @param the GraphicsContext gc
+	 */
 	public void drawShape(GraphicsContext gc) {
 		super.drawShape(gc);
 		gc.strokeOval(x - radius, y - radius, radius*2, radius*2);
 		gc.fillOval(x - radius, y - radius, radius*2, radius*2);
 	}
-	
+	/**
+	 * Check if a point is inside a Circle
+	 * @param px : the X coordinate of the point
+	 * @param py : the Y coordinate of the point
+	 * @return a boolean : true if the point is inside the circle
+	 */
 	public boolean isInside(double px, double py) {
 		 return px<=(this.x+this.radius) && px>=(this.x-this.radius)
 				 && py>=(this.y-this.radius) &&py<=(this.y+this.radius);
@@ -92,7 +149,6 @@ public class Circle extends Shape{
 
 	@Override
 	public void setPosition(double posX, double posY) {
-		// TODO Auto-generated method stub
 		this.x = posX;
 		this.y = posY;
 	}

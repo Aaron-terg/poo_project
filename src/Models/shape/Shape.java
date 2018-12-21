@@ -8,18 +8,25 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * <b>The shape interface contain basic function of a shape</b>
- * 
+ * <b>The shape abstract class contains basics functions of a shape</b>
+ * A Shape has the following properties : 
+ * <p>
+ * <ul>
+ * 		<li> A specified color </li>
+ * 		<li> a height && a width </li>
+ * </p>
  * @see Planet
  * @see SpaceshipType
- * @author meryl
- * @version 1.2
+ * @author meryl,Virginie
+ * @version 2.1
  */
 public abstract class Shape implements Serializable {
 	
 	protected double[] color;
 	protected double height, width;
-	
+	/**
+	 * Shape constructors
+	 */
 	public Shape() {
 		this.color = new double[] {0,0,0};
 	}
@@ -36,53 +43,72 @@ public abstract class Shape implements Serializable {
 		this.width = width;
 		this. height = height;
 	}
-	
+	/***********************************\
+	 * 								   *
+	 * 			Getter/Setter		   *
+	 * 								   *
+	\***********************************/
+	/**
+	 * return the height of the shape.
+	 * @return
+	 */
 	public double getHeight() {
 		return this.height;
 	}
-	
-
-	public abstract double[] position();
-	
-	public abstract void setPosition(double posX, double posY);
-	
-	public void drawShape(GraphicsContext gc) {
-		gc.setFill(rgb());
-		gc.setStroke(Color.BLACK);
-		
+	/**
+	 * 
+	 * @return the width of the shape
+	 */
+	public double width() {
+		return width;
 	}
-	
-	public boolean isInside(double x, double y) {
-		
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	public void validPosition(double frameWidth, double frameHeight) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public double distance (Shape shape) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
+	/**
+	 * Set the specified color to the shape
+	 * @param color : the color to apply
+	 */
 	public void rgb(Color color) {
 		this.color[0] = color.getRed();
 		this.color[1] = color.getGreen();
 		this.color[2] = color.getBlue();
 	}
+	/**
+	 * 
+	 * @return the actual color of the shape
+	 */
 	public Color rgb() {
 		return Color.color(color[0], color[1], color[2]);
 
 	}
+	/**
+	 * Get the actual position of the shape 
+	 * @return a table of Coordinates
+	 */
+	public abstract double[] position();
 	
-	public double width() {
-		return width;
-	}
-	public double height() {
-		return height;
-	}
 	
+	
+	/***********************************\
+	 * 								   *
+	 * 				Method			   *
+	 * 								   *
+	\***********************************/
+	
+	/**
+	 * Set the shape at a specific position
+	 * @param posX : the X coordinate of the new position
+	 * @param posY : the Y coordinate of the new position
+	 */	
+	public abstract void setPosition(double posX, double posY);
+	
+
+	/**
+	 * This method permits to draw the shape on the window
+	 * @param gc
+	 */
+	public void drawShape(GraphicsContext gc) {
+		gc.setFill(rgb());
+		gc.setStroke(Color.BLACK);
+		
+	}
+
 }
