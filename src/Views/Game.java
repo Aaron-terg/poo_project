@@ -233,9 +233,9 @@ public class Game extends Application{
 							}
 							else{
 								for(Planet obstacle : universe.getPlanets()) {
-									if(obstacle.getPlanetShape().distPoint(spaceshipType.getSpaceshipShape().getX()[0], spaceshipType.getSpaceshipShape().getY()[0])
+									while(obstacle.getPlanetShape().distPoint(spaceshipType.getSpaceshipShape().getX()[0], spaceshipType.getSpaceshipShape().getY()[0])
 											< obstacle.getPlanetShape().getRadius()+15 && !obstacle.equals(planet)) {
-										spaceshipType.get_around(obstacle);
+										spaceshipType.getAround(obstacle,spacefleet);
 									}
 								}
 								spaceshipType.goTo(planet);
