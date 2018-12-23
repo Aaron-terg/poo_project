@@ -3,7 +3,6 @@ package views;
 import java.util.ArrayList;
 
 import models.GameObject;
-import models.UserInterface;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;

@@ -85,7 +85,6 @@ public abstract class Shape implements Serializable {
 	public void drawShape(GraphicsContext gc, Color rgb) {
 		gc.setFill(rgb);
 		gc.setStroke(Color.BLACK);
-		
 	}
 
 }

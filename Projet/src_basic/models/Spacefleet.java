@@ -59,7 +59,6 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 		this.nbShip = Math.min(nbShip, start.nbShipOnPlanet());
 		this.start = start;
 		start.nbShipOnPlanet(-this.nbShip);
-		
 		double radius = start.width;
 		angle = 0;
 		nbShipToSend = 0;
@@ -152,11 +151,11 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 		Iterator<SpaceshipType> spaceshipIt = spaceships.iterator();
 		while(spaceshipIt.hasNext() && !result) {
 			SpaceshipType spaceship = spaceshipIt.next();
-			result = spaceship.isInside(x, y);
+			result |= spaceship.isInside(x, y);
 			
 			if(result) {
 				System.out.println("bug not here!");
-
+				this.isSelected();
 				this.x = spaceship.getX();
 				this.y = spaceship.getY();
 			}
@@ -219,10 +218,8 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	 * Render the spaceship of the fleet
 	 */
 	public void render(GraphicsContext gc) {
-		if(this.equals(selected)) {
+		if(this.equals(selected)) 
 			gc.setLineWidth(5f);
-			gc.setStroke(Color.BLACK);
-		}
 		else
 			gc.setLineWidth(1f);
 		

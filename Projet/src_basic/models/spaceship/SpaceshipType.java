@@ -100,9 +100,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 * @see Shape#drawShape(GraphicsContext)
 	 */
 	public void render(GraphicsContext gc) {
-		gc.setStroke(player.getColor());
-		this.spaceshipShape.drawShape(gc, Color.BLACK);
-		gc.setStroke(Color.BLACK);
+		this.spaceshipShape.drawShape(gc, player.getColor());
 	}
 	/**
 	 * Update the position of the ship

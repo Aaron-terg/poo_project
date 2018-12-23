@@ -71,8 +71,9 @@ public class Polygon extends Shape{
 
 	public void drawShape(GraphicsContext gc, Color rgb) {
 		super.drawShape(gc, rgb);
-
-		gc.fillPolygon(x, y, x.length);;
+		
+		gc.strokePolygon(x, y, x.length);
+		gc.fillPolygon(x, y, x.length);
 		
 	}
 

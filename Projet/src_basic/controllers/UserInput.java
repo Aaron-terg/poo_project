@@ -79,11 +79,11 @@ public class UserInput implements Serializable{
 	 * @return a {@link KeyEvent} to be assign to a scene
 	 * @see Game
 	 */
-	public EventHandler<KeyEvent> keyPressed() {
+	public EventHandler<KeyEvent> keyPressed(EventHandler<KeyEvent> keyEv) {
 		
 		return new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) { 
-				
+				keyEv.handle(e);
 				if(e.isShiftDown() && user.percent < 100) 
 					user.percent+=5;
 				if(e.isAltDown() && user.percent>0) 

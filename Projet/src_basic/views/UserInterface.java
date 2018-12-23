@@ -1,10 +1,10 @@
-package models;
+package views;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import models.GameObject;
 import models.shape.Renderable;
-import views.Game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -32,7 +32,6 @@ public class UserInterface implements Renderable{
 				// TODO Auto-generated method stub
 				gc.setStroke(Color.CADETBLUE);
 				gc.setLineWidth(1);
-				super.render(gc);
 				gc.strokeLine(x + 5 , y +5, x +width -5,y + height -5);
 				gc.strokeLine(x + width -5,  y + 5, x +5, y + height -5);
 			}
@@ -56,6 +55,10 @@ public class UserInterface implements Renderable{
 	 */
 	public ArrayList<GameObject> getClickable() {
 		return clickable;
+	}
+	
+	public void addClickable(GameObject go) {
+		clickable.add(go);
 	}
 
 	/**
