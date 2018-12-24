@@ -164,7 +164,7 @@ public class Game extends Application{
 	// TODO fix endGame noreaction
 	public void initGame() {
 		intermediaryUi = new SplashScreen();
-		
+		System.out.println("init");
 		// SplashScreen renderer
 		gameState  = GameState.INIT;
 		new AnimationTimer() {
@@ -179,7 +179,7 @@ public class Game extends Application{
 					userIn = new UserInput(user);
 					universe = new Universe(10);
 					Player ia = new AI(universe, "AI", Color.GREEN);
-					players.add(ia);
+//					players.add(ia);
 					
 //					Player ia2 = new AI(universe, "IA2", Color.ALICEBLUE);
 //					players.add(ia2);
@@ -288,8 +288,7 @@ public class Game extends Application{
 
 					}
 					// End the game if their is no more player
-					else if(gameState.equals(GameState.ENDED) || players.size() <= 1) {
-						gameState = GameState.ENDED;
+					else if(gameState.equals(GameState.ENDED)) {
 						endGame();
 						intermediaryUi.render(gc);
 
