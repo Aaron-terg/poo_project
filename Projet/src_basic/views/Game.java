@@ -72,7 +72,7 @@ public class Game extends Application{
 	 * The universe of the game for playing with.
 	 * COntain a set of planet.
 	 */
-	private static Universe universe;
+	public static Universe universe;
 	
 	/**
 	 * An arrayList of player. containing all the player
@@ -146,7 +146,6 @@ public class Game extends Application{
 								gameState = GameState.LOADED;
 							if(gameObject.label() == "Restart") {
 								gameState  = GameState.INIT;
-								System.out.println(gameObject.label() + ", gameState: " + gameState);
 							}
 
 						}
@@ -161,10 +160,9 @@ public class Game extends Application{
 		stage.show();
 		initGame();
 	}
-	// TODO fix endGame noreaction
+
 	public void initGame() {
 		intermediaryUi = new SplashScreen();
-		System.out.println("init");
 		// SplashScreen renderer
 		gameState  = GameState.INIT;
 		new AnimationTimer() {
@@ -178,7 +176,7 @@ public class Game extends Application{
 					players = new ArrayList<Player>();
 					userIn = new UserInput(user);
 					universe = new Universe(10);
-					Player ia = new AI(universe, "AI", Color.GREEN);
+//					Player ia = new AI(universe, "AI", Color.GREEN);
 //					players.add(ia);
 					
 //					Player ia2 = new AI(universe, "IA2", Color.ALICEBLUE);
@@ -191,7 +189,7 @@ public class Game extends Application{
 					scene.setOnKeyPressed(userIn.keyPressed((EventHandler<KeyEvent>) scene.getOnKeyPressed()));
 					scene.setOnMousePressed(userIn.mousePressed());
 					scene.setOnMouseDragged(userIn.mouseDragged());
-					scene.setOnMouseReleased(userIn.mouseReleased(universe));
+					scene.setOnMouseReleased(userIn.mouseReleased());
 					gameState = gameState.RUNNING;
 				}else if(gameState.equals(GameState.LOADED))
 					loadGame();		
@@ -275,16 +273,23 @@ public class Game extends Application{
 						}
 
 						// drag'n drop utilities
-						if(userIn != null && userIn.action && userIn.lineJoint != null)
-							userIn.lineJoint.drawShape(gc, Color.BLACK);
-
+						if(userIn != null) {
+							if(userIn.action) {
+								if(userIn.lineJoint != null)
+									userIn.lineJoint.drawShape(gc, Color.BLACK);
+							}
+							else if(userIn.boundaries != null)
+								userIn.boundaries.render(gc);
+						}
+							
+						
 						// status of the game
 						String gameStatusText = gameStatus();
 						gc.fillText(gameStatusText, 1, 20);
 						gc.strokeText(gameStatusText, 1, 20);
 						gc.setTextAlign(TextAlignment.LEFT);
-						if(players.size() <= 1)
-							gameState = GameState.ENDED;
+//						if(players.size() <= 1)
+//							gameState = GameState.ENDED;
 
 					}
 					// End the game if their is no more player
@@ -462,8 +467,8 @@ public class Game extends Application{
 			scene.setOnKeyPressed(userIn.keyPressed((EventHandler<KeyEvent>) scene.getOnKeyPressed()));
 			scene.setOnMousePressed(userIn.mousePressed());
 			scene.setOnMouseDragged(userIn.mouseDragged());
-			scene.setOnMouseReleased(userIn.mouseReleased(universe));
-			System.out.println("check ! ");
+			scene.setOnMouseReleased(userIn.mouseReleased());
+			System.out.println("information checked ! ");
 		}catch(FileNotFoundException e) {
 			System.out.println("no file found");
 			gameState = GameState.STARTED;

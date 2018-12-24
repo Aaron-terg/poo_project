@@ -95,6 +95,19 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	public void setPlayer(Player p) {
 		this.player = p;
 	}
+	
+	
+	@Override
+	public boolean intersects(GameObject gameObject) {
+		
+		Polygon poly  = (Polygon)spaceshipShape;
+		boolean result = false;
+		for (int i = 0; i < poly.getX().length; i++) {
+			result |= gameObject.isInside(poly.getX()[i], poly.getY()[i]);
+		}
+		
+		return super.intersects(gameObject) && result;
+	}
 	/**
 	 * Display the ship 
 	 * @see Shape#drawShape(GraphicsContext)
@@ -110,9 +123,9 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 * 
 	 */
 	public void newPosition(double dx, double dy) {
-		this.x = getX() - dx*speed;
-		this.y = getY() - dy*speed;
-//		this.spaceshipShape.setPosition(this.x, this.y);
+		this.x = this.x - dx*speed;
+		this.y = this.y - dy*speed;
+//		this.spaceshipShape.setPosition(this.getX(), this.getY());
 		for(int i = 0; i<this.spaceshipShape.getX().length; i++) {
 			this.spaceshipShape.getX()[i]-=dx*speed;
 			this.spaceshipShape.getY()[i]-=dy*speed;

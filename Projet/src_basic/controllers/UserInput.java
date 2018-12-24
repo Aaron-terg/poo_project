@@ -51,6 +51,9 @@ public class UserInput implements Serializable{
 	 * @see UserInput#mouseDragged()
 	 */
 	public Line lineJoint;
+	
+	public GameObject boundaries;
+	
 	/**
 	 * UserInput constructor
 	 * 
@@ -136,16 +139,7 @@ public class UserInput implements Serializable{
 							// special shortcut for user planet only
 							if(e.isControlDown()) {
 
-								if(GameObject.selected instanceof Planet) {
-									Planet currentPlanet = (Planet)Planet.selected;
-									
-									if(currentPlanet != planet) {
-										
-										Spacefleet currentSpacefleet = user.newLaunch(user.percent, currentPlanet);
-										currentSpacefleet.setDestination(planet); 
-
-									}
-								}
+								user.newDest(planet);
 							}else {
 
 								lineJoint = new Line(planet.getX(), planet.getY());
@@ -156,31 +150,45 @@ public class UserInput implements Serializable{
 							action = false;
 					} 
 
+					// click not in planet 
 					if(!action) {
+						System.out.println("bug not here ! ");
+//						boundaries = new GameObject(e.getX(), e.getY(), 0,0);
 						Iterator<Spacefleet> spacefleetIt = user.getFleets().iterator();
 						while(spacefleetIt.hasNext() && !action) {
 							Spacefleet spacefleet = spacefleetIt.next();
-							if(spacefleet.inside(e.getX(), e.getY())) {
-								
-								System.out.println("inside! wouhouuu");
-								spacefleet.isSelected();
-								lineJoint = new Line(spacefleet.getX(), spacefleet.getY());
-								action = true;
+							Iterator<SpaceshipType> spaceshipIt = spacefleet.fleet().iterator();
+							while(spaceshipIt.hasNext() && !action) {
+								SpaceshipType spaceship = spaceshipIt.next();
+								if(spacefleet.inside(e.getX(), e.getY())) {
+									System.out.println("inside! wouhouuu");
+									spacefleet.isSelected();
+									lineJoint = new Line(spacefleet.getX(), spacefleet.getY());
+									action = true;
+								}
+	
 							}
 						}
 					}
 				}
 				
 				if(e.getButton().equals(MouseButton.SECONDARY)) {
-					Iterator<Spacefleet> spacefleetIt = user.getFleets().iterator();
-					while(spacefleetIt.hasNext() && !action) {
-						Spacefleet spacefleet = spacefleetIt.next();
-						if(spacefleet.inside(e.getX(), e.getY())) {
-							
-							System.out.println("inside! wouhouuu");
-							spacefleet.isSelected();
-							lineJoint = new Line(spacefleet.getX(), spacefleet.getY());
-							action = true;
+					Iterator<Planet> planetIt = Game.universe.getPlanets().iterator();
+					boolean result = false;
+					while(planetIt.hasNext() && !result) {
+						
+						Planet planet = planetIt.next();
+						if(planet.isInside(e.getX(), e.getY())) {
+							//TODO fix the right click
+							if(e.isControlDown()) {
+								System.out.println(planet);
+								result = true;
+							}else if(action){
+								System.out.println("not here");
+								user.newDest(planet);
+								result = true;
+								action = false;
+							}
 						}
 					}
 				}
@@ -201,8 +209,39 @@ public class UserInput implements Serializable{
 			public void handle(MouseEvent e) { 	
 				if(e.getButton().equals(MouseButton.PRIMARY)) {
 
-					if(action) {
+					if(action && lineJoint != null) {
 						lineJoint.setPosition(e.getX(), e.getY());
+					}else {
+//						boundaries.resize(e.getX() - boundaries.getX(), e.getY() - boundaries.getY());
+//						Iterator<Spacefleet> spacefleetIt = user.getFleets().iterator();
+//						while(spacefleetIt.hasNext() && !action) {
+//							Spacefleet spacefleet = spacefleetIt.next();
+//							if(spacefleet.inside(e.getX(), e.getY())) {
+//								
+//								System.out.println("inside! wouhouuu");
+//								spacefleet.isSelected();
+//								lineJoint = new Line(spacefleet.getX(), spacefleet.getY());
+//								action = true;
+//							}
+//						}
+						
+//						
+//						Iterator<Spacefleet> spacefleetIt = user.getFleets().iterator();
+//						while(spacefleetIt.hasNext() && !action) {
+//							Spacefleet spacefleet = spacefleetIt.next();
+//							Iterator<SpaceshipType> spaceIt = spacefleet.fleet().iterator();
+//							while(spaceIt.hasNext() && !action) {
+//								SpaceshipType spaceship = spaceIt.next();
+//								if(spaceship.intersects(boundaries)) {
+//									System.out.println("inside! wouhouuu dragged");
+//									spacefleet.isSelected();
+//									lineJoint = new Line(spaceship.getX(), spaceship.getY());
+//									action = true;
+//								}
+//							}
+//								
+//								
+//						}
 					}
 				}	
 			}
@@ -222,58 +261,34 @@ public class UserInput implements Serializable{
 	 * @return a {@link MouseEvent} to be assign to a scene
 	 * @see Game
 	 */
-	public EventHandler<MouseEvent> mouseReleased(Universe universe){
+	public EventHandler<MouseEvent> mouseReleased(){
 		return new EventHandler<MouseEvent>() {
 			
-			Spacefleet currentSpacefleet;
-			Planet currentPlanet;
 			@Override
 			public void handle(MouseEvent e) {
 				lineJoint = null;
+				boundaries = null;
 				if(action) {
-					Iterator<Planet> it = universe.getPlanets().iterator();
-					while (it.hasNext()) {
+					Spacefleet currentSpacefleet;
+					Iterator<Planet> it = Game.universe.getPlanets().iterator();
+					boolean result = false;
+					while (it.hasNext() && !result) {
 
 						Planet planet = it.next();
 						if(planet.isInside(e.getX(), e.getY())) {
-
-
-							if(GameObject.selected instanceof Planet) {
-								currentPlanet = (Planet)Planet.selected;
-
-								if(currentPlanet != planet) {
-
-									currentSpacefleet = user.newLaunch(user.percent, currentPlanet);
-									currentSpacefleet.setDestination(planet); 
-
-								}
-
-
-							}
+								user.newDest(planet);
+								result = true;
+								action = false;
 						}
-
+						
 					}
 				}
-				action = false;
-				if(e.getButton().equals(MouseButton.SECONDARY)) {
-					Iterator<Planet> it = universe.getPlanets().iterator();
-					while (it.hasNext()) {
-
-						Planet planet = it.next();
-						if(planet.isInside(e.getX(), e.getY())) {
-							if(GameObject.selected instanceof Spacefleet) {
-								((Spacefleet)GameObject.selected).setDestination(planet);
-							}else // show information about the planet 
-								if(GameObject.selected instanceof Planet)
-									System.out.println(planet);
-
-						}
-					}
-				}
+				
 
 			}
 			
 		};
 	}
+	
 	
 }

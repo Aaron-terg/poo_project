@@ -154,7 +154,7 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 			result |= spaceship.isInside(x, y);
 			
 			if(result) {
-				System.out.println("bug not here!");
+				System.out.println("bug not in inside");
 				this.isSelected();
 				this.x = spaceship.getX();
 				this.y = spaceship.getY();
@@ -183,7 +183,7 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 			while(ShipToSend > 0) {
 				try {
 					
-					//Positioned the gate around the planet
+					// Positioned the gate around the planet
 					spaceport[0] = (radius+15)*Math.cos(ShipToSend*angle) + start.getX();
 					spaceport[1] = -(radius+15)*Math.sin(ShipToSend*angle) + start.getY();
 					

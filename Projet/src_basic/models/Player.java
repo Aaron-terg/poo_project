@@ -8,6 +8,7 @@ import java.util.Random;
 import controllers.Universe;
 import controllers.UserInput;
 import models.planet.Planet;
+import views.Game;
 import javafx.scene.paint.Color;
 
 /**
@@ -187,6 +188,23 @@ public class Player implements Serializable{
 		return spacefleet;
 	}
 	
+	public void newDest(Planet planet){
+		Spacefleet currentSpacefleet;
+		if(GameObject.selected instanceof Planet) {
+			Planet currentPlanet = (Planet)Planet.selected;
+
+			if(currentPlanet != planet) {
+
+				currentSpacefleet = this.newLaunch(this.percent, currentPlanet);
+				currentSpacefleet.setDestination(planet); 
+
+			}
+
+		}else if(GameObject.selected instanceof Spacefleet) {
+			currentSpacefleet = (Spacefleet)Spacefleet.selected;
+			currentSpacefleet.setDestination(planet); 
+		}
+	}
 	/**
 	 * Check if the player has fleet in action
 	 * @return true if the player has a fleet with a destination set
