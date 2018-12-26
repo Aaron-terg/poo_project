@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 import controllers.AI;
 import controllers.Universe;
+import controllers.UniverseSetting;
 import controllers.UserInput;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -24,18 +25,19 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import models.GameObject;
-import models.GameState;
 import models.Player;
 import models.Spacefleet;
 import models.planet.Planet;
 import models.spaceship.SpaceshipType;
+import views.button.LabelledRectangleButton;
+import views.ui.InterfaceMenu;
+import views.ui.SettingUniverseScreen;
+import views.ui.SplashScreenGroup;
+import views.ui.UserInterface;
 
 /**
  * <b>The Game application</b>
@@ -52,303 +54,274 @@ public class Game extends Application{
 	 */
 	public final static double WIDTH = 1400;
 	public final static double HEIGHT = 900;
-	
-	/**
-	 * Canvas context to be draw on
-	 */
-	private GraphicsContext gc;
-	
+
+
 	/**
 	 * the scene of the application need for the loading
 	 * @see Game#loadGame()
 	 */
 	private Scene scene;
 	
+	private static AnimationTimer gameLoop;
+	
+	private Canvas canvas;
+	
+	/**
+	 * user interface, (more view to come in an update)
+	 */
+	public UserInterface intermediaryUi;
+	
 	/**
 	 * user controller setting every mouse movement or keyEvent for the player
 	 */
 	private UserInput userIn;
+	
+	public static UniverseSetting uSet;
+	
 	/**
 	 * The universe of the game for playing with.
 	 * COntain a set of planet.
 	 */
 	public static Universe universe;
-	
+
 	/**
 	 * An arrayList of player. containing all the player
 	 */
 	private ArrayList<Player> players;
-	
-	/**
-	 * an enumeration of gameState. Allow communication between the different loop and controller.
-	 */
-	public static GameState gameState;
-	
-	/**
-	 * user interface, (more view to come in an update)
-	 */
-	private UserInterface ui, intermediaryUi;
-	
+
 	public static void main(String[] args) {
-		
+
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		
+
 		// setting of the application
 		stage.setTitle("Space Game");
 		stage.setResizable(false);
-		Group root = new Group();
-		scene = new Scene(root);
-		Canvas canvas = new Canvas(WIDTH, HEIGHT);
-		gc = canvas.getGraphicsContext2D();
-		root.getChildren().add(canvas);
-		
+		scene = new Scene(new Group(), WIDTH, HEIGHT);
+		canvas = new Canvas(WIDTH, HEIGHT);
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+
+		intermediaryUi = new UserInterface();
+		intermediaryUi.refreshInterface((new SplashScreenGroup(this)).getChildren());
+
+		((Group)scene.getRoot()).getChildren().addAll(canvas, intermediaryUi);
+
+		intermediaryUi.setVisible(true);
+		canvas.setVisible(false);
+
 		// Basic interaction for the user
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent e) {
 				KeyCode code = e.getCode();
-				if(code.equals(KeyCode.P) || code.equals(KeyCode.ESCAPE)) 
-					Game.gameState = (Game.gameState.equals(GameState.PAUSED))? GameState.RUNNING: GameState.PAUSED;
-				if (code.equals(KeyCode.S) && e.isControlDown()) 
-					Game.gameState = GameState.SAVED;
-				if (code.equals(KeyCode.P) && e.isControlDown()) 
-					Game.gameState = GameState.LOADED;
+				if(code.equals(KeyCode.P) || code.equals(KeyCode.ESCAPE)) {
+					pause();
+
+				}if (code.equals(KeyCode.S) && e.isControlDown()) {
+					saveGame();
+				}
+				if (code.equals(KeyCode.P) && e.isControlDown()) {
+					loadGame();
+				}
 				if (code.equals(KeyCode.Q) && e.isControlDown())
 					System.exit(0);	
-				if (code.equals(KeyCode.R) && e.isControlDown())
-					Game.gameState = GameState.INIT;
+				if (code.equals(KeyCode.R) && e.isControlDown()) {
+					((UserInterface) intermediaryUi).refreshInterface((new SplashScreenGroup(Game.this)).getChildren());
+					intermediaryUi.setVisible(true);
+					canvas.setVisible(false);
+					gameLoop.stop();
+
+
+				}
+
 			};
 		});
-		scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if(event.getButton().equals(MouseButton.PRIMARY)){
-					UserInterface currentUi;
-					if(gameState.equals(GameState.RUNNING))
-						currentUi = ui;
-					else {
-						currentUi = intermediaryUi;
-					}
-					for (Iterator clickIt = currentUi.getClickable().iterator(); clickIt.hasNext();) {
-						GameObject gameObject = (GameObject) clickIt.next();
-						if(gameObject.isInside(event.getX(), event.getY())) {
-							if(gameObject.label() == "Exit")
-								System.exit(0);
-							if(gameObject.label() == "Init")
-								gameState = GameState.STARTED;
-							if(gameObject.label() == "Save")
-								gameState = GameState.SAVED;
-							if(gameObject.label() == "Continue")
-								gameState = GameState.LOADED;
-							if(gameObject.label() == "Restart") {
-								gameState  = GameState.INIT;
-							}
-
-						}
-					}
-				}
-
-			}
-
-		});
-
 		stage.setScene(scene);
 		stage.show();
-		initGame();
+		gameLoop = new AnimationTimer() {	
+
+			long prevTime = System.nanoTime();
+			double step = 0.0166f, maxStep = 0.05f;
+			double accTime = 0, accTimeFrameRate = 0, accTimeLaunch=0;
+
+			public void handle(long now) {
+				gc.setFill(Color.WHITE);
+				gc.fillRect(0, 0, WIDTH, HEIGHT);
+
+				//				if(gameState.equals(GameState.RUNNING)) {
+				double elapsedTime = (now - prevTime) / 1E9f;
+				double elapsedTimeCaped = Math.min(elapsedTime, maxStep);
+				accTime += elapsedTimeCaped;
+				accTimeFrameRate += elapsedTimeCaped;
+				accTimeLaunch += elapsedTimeCaped;
+				prevTime =now;
+
+				// update every seconds
+				while(accTime >= step) {
+					for (Iterator<Planet> planetIt = universe.getPlanets().iterator(); planetIt.hasNext();) {
+						Planet planet = (Planet) planetIt.next();
+						if(planet.isOwn())
+							planet.nbShipOnPlanet(planet.getProductionRate());
+					}
+
+					accTime-= step*60; //tweak that value to change the frequency 60 = 1s, 30 = 0.5s, etc...
+				}
+
+				//bond the frame rate
+				while(accTimeFrameRate >= step) {
+					update();
+					accTimeFrameRate-=step;
+				}
+
+				// send ship every 1/3 seconds
+				while(accTimeLaunch >= step) {
+					for (Iterator<Player> playerIt = players.iterator(); playerIt.hasNext();) {
+						Player player = playerIt.next();
+
+						if(player.hasTerritory()) {
+							for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
+								Spacefleet spacefleet = fleetIt.next();
+
+								if(spacefleet.hasDestination() && spacefleet.getNbWave() > 0)
+									spacefleet.takeOff();
+							}
+						}
+					}
+
+					accTimeLaunch -= step*40; //same here
+				}
+
+
+				universe.render(gc);
+
+				//rendering of spaceships
+				for (Iterator playerIt = players.iterator(); playerIt.hasNext();) {
+					Player player = (Player) playerIt.next();
+					for (Iterator fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
+						Spacefleet spacefleet = (Spacefleet) fleetIt.next();
+						spacefleet.render(gc);
+					}
+				}
+
+				// drag'n drop utilities
+				if(userIn != null) {
+					if(userIn.action) {
+						if(userIn.lineJoint != null)
+							userIn.lineJoint.drawShape(gc, Color.BLACK);
+					}
+					else if(userIn.boundaries != null)
+						userIn.boundaries.render(gc);
+				}
+
+
+				// status of the game
+				String gameStatusText = gameStatus();
+				gc.fillText(gameStatusText, 1, 20);
+				gc.strokeText(gameStatusText, 1, 20);
+				gc.setTextAlign(TextAlignment.LEFT);
+				if(players.size() <= 1) {
+					System.out.println("ending");
+					endGame();
+				}
+
+			}
+
+		};
+
 	}
 
-	public void initGame() {
-		intermediaryUi = new SplashScreen();
-		// SplashScreen renderer
-		gameState  = GameState.INIT;
-		new AnimationTimer() {
-			@Override
-			public void handle(long arg0) {
-				gc.clearRect(0, 0, WIDTH, HEIGHT);
-				intermediaryUi.render(gc);
-				if(gameState.equals(GameState.STARTED)) {
-					Player user = new Player("Aaron Terg", Color.RED);
+	public void gameSetting() {
+		intermediaryUi.setVisible(true);
+		canvas.setVisible(false);
+		uSet = new UniverseSetting(10, 2, true);
 
-					players = new ArrayList<Player>();
-					userIn = new UserInput(user);
-					universe = new Universe(10);
-//					Player ia = new AI(universe, "AI", Color.GREEN);
-//					players.add(ia);
-					
-//					Player ia2 = new AI(universe, "IA2", Color.ALICEBLUE);
-//					players.add(ia2);
-
-					// setting of the controller for the player
-//					scene.setOnMouseClicked(UserInput.mouseClicked());
-					user.firstPlanet(universe);
-					players.add(user);
-					scene.setOnKeyPressed(userIn.keyPressed((EventHandler<KeyEvent>) scene.getOnKeyPressed()));
-					scene.setOnMousePressed(userIn.mousePressed());
-					scene.setOnMouseDragged(userIn.mouseDragged());
-					scene.setOnMouseReleased(userIn.mouseReleased());
-					gameState = gameState.RUNNING;
-				}else if(gameState.equals(GameState.LOADED))
-					loadGame();		
-				//start the game rendering
-				if(gameState.equals(GameState.RUNNING)) {
-					this.stop();
-					gameRenderer();
-				}
-			}
-		}.start();
+		intermediaryUi.refreshInterface((new SettingUniverseScreen(this, uSet)).getChildren());
 	}
 	
+	public void initGame() {
+		gameLoop.stop();
+		System.out.println("new game");
+		
+		players = new ArrayList<Player>();
+		
+		
+		universe = new Universe(uSet.nbPlanet);
+
+		// SplashScreen renderer
+		if(uSet.humanPlayer) {
+			Player user = new Player("Aaron Terg", uSet.color[3]);
+			userIn = new UserInput(user);
+
+			canvas.setOnMouseClicked(UserInput.mouseClicked());
+			user.firstPlanet(universe);
+			canvas.setOnKeyPressed(userIn.keyPressed((EventHandler<KeyEvent>) scene.getOnKeyPressed()));
+			canvas.setOnMousePressed(userIn.mousePressed());
+			canvas.setOnMouseDragged(userIn.mouseDragged());
+			canvas.setOnMouseReleased(userIn.mouseReleased());
+			
+			players.add(user);
+			uSet.nbPlayer--;
+		}
+		
+		
+		for (int i = 0; i < uSet.nbPlayer; i++) {
+			Player ia = new AI(universe, "AI" + i, uSet.color[i]);
+			players.add(ia);
+		}
+		
+
+		// setting of the controller for the player
+		
+	}
+
 	public void gameRenderer() {
+
+		if(universe != null) {
 		//start the rendering loop when the gameStep is Runnning
-		if(gameState.equals(GameState.RUNNING)) {
-			ui = new UniverseSetting();
-			intermediaryUi = null;
-			new AnimationTimer() {	
-
-				long prevTime = System.nanoTime();
-				double step = 0.0166f, maxStep = 0.05f;
-				double accTime = 0, accTimeFrameRate = 0, accTimeLaunch=0;
-
-				public void handle(long now) {
-					gc.clearRect(0, 0, WIDTH, HEIGHT);
-					
-					if(gameState.equals(GameState.RUNNING)) {
-						ui.render(gc);
-						double elapsedTime = (now - prevTime) / 1E9f;
-						double elapsedTimeCaped = Math.min(elapsedTime, maxStep);
-						accTime += elapsedTimeCaped;
-						accTimeFrameRate += elapsedTimeCaped;
-						accTimeLaunch += elapsedTimeCaped;
-						prevTime =now;
-
-						// update every seconds
-						while(accTime >= step) {
-							for (Iterator<Planet> planetIt = universe.getPlanets().iterator(); planetIt.hasNext();) {
-								Planet planet = (Planet) planetIt.next();
-								if(planet.isOwn())
-									planet.nbShipOnPlanet(planet.getProductionRate());
-							}
-
-							accTime-= step*60; //tweak that value to change the frequency 60 = 1s, 30 = 0.5s, etc...
-						}
-
-						//bond the frame rate
-						while(accTimeFrameRate >= step) {
-							update();
-							accTimeFrameRate-=step;
-						}
-
-						// send ship every 1/3 seconds
-						while(accTimeLaunch >= step) {
-							for (Iterator<Player> playerIt = players.iterator(); playerIt.hasNext();) {
-								Player player = playerIt.next();
-
-								if(player.hasTerritory()) {
-									for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
-										Spacefleet spacefleet = fleetIt.next();
-
-										if(spacefleet.hasDestination() && spacefleet.getNbWave() > 0)
-											spacefleet.takeOff();
-									}
-								}
-							}
-
-							accTimeLaunch -= step*40; //same here
-						}
-
-
-						universe.render(gc);
-
-						//rendering of spaceships
-						for (Iterator playerIt = players.iterator(); playerIt.hasNext();) {
-							Player player = (Player) playerIt.next();
-							for (Iterator fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
-								Spacefleet spacefleet = (Spacefleet) fleetIt.next();
-								spacefleet.render(gc);
-							}
-						}
-
-						// drag'n drop utilities
-						if(userIn != null) {
-							if(userIn.action) {
-								if(userIn.lineJoint != null)
-									userIn.lineJoint.drawShape(gc, Color.BLACK);
-							}
-							else if(userIn.boundaries != null)
-								userIn.boundaries.render(gc);
-						}
-							
-						
-						// status of the game
-						String gameStatusText = gameStatus();
-						gc.fillText(gameStatusText, 1, 20);
-						gc.strokeText(gameStatusText, 1, 20);
-						gc.setTextAlign(TextAlignment.LEFT);
-//						if(players.size() <= 1)
-//							gameState = GameState.ENDED;
-
-					}
-					// End the game if their is no more player
-					else if(gameState.equals(GameState.ENDED)) {
-						endGame();
-						intermediaryUi.render(gc);
-
-					}
-					else if(gameState.equals(GameState.PAUSED)) {
-						pause();
-						intermediaryUi.render(gc);
-					}
-					else if(gameState.equals(GameState.SAVED))
-						saveGame();
-					else if(gameState.equals(GameState.LOADED))
-						loadGame();
-					else if(gameState.equals(GameState.INIT)) {
-						this.stop();
-						initGame();
-					}
-				}
-
-			}.start();
+			intermediaryUi.setVisible(false);
+			canvas.setVisible(true);
+			gameLoop.start();
+		}else {
+			gameSetting();
 		}
 	}
-	
+
 	/**
 	 * update all the game object
 	 * if their is the need
 	 * 
 	 */
 	public void update() {
-		
+
 		// loop over players
 		for (Iterator<Player> playerIt = players.iterator(); playerIt.hasNext();) {
 			Player player = playerIt.next();
-			
+
 			// test if the player can play
 			if(player.hasTerritory()) { 
-			
+
 				// player have spacefleet ready to be sent?
 				if(player.inAction()) { 
 
 					for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
 						Spacefleet spacefleet = fleetIt.next();
-						
+
 						// launch the first wave of a spacefleet
 						if(spacefleet.fleetSize() == 0)
 							spacefleet.takeOff();
-						
+
 						for (Iterator<SpaceshipType> iterator = spacefleet.fleet().iterator(); iterator.hasNext();) {
-							
+
 							SpaceshipType spaceshipType = iterator.next();
 
 							Planet planet = spacefleet.getDestination();
-							
+
 							if(planet == null) //exit if the spaceship doesn't have destination
 								break;
-							
+
 							// spaceship collision with planet
 							if(planet.getPlanetShape().intersects(spaceshipType.getSpaceshipShape())) {
 								planet.spaceShipEnter(spaceshipType);
@@ -374,7 +347,7 @@ public class Game extends Application{
 			}
 		}
 	}
-	
+
 	/**
 	 * Information about the current state of the user.
 	 * <ul>
@@ -387,36 +360,124 @@ public class Game extends Application{
 	 * @return
 	 */
 	public String gameStatus() {
-		int nbPlayers = players.size();
-		Player user = userIn.getUser();
 		String txt = "";
+		int nbPlayers = players.size();
+		
 		if(nbPlayers > 1) {
-			txt = "Ships to send: "+user.percent +"%\n"
-					+ "nb players: "+ nbPlayers+ "\n";
+			
+			txt += "nb players: "+ nbPlayers+ "\n";
+			if(uSet.humanPlayer) {
+				Player user = userIn.getUser();
+
+				txt = "Ships to send: "+ user.percent +"%\n" + txt;
+				txt += user.getFleets().size() + "\n";
+			}
+			
 		}
 		else if(nbPlayers == 1)
 			txt = "winner: " + players.toString()+ "\n"; 
 		else
 			txt = "draw \n";
-		return txt + user.getFleets().size() + "\n";
+		return txt ;
 	}
-	
+
 	/**
 	 * Set the game to pause, and display the pause menu (to be implemented)
 	 */
 	public void pause() {
-			intermediaryUi = new PauseScreen("Game paused\n", 2);
+		gameLoop.stop();
+		double btnWidth = 200,
+				btnHeight = 100,
+				centerX = (Game.WIDTH / 2),
+				centerY = (Game.HEIGHT /2);
+		
+		int nbBtn = 3;
+		LabelledRectangleButton restartBtn = new LabelledRectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		restartBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("clicked " +  restartBtn.label);
+				gameSetting();
+			}
+        });
+		
+		nbBtn--;
+		LabelledRectangleButton saveBtn = new LabelledRectangleButton("Save", centerX,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		saveBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("clicked " +  saveBtn.label);
+				saveGame();
+			}
+        });
+		nbBtn--;
+		
+		LabelledRectangleButton continueBtn = new LabelledRectangleButton("Continue", centerX,  centerY + ((btnHeight * nbBtn)) + 25 * (nbBtn -1), 2*btnWidth, btnHeight);
+		continueBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("clicked " +  continueBtn.label);
+				gameRenderer();
+			}
+        });
+		nbBtn--;
+		
+		Group group = new Group();
+		group.getChildren().addAll( restartBtn, saveBtn, continueBtn);
+		intermediaryUi.refreshInterface((new InterfaceMenu("Pause", group.getChildren(), 3)).getChildren());
+		
+		intermediaryUi.setVisible(true);
+		canvas.setVisible(false);
 	}
-	
+
 	/**
 	 * Stop the rendering loop when the game has reached the end.
 	 * Display the winner of the game
 	 * @param loop the animationTier loop to be stop
 	 */
 	public void endGame() {
-			intermediaryUi = new endMenuScreen( "winner:\n" + players.get(0).toString()+ "\n", 1);
+		gameLoop.stop();
+		double btnWidth = 200,
+				btnHeight = 100,
+				centerX = (Game.WIDTH / 2),
+				centerY = (Game.HEIGHT /2);
+		
+		int nbBtn = 3;
+		LabelledRectangleButton restartBtn = new LabelledRectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		restartBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("clicked " +  restartBtn.label);
+				gameSetting();
+			}
+        });
+		
+		nbBtn--;
+		LabelledRectangleButton quitBtn = new LabelledRectangleButton("Quit", centerX,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		quitBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				System.out.println("clicked " +  quitBtn.label);
+				System.exit(0);
+			}
+        });
+		nbBtn--;
+		
+		
+		Group group = new Group();
+		group.getChildren().addAll(quitBtn, restartBtn);
+		intermediaryUi.refreshInterface((new InterfaceMenu("Congratulation!", group.getChildren(), 2)).getChildren());
+		
+		intermediaryUi.setVisible(true);
+		canvas.setVisible(false);
+
 	}
-	
+
 	/**
 	 * Save the current state to a file and set the game state to RUNNING
 	 */
@@ -426,13 +487,13 @@ public class Game extends Application{
 						new BufferedOutputStream(
 								new FileOutputStream(
 										new File("Saved_data.txt"))))
-		){
-			
+				){
+
 			oos.writeObject(this.universe);
 			oos.writeObject(players);
+			oos.writeObject(uSet);
 			oos.writeObject(userIn);
-			oos.writeObject(gameState);
-			
+
 		}catch(FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e1) {
@@ -440,18 +501,17 @@ public class Game extends Application{
 			e1.printStackTrace();
 		}finally {
 			System.out.println("saved");
-			gameState = GameState.RUNNING;
 		}
 	}
-	
+
 	/**
 	 * The game loader, it reload the previous save and set the gameState to RUNNING
 	 */
 	public void loadGame() {
 		try(ObjectInputStream ois = new ObjectInputStream(
-              		new BufferedInputStream(
-              			new FileInputStream(
-          					new File("saved_data.txt")))))
+				new BufferedInputStream(
+						new FileInputStream(
+								new File("saved_data.txt")))))
 		{
 			universe = (Universe)ois.readObject();
 			players = (ArrayList<Player>)ois.readObject();
@@ -460,32 +520,35 @@ public class Game extends Application{
 				if (player instanceof AI) {
 					AI ai = (AI) player;
 					ai.universe = universe;
-					
+
 				}
 			}
-			userIn = (UserInput)ois.readObject();
-			scene.setOnKeyPressed(userIn.keyPressed((EventHandler<KeyEvent>) scene.getOnKeyPressed()));
-			scene.setOnMousePressed(userIn.mousePressed());
-			scene.setOnMouseDragged(userIn.mouseDragged());
-			scene.setOnMouseReleased(userIn.mouseReleased());
+			uSet = (UniverseSetting)ois.readObject();
+			if(uSet.humanPlayer) {
+				userIn = (UserInput)ois.readObject();
+				canvas.setOnKeyPressed(userIn.keyPressed((EventHandler<KeyEvent>) scene.getOnKeyPressed()));
+				canvas.setOnMousePressed(userIn.mousePressed());
+				canvas.setOnMouseDragged(userIn.mouseDragged());
+				canvas.setOnMouseReleased(userIn.mouseReleased());
+			}
 			System.out.println("information checked ! ");
+
 		}catch(FileNotFoundException e) {
 			System.out.println("no file found");
-			gameState = GameState.STARTED;
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			gameState = GameState.STARTED;
 
 			System.out.println(e1.getMessage());
 		} catch (ClassNotFoundException e) {
-			gameState = GameState.STARTED;
 
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
 		finally {
 			System.out.println("load");
-			gameState = (gameState.equals(GameState.LOADED))? GameState.RUNNING : GameState.STARTED;
+			intermediaryUi.setVisible(false);
+			canvas.setVisible(true);
+			gameRenderer();
 		}
 	} 
 }

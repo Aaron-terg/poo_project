@@ -85,7 +85,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		double radius = randomNumber.nextInt(80)+30;
 		double frameWidth = Game.WIDTH;
 		double frameHeight = Game.HEIGHT;
-		double pointX = (frameWidth -200 - radius)*randomNumber.nextDouble() + radius ;
+		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius ;
 		double pointY = (frameHeight - radius)*randomNumber.nextDouble() + radius;
 		this.shipOnPlanet = randomNumber.nextInt(100)+1;
 		
