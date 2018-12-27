@@ -198,9 +198,9 @@ public class Game extends Application{
 				universe.render(gc);
 
 				//rendering of spaceships
-				for (Iterator playerIt = players.iterator(); playerIt.hasNext();) {
+				for (Iterator<Player> playerIt = players.iterator(); playerIt.hasNext();) {
 					Player player = (Player) playerIt.next();
-					for (Iterator fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
+					for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
 						Spacefleet spacefleet = (Spacefleet) fleetIt.next();
 						spacefleet.render(gc);
 					}
@@ -241,6 +241,7 @@ public class Game extends Application{
 		intermediaryUi.refreshInterface((new SettingUniverseScreen(this, uSet)).getChildren());
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void initGame() {
 		gameLoop.stop();
 		System.out.println("new game");
@@ -255,9 +256,11 @@ public class Game extends Application{
 			Player user = new Player("Aaron Terg", uSet.color[3]);
 			userIn = new UserInput(user);
 
-			canvas.setOnMouseClicked(UserInput.mouseClicked());
 			user.firstPlanet(universe);
-			canvas.setOnKeyPressed(userIn.keyPressed((EventHandler<KeyEvent>) scene.getOnKeyPressed()));
+			
+			canvas.setOnMouseClicked(userIn.mouseClicked());
+			EventHandler<KeyEvent> onKeyPressed = (EventHandler<KeyEvent>) scene.getOnKeyPressed();
+			canvas.setOnKeyPressed(userIn.keyPressed(onKeyPressed));
 			canvas.setOnMousePressed(userIn.mousePressed());
 			canvas.setOnMouseDragged(userIn.mouseDragged());
 			canvas.setOnMouseReleased(userIn.mouseReleased());
@@ -323,14 +326,17 @@ public class Game extends Application{
 								break;
 
 							// spaceship collision with planet
-							if(planet.getPlanetShape().intersects(spaceshipType.getSpaceshipShape())) {
+							if(planet.intersects(spaceshipType)) {
 								planet.spaceShipEnter(spaceshipType);
 								iterator.remove();
 							}
 							else{
 								for(Planet obstacle : universe.getPlanets()) {
-									while(obstacle.getPlanetShape().distPoint(spaceshipType.getSpaceshipShape().getX()[0], spaceshipType.getSpaceshipShape().getY()[0])
-											< obstacle.getPlanetShape().getRadius()+15 && !obstacle.equals(planet)) {
+									// if -> fluidifie les collisions 
+									// while assure que les planetes ne soit pas dans la planete
+									// TODO improve getAround 
+									while(obstacle.getPlanetShape().distPoint(spaceshipType.getX(), spaceshipType.getY())
+											< obstacle.width()/2 + spaceshipType.width() && !obstacle.equals(planet)) {
 										spaceshipType.getAround(obstacle,spacefleet);
 									}
 								}
@@ -489,7 +495,7 @@ public class Game extends Application{
 										new File("Saved_data.txt"))))
 				){
 
-			oos.writeObject(this.universe);
+			oos.writeObject(Game.universe);
 			oos.writeObject(players);
 			oos.writeObject(uSet);
 			oos.writeObject(userIn);
@@ -507,6 +513,7 @@ public class Game extends Application{
 	/**
 	 * The game loader, it reload the previous save and set the gameState to RUNNING
 	 */
+	@SuppressWarnings("unchecked")
 	public void loadGame() {
 		try(ObjectInputStream ois = new ObjectInputStream(
 				new BufferedInputStream(
@@ -515,7 +522,7 @@ public class Game extends Application{
 		{
 			universe = (Universe)ois.readObject();
 			players = (ArrayList<Player>)ois.readObject();
-			for (Iterator playIt = players.iterator(); playIt.hasNext();) {
+			for (Iterator<Player> playIt = players.iterator(); playIt.hasNext();) {
 				Player player = (Player) playIt.next();
 				if (player instanceof AI) {
 					AI ai = (AI) player;
@@ -526,6 +533,7 @@ public class Game extends Application{
 			uSet = (UniverseSetting)ois.readObject();
 			if(uSet.humanPlayer) {
 				userIn = (UserInput)ois.readObject();
+				canvas.setOnMouseClicked(userIn.mouseClicked());
 				canvas.setOnKeyPressed(userIn.keyPressed((EventHandler<KeyEvent>) scene.getOnKeyPressed()));
 				canvas.setOnMousePressed(userIn.mousePressed());
 				canvas.setOnMouseDragged(userIn.mouseDragged());

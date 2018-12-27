@@ -82,7 +82,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 */
 	public Planet() {
 		Random randomNumber = new Random();
-		double radius = randomNumber.nextInt(80)+30;
+		double radius = randomNumber.nextInt(100)+50;
 		double frameWidth = Game.WIDTH;
 		double frameHeight = Game.HEIGHT;
 		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius ;
@@ -98,16 +98,6 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		this.width = this.height;
 		validPosition(frameWidth, frameHeight);
 		this.planetShape = new Circle(this.x + radius, this.y + radius, radius);
-	}
-	
-	public Planet(double pointX, double pointY, double radius, Color color) {
-		super(pointX, pointY, radius*2, radius*2);
-		this.planetShape = new Circle(pointX, pointY, radius);
-		double frameWidth = Game.WIDTH;
-		double frameHeight = Game.HEIGHT;
-		validPosition(frameWidth, frameHeight);
-		this.spaceshipType = new BasicSpaceshipType();
-		
 	}
 	
 	/***********************************\
@@ -154,7 +144,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 * @see Planet#spaceshipType
 	 */
 	public SpaceshipType getSpaceShipeType() {
-		return (new BasicSpaceshipType(this.spaceshipType));
+		return spaceshipType;
 	}
 	
 	/**
@@ -255,7 +245,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 * @return
 	 */
 	public boolean superimposed(Planet p) {
-		return this.getPlanetShape().distance(p.getPlanetShape()) <= 40;
+		return this.getPlanetShape().distance(p.getPlanetShape()) <= 100;
 	}
 	
 
@@ -272,7 +262,9 @@ public class Planet extends GameObject implements Renderable, Serializable{
 			this.shipOnPlanet -= spaceship.getAttPower();
 		if(this.shipOnPlanet < 0) {
 			this.shipOnPlanet -= this.shipOnPlanet;
-			spaceship.getPlayer().myPlanet(this);;
+			spaceship.getPlayer().myPlanet(this);
+			if(this.equals(selected))
+				selected = null;
 		}
 			
 	}

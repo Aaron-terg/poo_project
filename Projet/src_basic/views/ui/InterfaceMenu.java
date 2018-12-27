@@ -3,15 +3,12 @@ package views.ui;
 import java.util.Iterator;
 
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import views.Game;
-import views.button.LabelledRectangleButton;
 
 public class InterfaceMenu extends UserInterface{
 
@@ -29,7 +26,7 @@ public class InterfaceMenu extends UserInterface{
 		textMenu.setTranslateX(-textMenu.getWrappingWidth()/2);
 		textMenu.setTextAlignment(TextAlignment.CENTER);
 
-		for (Iterator btnit = btn.iterator(); btnit.hasNext();) {
+		for (Iterator<Node> btnit = btn.iterator(); btnit.hasNext();) {
 			Node node = (Node) btnit.next();
 			node.relocate(centerX -btnWidth,  centerY - btnHeight + ((btnHeight * nbBtn))  + 25 * (nbBtn -1));
 			nbBtn--;

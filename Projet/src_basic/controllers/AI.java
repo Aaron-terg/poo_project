@@ -84,7 +84,7 @@ public class AI extends Player implements Serializable{
 		
 		boolean currentTest = true;
 		//prioritize the planet not owned
-		for (Iterator univ = universe.getPlanets().iterator(); univ.hasNext();) {
+		for (Iterator<Planet> univ = universe.getPlanets().iterator(); univ.hasNext();) {
 			Planet planet = (Planet) univ.next();
 			if(allOwned){
 				for (Iterator<Planet> territoryIt = this.territory.iterator(); territoryIt.hasNext();) {
@@ -131,9 +131,9 @@ public class AI extends Player implements Serializable{
 		}
 		allOwned |= currentTest;
 		//if there is a planet nearer take it
-		for (Iterator spaceIt = spacefleets.iterator(); spaceIt.hasNext();) {
+		for (Iterator<Spacefleet> spaceIt = spacefleets.iterator(); spaceIt.hasNext();) {
 			Spacefleet spacefleet = (Spacefleet) spaceIt.next();
-			for (Iterator univ = universe.getPlanets().iterator(); univ.hasNext();) {
+			for (Iterator<Planet> univ = universe.getPlanets().iterator(); univ.hasNext();) {
 				Planet planet = (Planet) univ.next();
 				if(!planet.isOwn()) {
 					double newDist = planet.distance(spacefleet.getX(), spacefleet.getY());

@@ -137,17 +137,6 @@ public class Circle extends Shape{
 		gc.strokeOval(x - radius, y - radius, radius*2, radius*2);
 		gc.fillOval(x - radius, y - radius, radius*2, radius*2);
 	}
-	/**
-	 * Check if a point is inside a Circle
-	 * @param px : the X coordinate of the point
-	 * @param py : the Y coordinate of the point
-	 * @return a boolean : true if the point is inside the circle
-	 */
-	public boolean isInside(double px, double py) {
-		 return px<=(this.x+this.radius) && px>=(this.x-this.radius)
-				 && py>=(this.y-this.radius) &&py<=(this.y+this.radius);
-		 
-	}
 
 	@Override
 	public void setPosition(double posX, double posY) {

@@ -89,11 +89,11 @@ public class GameObject implements Renderable, Serializable{
 	}
 
 	public double height() {
-		return height;
+		return (height < 0)? -height : height;
 	}
 
 	public double width() {
-		return width;
+		return (width < 0)? -width : width;
 	}
 	
 	public String label() {
@@ -129,9 +129,8 @@ public class GameObject implements Renderable, Serializable{
 	 * @return true if the couple of coordinate is inside the boundaries
 	 */
 	public boolean isInside(double x, double y) {
-		
-		return x <= (this.x + this.width) && x >= this.x
-				 && y >= this.y && y <= (this.y + this.height);
+		return ((width < 0)? x >= (this.x + this.width) && x <= this.x :  x <= (this.x + this.width) && x >= this.x)
+				&& ((height < 0)? y <= this.y && y >= (this.y + this.height) : y >= this.y && y <= (this.y + this.height));
 	}
 	
 	/**
@@ -140,11 +139,19 @@ public class GameObject implements Renderable, Serializable{
 	 * @return true if they intersect
 	 */
 	public boolean intersects(GameObject gameObject) {
-		// TODO find the condition
-		if(gameObject.x >= this.x + this.width
-				|| gameObject.x + gameObject.width <= this.x
-				|| gameObject.y >= this.y + this.height
-				|| gameObject.y + gameObject.height <= this.y)
+		if((
+				(width < 0)? gameObject.x < this.x + this.width
+				|| gameObject.x + gameObject.width > this.x
+				: gameObject.x > this.x + this.width
+				|| gameObject.x + gameObject.width < this.x
+			)
+			|| (
+					(height <0)?  gameObject.y < this.y + this.height
+					|| gameObject.y + gameObject.height > this.y
+					: gameObject.y > this.y + this.height
+					|| gameObject.y + gameObject.height < this.y
+				)
+		)
 			return false;
 		else	
 			return true;
@@ -155,14 +162,14 @@ public class GameObject implements Renderable, Serializable{
 	}
 	
 	public void validPosition(double frameWidth, double frameHeight) {
-		double offset = this.width + 5;
-		if(this.x + this.width >= frameWidth) 
+		double offset = this.width() + 5;
+		if(this.x + this.width() >= frameWidth) 
 			this.x -= offset;	
 		
 		if(this.x <= 0)
 			this.x += offset;
-		 offset = this.height + 5;
-		if(this.y + this.height >= frameHeight)
+		 offset = this.height() + 5;
+		if(this.y + this.height() >= frameHeight)
 			this.y -= offset;
 		
 		if(this.y <= 200)
@@ -172,9 +179,8 @@ public class GameObject implements Renderable, Serializable{
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return "x :" + x + ", y: "+ y
-				+ ", height: "+ height +", width: " + width +"\n"
+				+ ", height: "+ height() +", width: " + width() +"\n"
 				+ ", object selected :" + selected + "\n";
 	}
 	

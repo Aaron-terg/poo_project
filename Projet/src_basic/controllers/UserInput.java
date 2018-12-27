@@ -3,21 +3,17 @@ package controllers;
 import java.io.Serializable;
 import java.util.Iterator;
 
-import models.GameObject;
-import models.GameState;
-import models.Player;
-import models.Spacefleet;
-import models.spaceship.SpaceshipType;
-import models.planet.Planet;
-import models.shape.Line;
-import views.Game;
 import javafx.event.EventHandler;
-import javafx.fxml.JavaFXBuilderFactory;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import models.GameObject;
+import models.Player;
+import models.Spacefleet;
+import models.planet.Planet;
+import models.shape.Line;
+import models.spaceship.SpaceshipType;
+import views.Game;
 
 /**
  * <b>User control utilities</b>
@@ -86,6 +82,7 @@ public class UserInput implements Serializable{
 		
 		return new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) { 
+				// TODO percentatge control
 				keyEv.handle(e);
 				if(e.isShiftDown() && user.percent < 100) 
 					user.percent+=5;
@@ -102,16 +99,31 @@ public class UserInput implements Serializable{
 	 * 
 	 * @see Game
 	 */
-	public static EventHandler<MouseEvent> mouseClicked() {
+	public EventHandler<MouseEvent> mouseClicked() {
 
 		return new EventHandler<MouseEvent>() {
 
 			@Override
-			public void handle(MouseEvent event) {
-				if(event.getButton().equals(MouseButton.SECONDARY)) {
+			public void handle(MouseEvent e) {
+				if(e.getButton().equals(MouseButton.SECONDARY)) {
 					
+						Iterator<Planet> planetIt = Game.universe.getPlanets().iterator();
+						boolean result = false;
+						while(planetIt.hasNext() && !result) {
+							
+							Planet planet = planetIt.next();
+							if(planet.isInside(e.getX(), e.getY())) {
+								if(e.isControlDown()) {
+									System.out.println(planet);
+									result = true;
+								}else if(GameObject.selected != null){
+									user.newDest(planet);
+									result = true;
+								}
+							}
+						}
+					}
 				}
-			}
 		};
 	}
 	
@@ -152,46 +164,23 @@ public class UserInput implements Serializable{
 
 					// click not in planet 
 					if(!action) {
-						System.out.println("bug not here ! ");
-//						boundaries = new GameObject(e.getX(), e.getY(), 0,0);
 						Iterator<Spacefleet> spacefleetIt = user.getFleets().iterator();
 						while(spacefleetIt.hasNext() && !action) {
 							Spacefleet spacefleet = spacefleetIt.next();
-							Iterator<SpaceshipType> spaceshipIt = spacefleet.fleet().iterator();
-							while(spaceshipIt.hasNext() && !action) {
-								SpaceshipType spaceship = spaceshipIt.next();
 								if(spacefleet.inside(e.getX(), e.getY())) {
-									System.out.println("inside! wouhouuu");
 									spacefleet.isSelected();
 									lineJoint = new Line(spacefleet.getX(), spacefleet.getY());
 									action = true;
 								}
-	
-							}
 						}
+					}
+					
+					if(!action) {
+						boundaries = new GameObject(e.getX(), e.getY(), 0,0);
 					}
 				}
 				
-				if(e.getButton().equals(MouseButton.SECONDARY)) {
-					Iterator<Planet> planetIt = Game.universe.getPlanets().iterator();
-					boolean result = false;
-					while(planetIt.hasNext() && !result) {
-						
-						Planet planet = planetIt.next();
-						if(planet.isInside(e.getX(), e.getY())) {
-							//TODO fix the right click
-							if(e.isControlDown()) {
-								System.out.println(planet);
-								result = true;
-							}else if(action){
-								System.out.println("not here");
-								user.newDest(planet);
-								result = true;
-								action = false;
-							}
-						}
-					}
-				}
+				
 			}
 		};
 	}
@@ -211,37 +200,25 @@ public class UserInput implements Serializable{
 
 					if(action && lineJoint != null) {
 						lineJoint.setPosition(e.getX(), e.getY());
-					}else {
-//						boundaries.resize(e.getX() - boundaries.getX(), e.getY() - boundaries.getY());
-//						Iterator<Spacefleet> spacefleetIt = user.getFleets().iterator();
-//						while(spacefleetIt.hasNext() && !action) {
-//							Spacefleet spacefleet = spacefleetIt.next();
-//							if(spacefleet.inside(e.getX(), e.getY())) {
-//								
-//								System.out.println("inside! wouhouuu");
-//								spacefleet.isSelected();
-//								lineJoint = new Line(spacefleet.getX(), spacefleet.getY());
-//								action = true;
-//							}
-//						}
-						
-//						
-//						Iterator<Spacefleet> spacefleetIt = user.getFleets().iterator();
-//						while(spacefleetIt.hasNext() && !action) {
-//							Spacefleet spacefleet = spacefleetIt.next();
-//							Iterator<SpaceshipType> spaceIt = spacefleet.fleet().iterator();
-//							while(spaceIt.hasNext() && !action) {
-//								SpaceshipType spaceship = spaceIt.next();
-//								if(spaceship.intersects(boundaries)) {
-//									System.out.println("inside! wouhouuu dragged");
-//									spacefleet.isSelected();
-//									lineJoint = new Line(spaceship.getX(), spaceship.getY());
-//									action = true;
-//								}
-//							}
-//								
-//								
-//						}
+					}
+					else if(!action && boundaries != null){
+						boundaries.resize(e.getX() - boundaries.getX(), e.getY() - boundaries.getY());
+
+						Iterator<Spacefleet> spacefleetIt = user.getFleets().iterator();
+						while(spacefleetIt.hasNext() && !action) {
+							Spacefleet spacefleet = spacefleetIt.next();
+							Iterator<SpaceshipType> spaceIt = spacefleet.fleet().iterator();
+							while(spaceIt.hasNext() && !action) {
+								SpaceshipType spaceship = spaceIt.next();
+								if(boundaries.isInside(spaceship.getX(), spaceship.getY())) {
+									spacefleet.isSelected();
+									lineJoint = new Line(spaceship.getX(), spaceship.getY());
+									action = true;
+								}
+							}
+								
+								
+						}
 					}
 				}	
 			}
@@ -269,7 +246,6 @@ public class UserInput implements Serializable{
 				lineJoint = null;
 				boundaries = null;
 				if(action) {
-					Spacefleet currentSpacefleet;
 					Iterator<Planet> it = Game.universe.getPlanets().iterator();
 					boolean result = false;
 					while (it.hasNext() && !result) {

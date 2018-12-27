@@ -4,11 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import models.spaceship.SpaceshipType;
+import javafx.scene.canvas.GraphicsContext;
 import models.planet.Planet;
 import models.shape.Renderable;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+import models.spaceship.SpaceshipType;
 
 /**
  * <b>A commando of spaceship braving the universe to conquer planets</b>

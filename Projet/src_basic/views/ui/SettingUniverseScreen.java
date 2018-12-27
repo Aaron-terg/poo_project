@@ -13,6 +13,7 @@ import javafx.scene.text.TextAlignment;
 import views.Game;
 import views.button.AddRectangleButton;
 import views.button.LabelledRectangleButton;
+import views.button.RemoveRectangleButton;
 
 public class SettingUniverseScreen extends UserInterface{
 
@@ -108,7 +109,9 @@ public class SettingUniverseScreen extends UserInterface{
 		
 		addbtnGroup.getChildren().addAll(textPlayer, addBtn1, checkbox);
 		
+		// number of planet controller
 		Group planetbtnGroup = new Group();
+		
 		Text textPlanet = new Text(Game.WIDTH/2 -200, addBtn1.getY() + 200, "Number of planet :");
 		textPlanet.setFont(Font.font(40));
 		textPlanet.setFill(Color.CADETBLUE);
@@ -116,7 +119,53 @@ public class SettingUniverseScreen extends UserInterface{
 		textPlanet.setTranslateX(-textPlanet.getWrappingWidth()/2);
 		textPlanet.setTextAlignment(TextAlignment.CENTER);
 		
-		planetbtnGroup.getChildren().add(textPlanet);
+		// displayer of current number
+		Text nbplanet = new Text(textPlanet.getX() + 400, textPlanet.getY(), ""+ universe.nbPlanet );
+		nbplanet.setFont(Font.font(20));
+		nbplanet.setWrappingWidth(400);
+		nbplanet.setTranslateX(-textPlanet.getWrappingWidth()/2);
+		nbplanet.setTextAlignment(TextAlignment.CENTER);
+		
+		//decreasing button
+		RemoveRectangleButton rmBtn = new RemoveRectangleButton(textPlanet.getX() + 300, textPlanet.getY() , 50, 50);
+		rmBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+
+				if(universe.nbPlanet > 0) {
+					universe.nbPlanet--;
+					nbplanet.setText("" + universe.nbPlanet);
+				}
+				if(universe.nbPlanet == 0)
+					rmBtn.setVisible(false);
+				else 
+					rmBtn.setVisible(true);
+
+			}
+		});
+		
+		// increasing button
+		AddRectangleButton addBtn2 = new AddRectangleButton(textPlanet.getX() + 500, textPlanet.getY() , 50, 50);
+		addBtn2.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+
+				if(universe.nbPlanet < 15) {
+					universe.nbPlanet++;
+					nbplanet.setText("" + universe.nbPlanet);
+				}
+				if(universe.nbPlanet == 15)
+					addBtn2.setVisible(false);
+				else 
+					addBtn2.setVisible(true);
+
+			}
+		});
+		
+		planetbtnGroup.getChildren().addAll(textPlanet,nbplanet, addBtn2, rmBtn);
+	
 		
 		LabelledRectangleButton startGame = new LabelledRectangleButton("Start", Game.WIDTH/2, Game.HEIGHT  - 150, 400, 100);
 		startGame.setOnMouseClicked(new EventHandler<MouseEvent>() {

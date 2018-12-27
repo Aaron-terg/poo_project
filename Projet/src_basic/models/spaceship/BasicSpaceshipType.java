@@ -1,6 +1,5 @@
 package models.spaceship;
 
-import models.Player;
 import models.shape.Polygon;
 /**
  * <b>BasicSpaceShipType class represent the basicship</b>
@@ -18,28 +17,9 @@ public class BasicSpaceshipType extends SpaceshipType {
 	 * Constructors
 	 */
 	public BasicSpaceshipType() {
-		super();
-		this.speed = 2;
+		super(5, 2, 10, new Polygon());
+		this.width = 20;
+		this.height = 20;
 	}
-	
-	public BasicSpaceshipType(Player player) {
-		this(); 
-		this.player = player;
-	}
-	public BasicSpaceshipType(SpaceshipType spaceship) {
-		super(spaceship);
-	}
-	
-	public BasicSpaceshipType(Player player, double posX, double posY) {
-		super();
-		this.player = player;
-		this.spaceshipShape.setPosition(posX, posY);
-	}
-	
-
-
-
-
-	
 	
 }

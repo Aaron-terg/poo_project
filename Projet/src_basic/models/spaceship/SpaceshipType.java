@@ -3,6 +3,7 @@ package models.spaceship;
 import java.io.Serializable;
 import java.util.Random;
 
+import javafx.scene.canvas.GraphicsContext;
 import models.GameObject;
 import models.Player;
 import models.Spacefleet;
@@ -10,8 +11,6 @@ import models.planet.Planet;
 import models.shape.Polygon;
 import models.shape.Renderable;
 import models.shape.Shape;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 /**
  * <b>SpaceShipType class represent the ship</b>
@@ -37,7 +36,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	protected int attPower;
 	protected int speed;
 	protected long productionTime;
-	protected Polygon spaceshipShape;
+	protected Shape spaceshipShape;
 	protected Player player;
 	
 	/**
@@ -54,16 +53,11 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 		this.height = 20;
 	}
 
-	public SpaceshipType(int attPower, int speed, long productionTime, Polygon spaceshipShape, Player player) {
+	public SpaceshipType(int attPower, int speed, long productionTime, Polygon spaceshipShape) {
 		this.attPower = attPower;
 		this.speed = speed;
 		this.productionTime = productionTime;
 		this.spaceshipShape = spaceshipShape;
-		this.player= player;
-	}
-	
-	public SpaceshipType(SpaceshipType s) {
-		this(s.attPower, s.speed, s.productionTime, new Polygon(s.spaceshipShape), s.player);
 	}
 	
 	/***********************************\
@@ -84,7 +78,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 		return this.productionTime;
 	}
 	
-	public Polygon getSpaceshipShape() {
+	public Shape getSpaceshipShape() {
 		return spaceshipShape;
 	}
 	
@@ -116,35 +110,31 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 		this.spaceshipShape.drawShape(gc, player.getColor());
 	}
 	/**
-	 * Update the position of the ship
+	 * Update the position of the ship. <br/>
 	 * Do a translation of the ship's position according to the parameters
 	 * @param dx :x coordinate's for the translation
 	 * @param dy : y coordinate's translation
 	 * 
 	 */
-	public void newPosition(double dx, double dy) {
-		this.x = this.x - dx*speed;
-		this.y = this.y - dy*speed;
-//		this.spaceshipShape.setPosition(this.getX(), this.getY());
-		for(int i = 0; i<this.spaceshipShape.getX().length; i++) {
-			this.spaceshipShape.getX()[i]-=dx*speed;
-			this.spaceshipShape.getY()[i]-=dy*speed;
-		}
+	public void moveTo(double dx, double dy) {
+		this.x -= dx*speed;
+		this.y -= dy*speed;
+		this.spaceshipShape.setPosition(this.x, this.y);
 	}
 
 	/**
 	 * Calculate the director vector of the line between the ship's actual position and the destination
 	 * @param destination The planet the ship go to destination 
-	 * @see SpaceshipType#newPosition(double, double)
+	 * @see SpaceshipType#moveTo(double, double)
 	 */
 	public void goTo(Planet destination) {
 		
-		double distX = this.spaceshipShape.getX()[1]-destination.getPlanetShape().position()[0];
-		double distY = this.spaceshipShape.getY()[1]-destination.getPlanetShape().position()[1];
+		double distX = this.getX()-destination.getX();
+		double distY = this.getY()-destination.getY();
 		double dist = Math.sqrt((distX*distX)+(distY*distY));
 		double newPosX = distX/dist;
 		double newPosY = distY /dist;
-		this.newPosition(newPosX, newPosY);
+		this.moveTo(newPosX, newPosY);
 	}
 	
 
@@ -153,47 +143,47 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 * Move away the ship from the planet and find the new position thanks to this.newPosition
 	 * @param obstacle, the planet to avoid
 	 * @param fleet : to know which planet is the destination of the ships
-	 * @see SpaceshipType#newPosition(double, double)
+	 * @see SpaceshipType#moveTo(double, double)
 	 */
 	public void getAround(Planet obstacle, Spacefleet fleet) {
 		Planet destination = fleet.getDestination();
 		double cos=0, sin=0; 
 		double a = (destination.getY()-obstacle.getY())/(destination.getX()-obstacle.getX());//the coefficient of the line a*x+b
-		double b = destination.getY()-a*destination.getX()+15;
-		double line = a*this.spaceshipShape.getX()[1]+b;
+		double b = destination.getY()-a*destination.getX() + width;
+		double line = a*this.getX()+b;
 		boolean destinationisDown = destination.getY()>= obstacle.getY();
 		boolean destinationisOnLeft = destination.getX()<=obstacle.getX();
 		
 		//"Cut" the obstacle in four parts and choose in each part the calculation to apply
-		if(this.getSpaceshipShape().getX()[1]> obstacle.getX() && this.getSpaceshipShape().getY()[1]<= obstacle.getY()) {
+		if(this.getX()> obstacle.getX() && this.getY()<= obstacle.getY()) {
 			
 			//Check where is the ship compared to the line between obstacle's center && destination's center
 			
-			if(destinationisOnLeft && destinationisDown&& this.spaceshipShape.getY()[1]>=line||!destinationisOnLeft && destinationisDown){//spread the ship away from the planet
+			if(destinationisOnLeft && destinationisDown&& this.getY() >=line ||!destinationisOnLeft && destinationisDown){//spread the ship away from the planet
 				cos=-1; //move away from the circle
 			}else 
 				sin=1;
 			
-		}else if(this.getSpaceshipShape().getX()[1]>obstacle.getX() && this.getSpaceshipShape().getY()[1]>=obstacle.getY()){
-			if(destinationisOnLeft && !destinationisDown && this.spaceshipShape.getY()[1]<=line ||!destinationisDown && !destinationisOnLeft) {
+		}else if(this.getX()>obstacle.getX() && this.getY() >=obstacle.getY()){
+			if(destinationisOnLeft && !destinationisDown && this.getY() <=line ||!destinationisDown && !destinationisOnLeft) {
 				cos = -1;
 			}else 
 				sin = -1;
-		}else if(this.getSpaceshipShape().getX()[1]<= obstacle.getX() && this.getSpaceshipShape().getY()[1]>obstacle.getY()) {
+		}else if(this.getX()<= obstacle.getX() && this.getY() >obstacle.getY()) {
 			
-			if(!destinationisOnLeft && !destinationisDown&& this.spaceshipShape.getY()[1]<=line|| destinationisOnLeft && !destinationisDown){
+			if(!destinationisOnLeft && !destinationisDown&& this.getY() <=line|| destinationisOnLeft && !destinationisDown){
 				cos =1;
 			}else 
 				sin = -1;
 		
 		}else {
-			if(!destinationisOnLeft && destinationisDown&& this.spaceshipShape.getY()[1]<=line &&  this.spaceshipShape.getY()[1]!=obstacle.getY()||(!destinationisOnLeft && !destinationisDown)) {
+			if(!destinationisOnLeft && destinationisDown&& this.getY()<=line &&  this.getY() !=obstacle.getY()||(!destinationisOnLeft && !destinationisDown)) {
 					sin = 1;
 			}else
 				cos=1;
 
 		}	
-		this.newPosition(cos, sin);
+		this.moveTo(cos, sin);
 	}
 	
 	@Override

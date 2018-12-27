@@ -26,20 +26,12 @@ public class Polygon extends Shape{
 		this(new double[]{0,20,10}, new double[]{0, 0 ,20});
 	}
 	
-	public Polygon(double x, double y) {
-		this(new double[] {x-12.5, x+12.5, x},
-				new double[] {y-25, y-25, y});
-
-	}
-	
 	public Polygon(double[] x, double[] y) {
 		super(x[1], y[2]);
 		this.x = x;
 		this.y = y;
 	}
-	public Polygon(Polygon polygon) {
-		this(polygon.x, polygon.y);
-	}
+
 	/***********************************\
 	 * 								   *
 	 * 			Getter && Setter	   *
@@ -95,8 +87,8 @@ public class Polygon extends Shape{
 		for(int i = 0; i<this.x.length; i++) {
 			double distance_x= x_int-x[i];
 			double distance_y = y_int-y[i];
-			x[i] = posX + distance_x;
-			y[i]= posY+distance_y;
+			x[i] = posX - distance_x;
+			y[i] = posY - distance_y;
 		}
 
 	}

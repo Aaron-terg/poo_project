@@ -7,9 +7,8 @@ import java.util.Random;
 
 import controllers.Universe;
 import controllers.UserInput;
-import models.planet.Planet;
-import views.Game;
 import javafx.scene.paint.Color;
+import models.planet.Planet;
 
 /**
  * <b>Player class represent the player</b>
@@ -214,7 +213,7 @@ public class Player implements Serializable{
 		if(this.spacefleets.isEmpty())
 			return false;
 		boolean res = false;
-		for (Iterator iterator = spacefleets.iterator(); iterator.hasNext();) {
+		for (Iterator<Spacefleet> iterator = spacefleets.iterator(); iterator.hasNext();) {
 			Spacefleet spacefleet = (Spacefleet) iterator.next();
 			res |= spacefleet.hasDestination();
 		}
