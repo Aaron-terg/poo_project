@@ -36,18 +36,19 @@ Before getting to the  front, here is some useful information to control your fl
 
 Troop movement
 --
-When you want to send flying some spaceship use the percentage at the top left of the screen with the key Alt or Shift (shift will increase the number of ships to send while alt will decrease it).
+When you want to send flying some spaceship use the percentage at the top left of the screen with the key E or A (A will increase the number of ships to send while E will decrease it).
   
-    Press The SHIFT key or the ALT key to increase or decrease of 5% respectively
+    Press The A key or the E key to increase or decrease of 5% respectively
 
 
 The troop movement is done in three step:
 
- 1. Select your planet with a LEFT click of your mouse. The selected planet will have bigger outline.
- 2. Choose your percentage (you can do switch order with the first one
+ 1. Select your planet or spacefleet with a LEFT click of your mouse. The selected planet will have bigger outline.
+    - The spacefleet can be selected easily with a box create while drag and release the mouse
+ 2. Choose your percentage (you can do switch order with the first one)
  3. Select the planet you want to send your fleet to. There is two way to do so:
-    *  attack or recharge with a drag and release.
-    * if the planet is yours, you can press the CTRL key while LEFT clicking on the planet.
+    -  attack or recharge with a drag and release.
+    - if the planet is yours, you can press the CTRL key while LEFT clicking on the planet.
 
  /!\   The drag'n release start from the departure planet to the arriving one. 
 
@@ -67,3 +68,10 @@ CTRL + Q: Rage quit
  
 CTRL + R: Start a new game
  start a new game while playing.
+ 
+The user interface
+-- 
+
+Spalshscreen:
+
+ 

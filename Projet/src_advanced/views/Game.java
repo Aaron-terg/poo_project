@@ -97,6 +97,7 @@ public class Game extends Application{
 	@Override
 	public void start(Stage stage) throws Exception {
 
+		System.out.println("advanced version");
 		// setting of the application
 		stage.setTitle("Space Game");
 		stage.setResizable(false);
