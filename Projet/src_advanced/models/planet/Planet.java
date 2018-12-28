@@ -253,8 +253,8 @@ public abstract class Planet extends GameObject implements Renderable, Serializa
 	/**
 	 * Decrease the number of spaceships on a planet in case of an attack
 	 * Increase this number if the player has the planet
-	 * and set the new owner if the reserve was null while being attacked.
-	 * @param s
+	 * or set the new owner and spaceshipType if the reserve was null while being attacked.
+	 * @param s the spaceship entering the planet
 	 */
 	public void spaceShipEnter(SpaceshipType spaceship) {
 		
@@ -265,6 +265,7 @@ public abstract class Planet extends GameObject implements Renderable, Serializa
 		if(this.shipOnPlanet < 0) {
 			this.shipOnPlanet -= this.shipOnPlanet;
 			spaceship.getPlayer().myPlanet(this);
+			this.setSpaceShipeType(spaceship);
 			if(this.equals(selected))
 				selected = null;
 		}

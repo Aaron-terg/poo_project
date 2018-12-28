@@ -66,7 +66,7 @@ public class UserInput implements Serializable{
 	public Line lineJoint;
 	
 	/**
-	 * A gameObject used as a boundary box. help catching a spacefleet.
+	 * A gameObject used as a boundary box. help catching a space fleet.
 	 * <a>@see UserInput#mouseDragged()
 	 */
 	public GameObject boundaries;
