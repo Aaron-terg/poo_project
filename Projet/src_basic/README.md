@@ -70,6 +70,7 @@ The last UI appear at the end of the game if there is only one player left. Here
 
 
 ##Controls
+
 ###Game features
 
 Here is a little introduction of the different elements composing the game.
@@ -80,6 +81,7 @@ The universe where the players are acting is composed of planets. Each player be
 
 
 ####Spaceships
+
 The main actor of the game are the spaceship. You will need them to conquer the other planet.
 
  
@@ -108,6 +110,7 @@ The troop movement is done in three step:
  /!\ info:  The drag'n release start from the departure planet to the arriving one. 
 
 ###Mouse features
+
 ####In-game features
 
 LEFT Mouse pressing
