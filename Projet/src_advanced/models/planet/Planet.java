@@ -3,15 +3,14 @@ package models.planet;
 import java.io.Serializable;
 import java.util.Random;
 
-import models.GameObject;
-import models.Player;
-import models.spaceship.BasicSpaceshipType;
-import models.spaceship.SpaceshipType;
-import models.shape.Circle;
-import models.shape.Renderable;
-import views.Game;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import models.GameObject;
+import models.Player;
+import models.shape.Renderable;
+import models.shape.Shape;
+import models.spaceship.SpaceshipType;
+import views.Game;
 
 /**
  * <b>Planet class represent the planet</b>
@@ -51,21 +50,21 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 * @see Planet#getSpaceShipeType()
 	 * @see Planet#setSpaceShipeType(SpaceshipType)
 	 */
-	private SpaceshipType spaceshipType = null; 
+	protected SpaceshipType spaceshipType = null; 
 	
 	/**
 	 * The ratio of to create a Spaceship
 	 * 
 	 * @see Planet#getProductionRate()
 	 */
-	private int productionRate = 15;
+	protected int productionRate;
 	
 	/**
 	 * The number of spaceship on the planet
 	 * 
 	 * @see Planet#NbShipOnPlanet()
 	 */
-	private int shipOnPlanet;
+	protected int shipOnPlanet;
 	
 	/**
 	 * The models.shape of the planet
@@ -74,32 +73,32 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 * @see Planet#getPlanetShape()
 	 * @see Planet#setPlanetShape(PlanetShape)
 	 */
-	private Circle planetShape;
+	protected Shape planetShape;
 	
 	/**
 	 * Planet Constructor
 	 * 
 	 */
-	public Planet() {
+	public Planet(SpaceshipType spaceshipType) {
 		Random randomNumber = new Random();
 		double radius = randomNumber.nextInt(100)+50;
 		double frameWidth = Game.WIDTH;
 		double frameHeight = Game.HEIGHT;
 		double pointX = (frameWidth - radius)*randomNumber.nextDouble() + radius ;
 		double pointY = (frameHeight - radius)*randomNumber.nextDouble() + radius;
+		
 		this.shipOnPlanet = randomNumber.nextInt(100)+1;
-		
-		
-		this.spaceshipType = new BasicSpaceshipType();
-		
+		this.spaceshipType = spaceshipType;
+		this.productionRate = (int)((20 + 50*(radius/100)) / this.spaceshipType.getProductionTime());// (int)(20 + 50*(radius/100));
 		this.x = pointX - radius;
 		this.y = pointY - radius;
 		this.height = radius*2;
 		this.width = this.height;
+		
+		this.circonstrictRadius = Math.sqrt((width*width) + (height*height)) / 2 + 10;
+
 		validPosition(frameWidth, frameHeight);
-		this.planetShape = new Circle(this.x + radius, this.y + radius, radius);
 	}
-	
 	/***********************************\
 	 * 								   *
 	 * 			Getter/Setter		   *
@@ -157,7 +156,10 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 * @see Planet#spaceshipType
 	 */
 	public void setSpaceShipeType(SpaceshipType spaceshipType) {
+		if(this.shipOnPlanet > 0)
+			this.shipOnPlanet = 0;
 		this.spaceshipType = spaceshipType;
+		this.productionRate = (int)((20 + 50*(width/200)) / this.spaceshipType.getProductionTime());
 	}
 
 	/**
@@ -201,23 +203,10 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 * @see javafx.scene.shape
 	 * @see Planet#planetShape
 	 */
-	public Circle getPlanetShape() {
+	public Shape getPlanetShape() {
 		return this.planetShape;
 	}
 	
-	/**
-	 * set the models.shape of the planet.
-	 * 
-	 * @param models.shape
-	 * 			The new models.shape of the planet.
-	 * 
-	 * @see javafx.scene#shape
-	 * @see Planet#planetShape
-	 * 
-	 */
-	public void setPlanetShape(Circle shape) {
-		this.planetShape = shape;
-	}
 	
 	/***********************************\
 	 * 								   *
@@ -241,12 +230,31 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	
 	/**
 	 * Check if two planets are too close
-	 * @param p
+	 * @param planet
 	 * @return
 	 */
-	public boolean superimposed(Planet p) {
-		return this.getPlanetShape().distance(p.getPlanetShape()) <= 100;
-	}
+	public boolean superimposed(Planet planet) {
+		if(this.intersects(planet))
+			return true;
+		
+		// TODO fixed evalation of distance
+		boolean test = planet instanceof RoundPlanet, result;
+		int minDist = 100;
+		if(test) {
+			double radiusThis = ((this.width() <= this.height())? this.height() : this.width())/2;
+			double radiusP = ((planet.width() <= planet.height())? planet.height() : planet.width()) / 2;
+			result = this.distanceCarre(planet.getX(), planet.getY())  <=  minDist*minDist + (radiusThis + radiusP)*(radiusThis + radiusP);
+		}else {
+			double radiusThis = this.circonstrictRadius() + 5;
+			double radiusP = planet.circonstrictRadius() + 5;
+			result = this.distanceCarre(planet.getX(), planet.getY())  <=  minDist*minDist + (radiusThis + radiusP)*(radiusThis + radiusP);
+		
+
+			
+		}
+		return result;
+		
+		}
 	
 
 	/**
@@ -298,10 +306,35 @@ public class Planet extends GameObject implements Renderable, Serializable{
 
 		this.planetShape.drawShape(gc, (isOwn())? owner.getColor() : Color.CORNFLOWERBLUE);
 		gc.setLineWidth(1f);
+		(new models.shape.Circle(getX(), getY(), circonstrictRadius*2)).drawShape(gc, Color.TRANSPARENT);
 		gc.setFill(Color.BLACK);
 		
 		gc.fillText(""+shipOnPlanet, getX(),getY());
 		
+	}
+
+	public static Planet planetGenerator() {
+		Random randomNumber = new Random();
+		Planet planet;
+		int nbTypeOfPlanet = 3;
+		int i = randomNumber.nextInt(nbTypeOfPlanet);
+		switch (i) {
+		case 0:
+			planet = new RoundPlanet();
+			break;
+		case 1:
+			planet = new SquarePlanet();
+			break;
+			
+		case 2:
+			planet = new TrianglePlanet();
+			break;
+		default:
+			planet = new RoundPlanet();
+			break;
+		}
+		
+		return planet;
 	}
 	
 }

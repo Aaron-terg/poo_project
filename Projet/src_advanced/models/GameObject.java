@@ -5,6 +5,8 @@ import java.io.Serializable;
 import controllers.UserInput;
 import models.shape.Renderable;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 /**
  * <b>The GameObject is the basis of every element the user will interact with</b>
@@ -29,6 +31,7 @@ public class GameObject implements Renderable, Serializable{
 	 * @see GameObject#isInside(double, double)
 	 */
 	protected double height, width;
+	protected double circonstrictRadius;
 	
 	/**
 	 * The current GameObject focused by the user
@@ -45,30 +48,19 @@ public class GameObject implements Renderable, Serializable{
 		this.y = 0;
 		this.height = 0;
 		this.width = 0;
-		label = "GameObject";
+		this.circonstrictRadius = Math.sqrt((width*width) + (height*height)) / 2;
 	}
 	
 	/**
 	 * GameObject constructor set the x, y, width, and height attributes
 	 * @param x the abscisse coordinate
 	 * @param y the height coordinate
-	 * @param height the height of the GameObject
-	 * @param width the width of the GameObject
 	 */
-	public GameObject(double x, double y, double width, double height) {
+	public GameObject(double x, double y) {
 		this.x = x - width/2;
 		this.y = y - height/2;
-		this.height = height;
-		this.width = width;
-		label = "GameObject";
-	}
-	
-	public GameObject(double x, double y, double width, double height, String label) {
-		this.x = x - width/2;
-		this.y = y - height/2;
-		this.height = height;
-		this.width = width;
-		this.label = label;
+		this.circonstrictRadius = Math.sqrt((width*width) + (height*height)) / 2;
+
 	}
 	
 
@@ -157,10 +149,13 @@ public class GameObject implements Renderable, Serializable{
 			return true;
 	}
 	
-	public double distance(double p1X, double p1Y) {
-		return Math.sqrt((p1X - this.x)*(p1X - this.x) + (p1Y - this.y)*(p1Y - this.y));
+	public double distanceCarre(double p1X, double p1Y) {
+		return ((p1X - this.getX())*(p1X - this.getX()) + (p1Y - this.getY())*(p1Y - this.getY()));
 	}
 	
+	public double circonstrictRadius() {
+		return this.circonstrictRadius;
+	}
 	public void validPosition(double frameWidth, double frameHeight) {
 		double offset = this.width() + 5;
 		if(this.x + this.width() >= frameWidth) 
@@ -186,11 +181,11 @@ public class GameObject implements Renderable, Serializable{
 	
 	@Override
 	public void render(GraphicsContext gc) {
+		
 		gc.strokeLine(x, y, x, y+height);
 		gc.strokeLine(x, y+height, x+width, y + height);
 		gc.strokeLine(x+width, y + height, x+width, y);
 		gc.strokeLine(x+width, y, x, y);
 		gc.stroke();
-		
 	}
 }

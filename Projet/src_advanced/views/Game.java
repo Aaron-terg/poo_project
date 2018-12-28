@@ -118,6 +118,12 @@ public class Game extends Application{
 			@Override
 			public void handle(KeyEvent e) {
 				KeyCode code = e.getCode();
+				if(code.equals(KeyCode.ENTER)) {
+					uSet = new UniverseSetting(15, 1, true);
+					initGame();
+					gameRenderer();
+
+				}
 				if(code.equals(KeyCode.P) || code.equals(KeyCode.ESCAPE)) {
 					pause();
 
@@ -223,10 +229,10 @@ public class Game extends Application{
 				gc.fillText(gameStatusText, 1, 20);
 				gc.strokeText(gameStatusText, 1, 20);
 				gc.setTextAlign(TextAlignment.LEFT);
-				if(players.size() <= 1) {
-					System.out.println("ending");
-					endGame();
-				}
+//				if(players.size() <= 1) {
+//					System.out.println("ending");
+//					endGame();
+//				}
 
 			}
 
@@ -237,7 +243,7 @@ public class Game extends Application{
 	public void gameSetting() {
 		intermediaryUi.setVisible(true);
 		canvas.setVisible(false);
-		uSet = new UniverseSetting(10, 2, true);
+		uSet = new UniverseSetting(15, 2, true);
 
 		intermediaryUi.refreshInterface((new SettingUniverseScreen(this, uSet)).getChildren());
 	}
@@ -264,6 +270,7 @@ public class Game extends Application{
 			canvas.setOnMousePressed(userIn.mousePressed());
 			canvas.setOnMouseDragged(userIn.mouseDragged());
 			canvas.setOnMouseReleased(userIn.mouseReleased());
+			canvas.setOnScroll(userIn.scrollEvent());
 			
 			players.add(user);
 			uSet.nbPlayer--;
@@ -335,9 +342,11 @@ public class Game extends Application{
 									// if -> fluidifie les collisions 
 									// while assure que les planetes ne soit pas dans la planete
 									// TODO improve getAround 
-									while(obstacle.getPlanetShape().distPoint(spaceshipType.getX(), spaceshipType.getY())
-											< obstacle.width()/2 + spaceshipType.width() && !obstacle.equals(planet)) {
-										spaceshipType.getAround(obstacle,spacefleet);
+									double radiusSum = (obstacle.circonstrictRadius() + spaceshipType.circonstrictRadius());
+//									if(Math.sqrt(obstacle.distanceCarre(spaceshipType.getX(), spaceshipType.getY()))
+//											< radiusSum && !obstacle.equals(planet)) {
+									if(obstacle.intersects(spaceshipType)) {
+										spaceshipType.getAround(obstacle);
 									}
 								}
 								spaceshipType.goTo(planet);
@@ -538,6 +547,8 @@ public class Game extends Application{
 				canvas.setOnMousePressed(userIn.mousePressed());
 				canvas.setOnMouseDragged(userIn.mouseDragged());
 				canvas.setOnMouseReleased(userIn.mouseReleased());
+				canvas.setOnScroll(userIn.scrollEvent());
+
 			}
 			System.out.println("information checked ! ");
 

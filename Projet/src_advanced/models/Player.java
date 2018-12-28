@@ -181,7 +181,10 @@ public class Player implements Serializable{
 	 * @return a new Spacefleet ready to be sent
 	 */
 	public Spacefleet newLaunch(int percent, Planet start) {
+		
 		int nbShip = (int)(percent*start.nbShipOnPlanet())/100;
+		if(nbShip <= 0)
+			return null;
 		Spacefleet spacefleet = new Spacefleet(nbShip, start);
 		this.spacefleets.add(spacefleet);
 		return spacefleet;
@@ -195,7 +198,8 @@ public class Player implements Serializable{
 			if(currentPlanet != planet) {
 
 				currentSpacefleet = this.newLaunch(this.percent, currentPlanet);
-				currentSpacefleet.setDestination(planet); 
+				if(currentSpacefleet != null)
+					currentSpacefleet.setDestination(planet); 
 
 			}
 

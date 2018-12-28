@@ -46,6 +46,8 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	 */
 	private double angle; 
 	
+	private SpaceshipType spaceshipType;
+	
 	/**
 	 * Spacefleet constructor.<br/>
 	 * set a new fleet with a total of ship and a starting planet
@@ -53,11 +55,11 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	 * @param start  planet of departure
 	 */
 	public Spacefleet(int nbShip, Planet start) {
-		super(start.getX(), start.getY(), 0, 0);
+		super(start.getX(), start.getY());
 		this.spaceships = new ArrayList<>();
 		this.nbShip = Math.min(nbShip, start.nbShipOnPlanet());
 		this.start = start;
-		start.nbShipOnPlanet(-this.nbShip);
+		this.spaceshipType = start.getSpaceShipeType();
 		double radius = start.width;
 		angle = 0;
 		nbShipToSend = 0;
@@ -76,6 +78,10 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 			angle = 30;
 			nbShipToSend = 12;
 		}
+		nbShipToSend = Math.min(nbShipToSend, this.nbShip);
+		
+		start.nbShipOnPlanet(-this.nbShip);
+
 		angle*=Math.PI/180;
 		nbWave = Math.round(this.nbShip / nbShipToSend);
 	}
@@ -186,7 +192,7 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 					spaceport[1] = -(radius+15)*Math.sin(ShipToSend*angle) + start.getY();
 					
 					// instantiate a new spaceship from the type of the departure planet
-					SpaceshipType spaceship = start.getSpaceShipeType().getClass().newInstance();
+					SpaceshipType spaceship = this.spaceshipType.getClass().newInstance();
 					spaceship.x = spaceport[0];
 					spaceship.y = spaceport[1];
 					spaceship.getSpaceshipShape().setPosition(spaceport[0], spaceport[1]);

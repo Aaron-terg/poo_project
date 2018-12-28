@@ -17,9 +17,10 @@ public class BasicSpaceshipType extends SpaceshipType {
 	 * Constructors
 	 */
 	public BasicSpaceshipType() {
-		super(5, 2, 10, new Polygon());
-		this.width = 20;
-		this.height = 20;
+		super(3, 2, 3);
+		
+		this.spaceshipShape = new Polygon();
+		
 	}
 	
 }

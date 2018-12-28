@@ -94,14 +94,15 @@ public class AI extends Player implements Serializable{
 					if(planetOwned.nbShipOnPlanet() > 40) {
 						newPercent(planetOwned.nbShipOnPlanet());
 						spacefleet = newLaunch(percent, planetOwned);
-						double newDist = planet.distance(spacefleet.getX(), spacefleet.getY());
-						if(!planet.owner().equals((Player)this) || newDist < nextTargetDistance) {
-							nextTarget = planet;
-							nextTargetDistance = newDist;
-
+						if(spacefleet != null) {
+							double newDist = planet.distanceCarre(spacefleet.getX(), spacefleet.getY());
+							if(!planet.owner().equals((Player)this) || newDist < nextTargetDistance) {
+								nextTarget = planet;
+								nextTargetDistance = newDist;
+	
+							}
+							spacefleet.setDestination(nextTarget);
 						}
-						
-						spacefleet.setDestination(nextTarget);
 					}
 				}
 			}
@@ -114,8 +115,8 @@ public class AI extends Player implements Serializable{
 					if(planetOwned.nbShipOnPlanet() > 40) {
 						newPercent(planetOwned.nbShipOnPlanet());
 						spacefleet = newLaunch(percent, planetOwned);
-						if(!nextTarget.isOwn()) {
-							double newDist = planet.distance(spacefleet.getX(), spacefleet.getY());
+						if(spacefleet != null && !nextTarget.isOwn()) {
+							double newDist = planet.distanceCarre(spacefleet.getX(), spacefleet.getY());
 
 							if((!nextTarget.isOwn() || nextTarget.owner().equals((Player)this)) || newDist < nextTargetDistance){
 								nextTarget = planet;
@@ -136,7 +137,7 @@ public class AI extends Player implements Serializable{
 			for (Iterator<Planet> univ = universe.getPlanets().iterator(); univ.hasNext();) {
 				Planet planet = (Planet) univ.next();
 				if(!planet.isOwn()) {
-					double newDist = planet.distance(spacefleet.getX(), spacefleet.getY());
+					double newDist = planet.distanceCarre(spacefleet.getX(), spacefleet.getY());
 
 					if((!nextTarget.isOwn() || nextTarget.owner().equals((Player)this)) ||newDist < nextTargetDistance){
 						nextTarget = planet;

@@ -23,7 +23,7 @@ public class Polygon extends Shape{
 	 * Triangle constructor
 	 */
 	public Polygon() {
-		this(new double[]{0,20,10}, new double[]{0, 0 ,20});
+		this(new double[]{0,18,10}, new double[]{0, 0 ,18});
 	}
 	
 	public Polygon(double[] x, double[] y) {
@@ -59,8 +59,8 @@ public class Polygon extends Shape{
 	 * 				Method			   *
 	 * 								   *
 	\***********************************/
+	
 	@Override
-
 	public void drawShape(GraphicsContext gc, Color rgb) {
 		super.drawShape(gc, rgb);
 		
@@ -69,18 +69,13 @@ public class Polygon extends Shape{
 		
 	}
 
-
-	@Override
-	public double[] position() {
-		return (new double[]{this.x[0],y.clone()[0]});
-	}
 	
-	@Override
 	/**
 	 * set a point of the polygon at a specified position and calculate the others new positions;
 	 * @param posX : the X coordinate of the new position
 	 * @param posY : the Y coordinate of the new position
 	 */
+	@Override
 	public void setPosition(double posX, double posY) {
 		double x_int = x[0];
 		double y_int = y[0];

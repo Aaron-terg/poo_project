@@ -48,10 +48,6 @@ public class Line extends Shape implements Serializable{
 	 * 			Method				   *
 	 * 								   *
 	\***********************************/
-	@Override
-	public double[] position() {
-		return new double[] {width, height};
-	}
 
 	@Override
 	public void setPosition(double posX, double posY) {

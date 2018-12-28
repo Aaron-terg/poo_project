@@ -8,12 +8,16 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import models.GameObject;
 import models.Player;
 import models.Spacefleet;
 import models.planet.Planet;
 import models.shape.Line;
+import models.spaceship.BasicSpaceshipType;
+import models.spaceship.FastSpaceship;
 import models.spaceship.SpaceshipType;
+import models.spaceship.StrongSpaceShip;
 import views.Game;
 
 /**
@@ -90,7 +94,51 @@ public class UserInput implements Serializable{
 				if(code.equals(KeyCode.E)  && user.percent>0) 
 					user.percent-=5;
 					
+				// switching of spaceship type
+				if(code.equals(KeyCode.DIGIT1)) {
+					if(GameObject.selected instanceof Planet) {
+						Planet planet = (Planet) GameObject.selected;
+						if(!(planet.getSpaceShipeType() instanceof BasicSpaceshipType))
+							planet.setSpaceShipeType(new BasicSpaceshipType());
+					}
+				}
+				if(code.equals(KeyCode.DIGIT2)) {
+					if(GameObject.selected instanceof Planet) {
+						Planet planet = (Planet) GameObject.selected;
+						if(!(planet.getSpaceShipeType() instanceof StrongSpaceShip))
+							planet.setSpaceShipeType(new StrongSpaceShip());
+					}
+				}
+				if(code.equals(KeyCode.DIGIT3)) {
+					if(GameObject.selected instanceof Planet) {
+						Planet planet = (Planet) GameObject.selected;
+						if(!(planet.getSpaceShipeType() instanceof FastSpaceship))
+							planet.setSpaceShipeType(new FastSpaceship());
+					}
+				}
+					
 			}
+		};
+	}
+	
+	/**
+	 * The scroll listener for the game.
+	 * Manage the percentage of the player
+	 * @return a {@link ScrollEvent} to be assign to a scene
+	 * 
+	 * @see Game
+	 */
+	public EventHandler<ScrollEvent> scrollEvent(){
+		
+		return new EventHandler<ScrollEvent>() {
+			
+			@Override
+			public void handle(ScrollEvent event) {
+				if(event.getDeltaY() < 0  && user.percent > 0 )
+					user.percent--;
+				else if(event.getDeltaY() > 0 && user.percent < 100 )
+					user.percent++;
+			};
 		};
 	}
 	
@@ -177,7 +225,7 @@ public class UserInput implements Serializable{
 					}
 					
 					if(!action) {
-						boundaries = new GameObject(e.getX(), e.getY(), 0,0);
+						boundaries = new GameObject(e.getX(), e.getY());
 					}
 				}
 				

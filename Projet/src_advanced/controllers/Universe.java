@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import models.GameObject;
 import models.planet.Planet;
 import models.shape.Renderable;
 import javafx.scene.canvas.GraphicsContext;
@@ -45,24 +46,29 @@ public class Universe implements Renderable, Serializable{
 	public Universe(int nbPlanets) {
 		
 		
-		nbPlanets = Math.min(20, nbPlanets);
-		nbPlanets = Math.max(0, nbPlanets);
-		
+		nbPlanets = Math.min(15, nbPlanets);
+		nbPlanets = Math.max(2, nbPlanets);
+		int minDist = 100;
 		// Making of a set of planet
 		planets = new ArrayList<Planet>();
 		boolean superImposedTest = true;
 		while(planets.size() < nbPlanets) {
 			
 			//check if the planet is not over an other planet
-			Planet planet = new Planet();
+			Planet planet = Planet.planetGenerator();
+//			GameObject planetTestBound = new GameObject(planet.getX(), planet.getY(), planet.width() + minDist, planet.height() + minDist);
+//			planet.resize(planet.width()+ minDist, planet.height()+ minDist);
 			int j = planets.size() - 1;
 			while(j >= 0) {
 				Planet prevPlanet = planets.get(j);
 				superImposedTest &= !planet.superimposed(prevPlanet);
 				j--;
 			}
-			if(superImposedTest) 
+			if(superImposedTest) { 
+//				planet.resize(planet.width()- minDist, planet.height()- minDist);
+
 				planets.add(planet);
+			}
 				
 			superImposedTest = true;
 		}	

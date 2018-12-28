@@ -33,42 +33,12 @@ public abstract class Shape implements Serializable {
 		this.width = width;
 		this. height = height;
 	}
-	/***********************************\
-	 * 								   *
-	 * 			Getter/Setter		   *
-	 * 								   *
-	\***********************************/
-	/**
-	 * return the height of the shape.
-	 * @return
-	 */
-	public double getHeight() {
-		return this.height;
-	}
-
-	/**
-	 * 
-	 * @return the width of the shape
-	 */
-	public double width() {
-		return width;
-	}
-
-	
 	
 	/***********************************\
 	 * 								   *
 	 * 				Method			   *
 	 * 								   *
 	\***********************************/
-	
-	/**
-	 * Get the actual position of the shape 
-	 * @return a table of Coordinates
-	 */
-
-	public abstract double[] position();
-	
 
 	/**
 	 * Set the shape at a specific position

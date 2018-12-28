@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import models.GameObject;
 import models.Player;
 import models.Spacefleet;
@@ -53,11 +54,14 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 		this.height = 20;
 	}
 
-	public SpaceshipType(int attPower, int speed, long productionTime, Polygon spaceshipShape) {
+	public SpaceshipType(int attPower, int speed, long productionTime) {
 		this.attPower = attPower;
 		this.speed = speed;
 		this.productionTime = productionTime;
-		this.spaceshipShape = spaceshipShape;
+		this.width = 20;
+		this.height = 20;
+		this.circonstrictRadius = (Math.sqrt((width*width) + (height*height)) / 2) + 15;
+
 	}
 	
 	/***********************************\
@@ -108,6 +112,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 */
 	public void render(GraphicsContext gc) {
 		this.spaceshipShape.drawShape(gc, player.getColor());
+
 	}
 	/**
 	 * Update the position of the ship. <br/>
@@ -129,8 +134,8 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 */
 	public void goTo(Planet destination) {
 		
-		double distX = this.getX()-destination.getX();
-		double distY = this.getY()-destination.getY();
+		double distX = (this.getX()-destination.getX());
+		double distY = (this.getY()-destination.getY());
 		double dist = Math.sqrt((distX*distX)+(distY*distY));
 		double newPosX = distX/dist;
 		double newPosY = distY /dist;
@@ -145,47 +150,16 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 * @param fleet : to know which planet is the destination of the ships
 	 * @see SpaceshipType#moveTo(double, double)
 	 */
-	public void getAround(Planet obstacle, Spacefleet fleet) {
-		Planet destination = fleet.getDestination();
-		double cos=0, sin=0; 
-		double a = (destination.getY()-obstacle.getY())/(destination.getX()-obstacle.getX());//the coefficient of the line a*x+b
-		double b = destination.getY()-a*destination.getX() + width;
-		double line = a*this.getX()+b;
-		boolean destinationisDown = destination.getY()>= obstacle.getY();
-		boolean destinationisOnLeft = destination.getX()<=obstacle.getX();
+	public void getAround(Planet obstacle) {
+		double norm = Math.sqrt(obstacle.distanceCarre(this.getX(), this.getY()));
+		double vY = obstacle.getY() - this.getY(),
+				vX = obstacle.getX() - this.getX();
 		
-		//"Cut" the obstacle in four parts and choose in each part the calculation to apply
-		if(this.getX()> obstacle.getX() && this.getY()<= obstacle.getY()) {
-			
-			//Check where is the ship compared to the line between obstacle's center && destination's center
-			
-			if(destinationisOnLeft && destinationisDown&& this.getY() >=line ||!destinationisOnLeft && destinationisDown){//spread the ship away from the planet
-				cos=-1; //move away from the circle
-			}else 
-				sin=1;
-			
-		}else if(this.getX()>obstacle.getX() && this.getY() >=obstacle.getY()){
-			if(destinationisOnLeft && !destinationisDown && this.getY() <=line ||!destinationisDown && !destinationisOnLeft) {
-				cos = -1;
-			}else 
-				sin = -1;
-		}else if(this.getX()<= obstacle.getX() && this.getY() >obstacle.getY()) {
-			
-			if(!destinationisOnLeft && !destinationisDown&& this.getY() <=line|| destinationisOnLeft && !destinationisDown){
-				cos =1;
-			}else 
-				sin = -1;
+		double newPointX = vX / norm,
+				newPointY = vY / norm;
 		
-		}else {
-			if(!destinationisOnLeft && destinationisDown&& this.getY()<=line &&  this.getY() !=obstacle.getY()||(!destinationisOnLeft && !destinationisDown)) {
-					sin = 1;
-			}else
-				cos=1;
-
-		}	
-		this.moveTo(cos, sin);
+		moveTo(newPointX, newPointY);
 	}
-	
 	@Override
 	public String toString() {
 		return "spaceship owner: " + player;
