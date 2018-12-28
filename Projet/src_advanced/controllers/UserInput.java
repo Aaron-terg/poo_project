@@ -25,6 +25,7 @@ import views.Game;
  * <p> The UserInput class define the control provide to the user in {@link javafx}</p>
  * 
  * @author meryl, Virginie
+ * @version src_advanced
  * @since src_basic
  */
 public class UserInput implements Serializable{
@@ -32,6 +33,7 @@ public class UserInput implements Serializable{
 	/**
 	 * The user being granted the following control
 	 * 
+	 * @see UserInput#scrollEvent()
 	 * @see UserInput#keyPressed()
 	 * @see UserInput#mousePressed()
 	 * @see UserInput#mouseDragged()
@@ -53,6 +55,10 @@ public class UserInput implements Serializable{
 	 */
 	public Line lineJoint;
 	
+	/**
+	 * A gameObject used as a boundary box. help catching a spacefleet.
+	 * <a>@see UserInput#mouseDragged()
+	 */
 	public GameObject boundaries;
 	
 	/**
@@ -79,7 +85,12 @@ public class UserInput implements Serializable{
 	\***********************************/
 
 	/**
-	 * The keyboard listener manager
+	 * The keyboard listener manager for the game.
+	 * It specify action when digits key, A or E keys are pressed.
+	 * <ul> 
+	 * <li> Digits key: manage the spaceship type of the selected planet.</li>
+	 * <li> A / E : manage the percentage of spaceships sent.</li>
+	 * </ul>
 	 * @return a {@link KeyEvent} to be assign to a scene
 	 * @see Game#initGame()
 	 */
@@ -143,7 +154,9 @@ public class UserInput implements Serializable{
 	}
 	
 	/**
-	 * The click listener for the game
+	 * The click listener for the game.
+	 * display info about a planet in the console with a right click. if th e CTRL key is pressed and the cursor is inside
+	 * one of the user planet, then set the destination to this planet.
 	 * @return a {@link MouseEvent} to be assign to a scene
 	 * 
 	 * @see Game
@@ -178,8 +191,8 @@ public class UserInput implements Serializable{
 	
 	/**
 	 * The mouse pressed listener for the game.
-	 * All the selection of the user's planet are done here
-	 * 
+	 * All the selection of the user's planet / spacefleet are done here
+	 * if a spacefleet / planet is selected it create a line with the center of object selected as origin.
 	 * @return a {@link MouseEvent} to be assign to a scene
 	 * @see Game
 	 */	
@@ -236,7 +249,8 @@ public class UserInput implements Serializable{
 	
 	/**
 	 * The mouse drag listener for the game.
-	 * draw a line between the {@link GameObject#selected} planet and the mouse
+	 * draw a line between the {@link GameObject#selected} planet / spacefleet and the mouse.
+	 * or draw the boundaries if there is no selected element underneath the cursor.
 	 * @return a {@link MouseEvent} to be assign to a scene
 	 * @see Game
 	 */
@@ -281,7 +295,6 @@ public class UserInput implements Serializable{
 	 * <ul>
 	 * 		<li> left button: became the destination
 	 *  	of a spacefleet if there is one ready to be send</li>
-	 *  	<li> left button: its information are displayed in the console </li>
 	 *  </ul>
 	 * @param universe the universe for the planet set to 
 	 * @return a {@link MouseEvent} to be assign to a scene

@@ -3,6 +3,11 @@ package views.button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
+/**
+ * 
+ * @author meryl
+ *
+ */
 public class RemoveRectangleButton extends RectangleButton {
 
 	public RemoveRectangleButton(double x, double y, double w, double h) {

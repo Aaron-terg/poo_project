@@ -24,7 +24,8 @@ import models.planet.Planet;
  * @see SpaceShip
  * 
  * @author meryl, Virginie
- * @version src_basic
+ * @version src_advanced
+ * @since src_basic
  *
  */
 public class Player implements Serializable{
@@ -190,6 +191,12 @@ public class Player implements Serializable{
 		return spacefleet;
 	}
 	
+	/**
+	 * set the new destination for the current selected spacefleet.
+	 * @param planet the new destination
+	 * 
+	 * @see UserInput#mouseReleased()
+	 */
 	public void newDest(Planet planet){
 		Spacefleet currentSpacefleet;
 		if(GameObject.selected instanceof Planet) {

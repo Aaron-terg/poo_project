@@ -11,11 +11,16 @@ import javafx.scene.paint.Color;
  * 		<li>A table of points which represent the coordinates of the polygon's tops</li>
  * 	</li>
  * </p>
- * @author virginie
+ * @author meryl
+ * 
+ *  @see Shape
  *
  */
 public class Polygon extends Shape{
 
+	/**
+	 * the position of the vertices of the polygon
+	 */
 	private double[] x, y; 
 	
 	
@@ -26,6 +31,11 @@ public class Polygon extends Shape{
 		this(new double[]{0,18,10}, new double[]{0, 0 ,18});
 	}
 	
+	/**
+	 * polygon constructor
+	 * @param x an array of x coordinates
+	 * @param y an array of y coordinates
+	 */
 	public Polygon(double[] x, double[] y) {
 		super(x[1], y[2]);
 		this.x = x;
@@ -34,32 +44,15 @@ public class Polygon extends Shape{
 
 	/***********************************\
 	 * 								   *
-	 * 			Getter && Setter	   *
-	 * 								   *
-	\***********************************/
-	
-	/**
-	 * 
-	 * @return the table of X polygon's coordinates
-	 */
-	public double[] getX() {
-		return x;
-	}
-	/**
-	 * 
-	 * @return the table of Y polygon's coordinates
-	 */
-	public double[] getY() {
-		return y;
-	}
-
-
-	/***********************************\
-	 * 								   *
 	 * 				Method			   *
 	 * 								   *
 	\***********************************/
 	
+	/**
+	 * Draw the shape on the window 
+	 * @param the GraphicsContext gc
+	 * @param rgb the color of the shape
+	 */
 	@Override
 	public void drawShape(GraphicsContext gc, Color rgb) {
 		super.drawShape(gc, rgb);
@@ -71,7 +64,7 @@ public class Polygon extends Shape{
 
 	
 	/**
-	 * set a point of the polygon at a specified position and calculate the others new positions;
+	 * set a point of the polygon at a specified position and calculate the others coordinates new positions;
 	 * @param posX : the X coordinate of the new position
 	 * @param posY : the Y coordinate of the new position
 	 */

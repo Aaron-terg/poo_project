@@ -14,7 +14,7 @@ import models.shape.Renderable;
 import models.shape.Shape;
 
 /**
- * <b>SpaceShipType class represent the ship</b>
+ * <b>SpaceShipType abstract class represent the ship</b>
  * <p>
  *     A SpaceShip has the following property:
  *     <ul>
@@ -22,26 +22,39 @@ import models.shape.Shape;
  *         <li>The speed </li>
  *         <li>The necessary time for its production</li>
  *         <li>The shape of the ship</li>
- *         <li> His own player 
+ *         <li> its own player 
  *         
  *     </li>
  * </p>
  * 
- *
- * 
- * @author Virginie
- * @version 2.1
+ * @author meryl
+ * @version src_advanced
  * **/
 public abstract class SpaceshipType extends GameObject implements Renderable, Serializable{
 	
+	/**
+	 * The power of its attack
+	 */
 	protected int attPower;
+	/**
+	 * its speed
+	 */
 	protected int speed;
+	/**
+	 * The necessary time for its production
+	 */
 	protected long productionTime;
+	/**
+	 * The shape of the ship
+	 */
 	protected Shape spaceshipShape;
+	/**
+	 * its own player
+	 */
 	protected Player player;
 	
 	/**
-	 * SpaceshipType constructor
+	 * SpaceshipType constructor setting the statistic of the spaceship, the size and the circonstric radius
 	 * 
 	 */
 	public SpaceshipType(int attPower, int speed, long productionTime) {
@@ -60,52 +73,69 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 * 								   *
 	\***********************************/
 	
+	/**
+	 * 
+	 * @return the attack power of the spaceship
+	 */
 	public int getAttPower() {
 		return this.attPower;
 	}
 	
+	/**
+	 * 
+	 * @return the speed of ths spaceship
+	 */
 	public int getSpeed() {
 		return this.speed;
 	}
 	
+	/**
+	 * 
+	 * @return the production time of the spaceship
+	 */
 	public long getProductionTime() {
 		return this.productionTime;
 	}
 	
+	/**
+	 * 
+	 * @return the spaceship shape
+	 */
 	public Shape getSpaceshipShape() {
 		return spaceshipShape;
 	}
 	
+	/**
+	 * 
+	 * @return its owner
+	 */
 	public Player getPlayer() {
 		return this.player;
 	}
 	
+	/**
+	 * set the new owner
+	 * @param p the new owner
+	 */
 	public void setPlayer(Player p) {
 		this.player = p;
 	}
 	
-	
-	@Override
-	public boolean intersects(GameObject gameObject) {
-		
-		Polygon poly  = (Polygon)spaceshipShape;
-		boolean result = false;
-		for (int i = 0; i < poly.getX().length; i++) {
-			result |= gameObject.isInside(poly.getX()[i], poly.getY()[i]);
-		}
-		
-		return super.intersects(gameObject) && result;
-	}
+	/***********************************\
+	 * 								   *
+	 * 				Method			   *
+	 * 								   *
+	\***********************************/
+
 	/**
 	 * Display the ship 
 	 * @see Shape#drawShape(GraphicsContext)
 	 */
 	public void render(GraphicsContext gc) {
 		this.spaceshipShape.drawShape(gc, player.getColor());
-		(new models.shape.Circle(getX(), getY(), circonstrictRadius*2)).drawShape(gc, Color.TRANSPARENT);
-
 
 	}
+	
 	/**
 	 * Update the position of the ship. <br/>
 	 * Do a translation of the ship's position according to the parameters
@@ -152,6 +182,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 		
 		moveTo(newPointX, newPointY);
 	}
+	
 	@Override
 	public String toString() {
 		return "spaceship owner: " + player;

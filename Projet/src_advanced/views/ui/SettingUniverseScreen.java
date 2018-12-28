@@ -12,16 +12,28 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import views.Game;
 import views.button.AddRectangleButton;
-import views.button.LabelledRectangleButton;
+import views.button.RectangleButton;
 import views.button.RemoveRectangleButton;
 
+/**
+ * <b>The setting screen</b>
+ * <p>Here you can set the number  of player / planet and choose if you want to play or just watch the AI fighting each other</b>
+ * @author meryl
+ *
+ * @version src_advanced
+ */
 public class SettingUniverseScreen extends UserInterface{
 
-	public UniverseSetting universe;
-	
+	/**
+	 * Create a group of button linked to the universe setting. Every action on one of the button modify the current setting.
+	 * 
+	 * @param game the current game
+	 * @param universe the universe setting to tickle with
+	 * @see Game
+	 * @see UniverseSetting
+	 */
 	public SettingUniverseScreen(Game game, UniverseSetting universe) {
-		
-		this.universe = universe;
+		super();
 
 		// title
 		Text title = new Text(Game.WIDTH/2, 200, "Setting");
@@ -187,13 +199,12 @@ public class SettingUniverseScreen extends UserInterface{
 		planetbtnGroup.getChildren().addAll(textPlanet,nbplanet, addBtn2, rmBtn);
 	
 		// start the game when the setting is done
-		LabelledRectangleButton startGame = new LabelledRectangleButton("Start", Game.WIDTH/2, textPlanet.getY() + 200, 400, 100);
+		RectangleButton startGame = new RectangleButton("Start", Game.WIDTH/2, textPlanet.getY() + 200, 400, 100);
 		startGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
 				if(universe.nbPlayer > 1) {
-					System.out.println("clicked " +  startGame.label);
 					game.initGame();
 					game.gameRenderer();
 				}

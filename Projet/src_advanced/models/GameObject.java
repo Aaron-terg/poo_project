@@ -12,11 +12,11 @@ import javafx.scene.shape.Circle;
  * <b>The GameObject is the basis of every element the user will interact with</b>
  * 
  * @author meryl, Virginie
+ * @version src_advanced
  * @since src_basic
  */
 public class GameObject implements Renderable, Serializable{
 	
-	protected String label;
 	/**
 	 * x and y are the position of the game object in the canvas
 	 * @see GameObject#getX()
@@ -53,6 +53,7 @@ public class GameObject implements Renderable, Serializable{
 	
 	/**
 	 * GameObject constructor set the x, y, width, and height attributes
+	 * construct a circonstric circle with the height and width.
 	 * @param x the abscisse coordinate
 	 * @param y the height coordinate
 	 */
@@ -65,7 +66,7 @@ public class GameObject implements Renderable, Serializable{
 	
 
 	/**
-	 * Get the x position of center of the GameObject
+	 * Get the x position of the center of the GameObject
 	 * @return The x coordinate
 	 */
 	public double getX() {
@@ -73,28 +74,50 @@ public class GameObject implements Renderable, Serializable{
 	}
 
 	/**
-	 * Get the y position of center of the GameObject
+	 * Get the y position of the center of the GameObject
 	 * @return The y coordinate
 	 */
 	public double getY() {
 		return y + height/2;
 	}
 
+	/**
+	 * Get the height of the GameObject
+	 * @return the absolute value of the height
+	 */
 	public double height() {
 		return (height < 0)? -height : height;
 	}
 
+	/**
+	 * Get the width of the GameObject
+	 * @return the absolute value of the width
+	 */
 	public double width() {
 		return (width < 0)? -width : width;
 	}
 	
+	/**
+	 * Get the radius of the circonstric circle
+	 * @return the radius of the circonstric circle
+	 */
+	public double circonstrictRadius() {
+		return this.circonstrictRadius;
+	}
 	/***********************************\
 	 * 								   *
 	 * 				Method			   *
 	 * 								   *
 	\***********************************/
 	
-	
+	/**
+	 * Resize the boundaries of the game object.
+	 * 
+	 * @see UserInput#mouseDragged()
+	 * 
+	 * @param w the new width
+	 * @param h the new height
+	 */
 	public void resize(double w, double h) {
 		width = w;
 		height = h;
@@ -145,13 +168,22 @@ public class GameObject implements Renderable, Serializable{
 			return true;
 	}
 	
+	/**
+	 * return the square distance between the center of this game object and a point.<br>
+	 * some method didn't needed the square root distance. it prevent a use of Math.sqrt method
+	 * @param p1X x coordinate of the point
+	 * @param p1Y y coordinate of the point
+	 * @return return the square distance between the center of this game object and a point
+	 */
 	public double distanceCarre(double p1X, double p1Y) {
 		return ((p1X - this.getX())*(p1X - this.getX()) + (p1Y - this.getY())*(p1Y - this.getY()));
 	}
 	
-	public double circonstrictRadius() {
-		return this.circonstrictRadius;
-	}
+	/**
+	 * check the position of the gameObject. if it's out of bound then replace it.
+	 * @param frameWidth the scene width
+	 * @param frameHeight the scene height
+	 */
 	public void validPosition(double frameWidth, double frameHeight) {
 		double offset = this.width() + 5;
 		if(this.x + this.width() >= frameWidth) 

@@ -16,16 +16,29 @@ import javafx.scene.paint.Color;
  * 
  * 	<p>	
  * @see Planet
- * 
+ * @see Shape
  * @author meryl,Virginie
- * @version src_basic
+ * @version src_advanced
  *
  */
 public class Circle extends Shape{
 	
+	/**
+	 * the position of the shape
+	 */
 	private double x, y;
+	
+	/**
+	 * the radius of the shape.
+	 */
 	private double radius;
 	
+	/**
+	 * The circle constructor
+	 * @param x coordinates
+	 * @param y coordinates
+	 * @param diameter
+	 */
 	public Circle(double x, double y, double diameter) {
 		this.x = x;
 		this.y = y;
@@ -43,7 +56,7 @@ public class Circle extends Shape{
 	 * @param the GraphicsContext gc
 	 * @param rgb the color of the shape
 	 */
-
+	@Override
 	public void drawShape(GraphicsContext gc, Color rgb) {
 		super.drawShape(gc, rgb);
 		gc.strokeOval(x - radius, y - radius, radius*2, radius*2);

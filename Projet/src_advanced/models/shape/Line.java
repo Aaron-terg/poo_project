@@ -20,8 +20,17 @@ import java.io.Serializable;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+/**
+ * The line making the joints between the selected gameobject and the position underneath the cursor.
+ * 
+ * @see Shape
+ * @author meryl
+ * @version src_basic
+ */
 public class Line extends Shape implements Serializable{
-	
+	/**
+	 * the position of the shape
+	 */
 	private double x, y;
 	/**
 	 * Line constructor
@@ -43,26 +52,30 @@ public class Line extends Shape implements Serializable{
 		this.x = originX;
 		this.y = originY;
 	}
+	
 	/***********************************\
 	 * 								   *
 	 * 			Method				   *
 	 * 								   *
 	\***********************************/
 
+	/**
+	 * Draw the shape on the window 
+	 * @param the GraphicsContext gc
+	 * @param rgb the color of the shape
+	 */
 	@Override
-	public void setPosition(double posX, double posY) {
-		this.width += posX -this.width;
-		this.height += posY - this.height;
-	}
-
-	@Override
-
 	public void drawShape(GraphicsContext gc, Color rgb) {
 		super.drawShape(gc, rgb);
 		gc.setLineWidth(2f);
 		gc.strokeLine(x, y, width, height);
 		gc.setLineWidth(1f);
 	}
-
+	
+	@Override
+	public void setPosition(double posX, double posY) {
+		this.width += posX -this.width;
+		this.height += posY - this.height;
+	}
 
 }

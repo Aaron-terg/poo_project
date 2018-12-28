@@ -39,23 +39,26 @@ public class AI extends Player implements Serializable{
 	 */
 	private Planet nextTarget;
 	
-	private double nextTargetDistance;
 	/**
-	 * A boolean marker to if every  planet of the universe is owned.
-	 * If it does, then start the phase 2 of the attack
+	 * The distance between the current planet selected and the targetted planet.
+	 * 
+	 * @see AI#expansion()
+	 */
+	private double nextTargetDistance;
+	
+	/**
+	 * A boolean marker verifying the availability of every  planet of the universe.
+	 * If it true, then start the phase 2 of the attack
 	 */
 	private boolean allOwned;
 	
-	private Random rand ;
-	
 	/**
-	 * AI Constructor
+	 * AI Constructor for the autonomous spacefleet.
 	 * @param universe the universe containing the set of planet
 	 */
 	public AI(Universe universe) {
 		super("PIRATE_AI", Color.DARKCYAN);
 		this.universe = universe;
-		rand = new Random();
 	}
 
 	/**
@@ -87,7 +90,7 @@ public class AI extends Player implements Serializable{
 	
 	/**
 	 * the principal "algorithm" for the decision making of the AI
-	 * it iterate over the universe's set of planet and then test if their is own near and not owned
+	 * it iterate over the universe's set of planet and then test if their is one owned near or not
 	 */
 	public void expansion() {
 		
@@ -168,9 +171,17 @@ public class AI extends Player implements Serializable{
 		percent= rand.nextInt(bound);
 	}
 
+	/**
+	 * The algorithm managing the autonomous spacefleet.
+	 * It create a spacefleet of 10 ships or less.
+	 * call its own spacefleet constructor designed for him
+	 * 
+	 * @see Spacefleet#Spacefleet(double, double, Player, int, Planet, SpaceshipType)
+	 */
 	public void randomAttack() {
-		if(rand.nextInt(100) < 33) {
-			Random random = rand;
+		Random random = new Random();
+
+		if(random.nextInt(100) < 33) {
 			int indexPlanet = random.nextInt(universe.getPlanets().size());
 			int nbShip = random.nextInt(10) + 1;
 			int typeOfSpaceShip = random.nextInt(3);

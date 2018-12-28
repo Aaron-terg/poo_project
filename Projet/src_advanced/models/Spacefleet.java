@@ -13,6 +13,7 @@ import models.spaceship.SpaceshipType;
  * <b>A commando of spaceship braving the universe to conquer planets</b>
  * 
  * @author meryl, Virginie
+ * @version src_advanced
  * @since src_basic
  *
  */
@@ -46,11 +47,17 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	 */
 	private double angle; 
 	
+	/**
+	 * the spaceship type of the spacefleet to avoid conflict while the starting planet change of spaceship type.
+	 * 
+	 * @since src_advanced
+	 */
 	private SpaceshipType spaceshipType;
 	
 	/**
 	 * Spacefleet constructor.<br/>
-	 * set a new fleet with a total of ship and a starting planet
+	 * set a new fleet with a total of ship and a starting planet.<br/>
+	 * It also defined the number of wave and number of ship to be send from the size of the planets.
 	 * @param nbShip the number of spaceship to be send (bound by the number of spaceship on the starting planet)
 	 * @param start  planet of departure
 	 */
@@ -86,6 +93,16 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 		nbWave = Math.round(this.nbShip / nbShipToSend);
 	}
 	
+	/**
+	 *  splacefleet constructor for the Pirate AI
+	 * 
+	 * @param x coordinate
+	 * @param y coordinate
+	 * @param player
+	 * @param nbShip number of ship
+	 * @param destination destination planet
+	 * @param spaceshipType type of spaceship
+	 */
 	public Spacefleet(double x, double y, Player player, int nbShip, Planet destination, SpaceshipType spaceshipType) {
 		this.nbShip = nbShip;
 		this.destination = destination;
@@ -193,7 +210,11 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	
 	/**
 	 * Send a number of ship defined in the constructor every time the method is called and the number of wave left is >0.
-	 * The spaceship are sent from "gate" around the planet.
+	 * The spaceship are sent from "gate" around the planet specify by the angle and radius of the planet.
+	 * 
+	 * @see Spacefleet#Spacefleet(int, Planet)
+	 * @see Spacefleet#angle
+	 * @see Spacefleet#nbWave
 	 * 
 	 */
 	public void takeOff() {
@@ -242,7 +263,10 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	}
 	
 	/**
-	 * Render the spaceship of the fleet
+	 * Render the spaceship of the fleet.<br>
+	 * iterates over its fleets array to render every spaceship in it.
+	 * 
+	 * @see Spacefleet#fleet()
 	 */
 	public void render(GraphicsContext gc) {
 		if(this.equals(selected)) 

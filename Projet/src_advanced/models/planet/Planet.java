@@ -3,6 +3,7 @@ package models.planet;
 import java.io.Serializable;
 import java.util.Random;
 
+import controllers.UserInput;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import models.GameObject;
@@ -13,7 +14,7 @@ import models.spaceship.SpaceshipType;
 import views.Game;
 
 /**
- * <b>Planet class represent the planet</b>
+ * <b>Planet abstract class representing the planet</b>
  * <p>
  *     A planet has the following property:
  *     <ul>
@@ -24,15 +25,20 @@ import views.Game;
  *     </li>
  * </p>
  * 
- * @see SpaceshipType
+ * inherit from GameObject.
+ * 
+ * @see GameObject
+ * @see RoundPlanet
+ * @see SquarePlanet
+ * @see TrianglePlanet
  * @see Player
  *
  * 
  * @author meryl
- * @version 2.1
+ * @version src_advanced
  *
  */
-public class Planet extends GameObject implements Renderable, Serializable{
+public abstract class Planet extends GameObject implements Renderable, Serializable{
 
 	/**
 	 * The owner of the planet.
@@ -70,13 +76,12 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 * The models.shape of the planet
 	 * 
 	 * @see javafx.scene.shape
-	 * @see Planet#getPlanetShape()
-	 * @see Planet#setPlanetShape(PlanetShape)
 	 */
 	protected Shape planetShape;
 	
 	/**
-	 * Planet Constructor
+	 * Planet Constructor to be called in the child class.<br/>
+	 * set a random new position, size, number of spaceship on planet and specify the production rate.
 	 * 
 	 */
 	public Planet(SpaceshipType spaceshipType) {
@@ -120,7 +125,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	
 	/**
 	 * set the current owner of the planet.
-	 * 
+	 * and  remove this planet of the territory of the previous owner.
 	 * @param player
 	 * 			The new owner of the planet
 	 * 
@@ -147,13 +152,14 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	}
 	
 	/**
-	 * set the type of spaceship the planet will now produce.
-	 * 
+	 * set the new type of spaceship the planet will now produce and the new production rate.
+	 * Destroy the current reserve of spaceship.
 	 * @param spaceshipType
 	 * 			the type of spaceship the planet will produce.
 	 * 
 	 * @see SpaceshipType
 	 * @see Planet#spaceshipType
+	 * @see UserInput#keyPressed(javafx.event.EventHandler)
 	 */
 	public void setSpaceShipeType(SpaceshipType spaceshipType) {
 		if(this.shipOnPlanet > 0)
@@ -195,18 +201,6 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		this.shipOnPlanet += nb;
 	}
 	
-	/**
-	 * Get the models.shape of the planet.
-	 * 
-	 * @return the models.shape of the planet.
-	 * 
-	 * @see javafx.scene.shape
-	 * @see Planet#planetShape
-	 */
-	public Shape getPlanetShape() {
-		return this.planetShape;
-	}
-	
 	
 	/***********************************\
 	 * 								   *
@@ -237,7 +231,6 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		if(this.intersects(planet))
 			return true;
 		
-		// TODO fixed evalation of distance
 		double radiusP, radiusThis;
 		if(planet instanceof RoundPlanet) 
 			radiusP = ((planet.width() <= planet.height())? planet.height() : planet.width()) / 2;
@@ -258,6 +251,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	/**
 	 * Decrease the number of spaceships on a planet in case of an attack
 	 * Increase this number if the player has the planet
+	 * and set the new owner if the reserve was null while being attacked.
 	 * @param s
 	 */
 	public void spaceShipEnter(SpaceshipType spaceship) {
@@ -304,13 +298,16 @@ public class Planet extends GameObject implements Renderable, Serializable{
 
 		this.planetShape.drawShape(gc, (isOwn())? owner.getColor() : Color.CORNFLOWERBLUE);
 		gc.setLineWidth(1f);
-		(new models.shape.Circle(getX(), getY(), circonstrictRadius*2)).drawShape(gc, Color.TRANSPARENT);
 		gc.setFill(Color.BLACK);
 		
 		gc.fillText(""+shipOnPlanet, getX(),getY());
 		
 	}
-
+	
+	/**
+	 * Generate a planet with its shape defined randomly
+	 * @return A new planet
+	 */
 	public static Planet planetGenerator() {
 		Random randomNumber = new Random();
 		Planet planet;

@@ -1,9 +1,23 @@
 package models.spaceship;
 
 import models.shape.Polygon;
-
+/**
+ * <b>FastSpaceship class represent the fast ship</b>
+ * <p>
+ *     The FastSpaceship class extends the SpaceshipType class
+ * </p>
+ * 
+ *
+ * @see SpaceshipType
+ * @author meryl
+ * @version src_advanced
+ * **/
 public class FastSpaceship extends SpaceshipType{
 	
+	/**
+	 * Constructors of the Fast spaceship
+	 * call the parent constructor with its stats and defined a shape.
+	 */
 	public FastSpaceship() {
 		super(10, 3, 15);
 		double[] Xs = new double[] {

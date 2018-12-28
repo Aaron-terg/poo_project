@@ -19,7 +19,6 @@ import controllers.UserInput;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.print.PageLayout;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -35,10 +34,8 @@ import models.Player;
 import models.Spacefleet;
 import models.planet.Planet;
 import models.spaceship.SpaceshipType;
-import views.button.LabelledRectangleButton;
-import views.ui.InterfaceMenu;
+import views.button.RectangleButton;
 import views.ui.SettingUniverseScreen;
-import views.ui.SplashScreenGroup;
 import views.ui.UserInterface;
 
 /**
@@ -46,7 +43,7 @@ import views.ui.UserInterface;
  * <p>the updating and rendering of spaceship and view are manage in this class<p>
  * 
  * @author meryl, Virginie
- * @version src_basic
+ * @version src_advanced
  * @since src_basic
  *
  */
@@ -54,8 +51,7 @@ public class Game extends Application{
 	/**
 	 * The dimension of the window application
 	 */
-	public final static double WIDTH = 1400;
-	public final static double HEIGHT = 900;
+	public final static double WIDTH = 1400, HEIGHT = 900;
 
 
 	/**
@@ -64,12 +60,19 @@ public class Game extends Application{
 	 */
 	private Scene scene;
 	
+	/**
+	 * The animation loop need for the rendering
+	 */
 	private static AnimationTimer gameLoop;
 	
+	/**
+	 * the canvas needed for setting the control while loading a game.
+	 * @see Game#loadGame()
+	 */
 	private Canvas canvas;
 	
 	/**
-	 * user interface, (more view to come in an update)
+	 * the user interface for configuring a new game
 	 */
 	public UserInterface intermediaryUi;
 	
@@ -78,11 +81,14 @@ public class Game extends Application{
 	 */
 	private UserInput userIn;
 	
+	/**
+	 * the setting of the universe configured by the user interface
+	 */
 	public static UniverseSetting uSet;
 	
 	/**
 	 * The universe of the game for playing with.
-	 * COntain a set of planet.
+	 * Contain a set of planet.
 	 */
 	public static Universe universe;
 
@@ -96,6 +102,17 @@ public class Game extends Application{
 		launch(args);
 	}
 
+	/**
+	 * Init the application.
+	 * defined the canvas, user interface, game loop scene interaction.
+	 * 
+	 * @see Game#canvas
+	 * @see Game#scene
+	 * @see Game#gameLoop
+	 * @see Game#intermediaryUi
+	 * @param stage
+	 * @throws Exception
+	 */
 	@Override
 	public void start(Stage stage) throws Exception {
 
@@ -107,8 +124,7 @@ public class Game extends Application{
 		canvas = new Canvas(WIDTH, HEIGHT);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 
-		intermediaryUi = new UserInterface();
-		intermediaryUi.refreshInterface((new SplashScreenGroup(this)).getChildren());
+		intermediaryUi = new UserInterface(this);
 
 		((Group)scene.getRoot()).getChildren().addAll(canvas, intermediaryUi);
 
@@ -120,12 +136,6 @@ public class Game extends Application{
 			@Override
 			public void handle(KeyEvent e) {
 				KeyCode code = e.getCode();
-				if(code.equals(KeyCode.ENTER)) {
-					uSet = new UniverseSetting(20, 1, true);
-					initGame();
-					gameRenderer();
-
-				}
 				if(code.equals(KeyCode.P) || code.equals(KeyCode.ESCAPE)) {
 					pause();
 
@@ -138,7 +148,7 @@ public class Game extends Application{
 				if (code.equals(KeyCode.Q) && e.isControlDown())
 					System.exit(0);	
 				if (code.equals(KeyCode.R) && e.isControlDown()) {
-					((UserInterface) intermediaryUi).refreshInterface((new SplashScreenGroup(Game.this)).getChildren());
+					((UserInterface) intermediaryUi).refreshInterface((new UserInterface(Game.this)).getChildren());
 					intermediaryUi.setVisible(true);
 					canvas.setVisible(false);
 					gameLoop.stop();
@@ -234,10 +244,10 @@ public class Game extends Application{
 				gc.fillText(gameStatusText, 1, 20);
 				gc.strokeText(gameStatusText, 1, 20);
 				gc.setTextAlign(TextAlignment.LEFT);
-//				if(players.size() <= 1) {
-//					System.out.println("ending");
-//					endGame();
-//				}
+				if(players.size() <= 1) {
+					System.out.println("ending");
+					endGame();
+				}
 
 			}
 
@@ -245,6 +255,9 @@ public class Game extends Application{
 
 	}
 
+	/**
+	 * Configure the universe to be create thanks to the user interface.
+	 */
 	public void gameSetting() {
 		intermediaryUi.setVisible(true);
 		canvas.setVisible(false);
@@ -253,6 +266,9 @@ public class Game extends Application{
 		intermediaryUi.refreshInterface((new SettingUniverseScreen(this, uSet)).getChildren());
 	}
 	
+	/**
+	 * set the universe with the value of the universe setting: number of player, planet user control if there is an user.
+	 */
 	@SuppressWarnings("unchecked")
 	public void initGame() {
 		gameLoop.stop();
@@ -263,7 +279,7 @@ public class Game extends Application{
 		
 		universe = new Universe(uSet.nbPlanet);
 
-		// SplashScreen renderer
+		// setting of the controller for the player
 		if(uSet.humanPlayer) {
 			Player user = new Player("Aaron Terg", uSet.color[3]);
 			userIn = new UserInput(user);
@@ -282,18 +298,17 @@ public class Game extends Application{
 			uSet.nbPlayer--;
 		}
 		
-		
+		// create the AI
 		for (int i = 0; i < uSet.nbPlayer; i++) {
 			Player ia = new AI(universe, "AI" + i, uSet.color[i]);
 			players.add(ia);
 		}
 		
-		players.add(new AI(universe));
-		System.out.println(players.size());
-		// setting of the controller for the player
-		
 	}
 
+	/**
+	 * start the game loop renderer 
+	 */
 	public void gameRenderer() {
 
 		if(universe != null) {
@@ -308,8 +323,6 @@ public class Game extends Application{
 
 	/**
 	 * update all the game object
-	 * if their is the need
-	 * 
 	 */
 	public void update() {
 
@@ -404,7 +417,7 @@ public class Game extends Application{
 	}
 
 	/**
-	 * Set the game to pause, and display the pause menu (to be implemented)
+	 * Set the game to pause, and display the pause menu
 	 */
 	public void pause() {
 		gameLoop.stop();
@@ -414,34 +427,31 @@ public class Game extends Application{
 				centerY = (Game.HEIGHT /2);
 		
 		int nbBtn = 3;
-		LabelledRectangleButton restartBtn = new LabelledRectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		RectangleButton restartBtn = new RectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
 		restartBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clicked " +  restartBtn.label);
 				gameSetting();
 			}
         });
 		
 		nbBtn--;
-		LabelledRectangleButton saveBtn = new LabelledRectangleButton("Save", centerX,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		RectangleButton saveBtn = new RectangleButton("Save", centerX,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
 		saveBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clicked " +  saveBtn.label);
 				saveGame();
 			}
         });
 		nbBtn--;
 		
-		LabelledRectangleButton continueBtn = new LabelledRectangleButton("Continue", centerX,  centerY + ((btnHeight * nbBtn)) + 25 * (nbBtn -1), 2*btnWidth, btnHeight);
+		RectangleButton continueBtn = new RectangleButton("Continue", centerX,  centerY + ((btnHeight * nbBtn)) + 25 * (nbBtn -1), 2*btnWidth, btnHeight);
 		continueBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clicked " +  continueBtn.label);
 				gameRenderer();
 			}
         });
@@ -449,7 +459,7 @@ public class Game extends Application{
 		
 		Group group = new Group();
 		group.getChildren().addAll( restartBtn, saveBtn, continueBtn);
-		intermediaryUi.refreshInterface((new InterfaceMenu("Pause", group.getChildren(), 3)).getChildren());
+		intermediaryUi.refreshInterface((new UserInterface("Pause", group.getChildren(), 3)).getChildren());
 		
 		intermediaryUi.setVisible(true);
 		canvas.setVisible(false);
@@ -468,23 +478,21 @@ public class Game extends Application{
 				centerY = (Game.HEIGHT /2);
 		
 		int nbBtn = 3;
-		LabelledRectangleButton restartBtn = new LabelledRectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		RectangleButton restartBtn = new RectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
 		restartBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clicked " +  restartBtn.label);
 				gameSetting();
 			}
         });
 		
 		nbBtn--;
-		LabelledRectangleButton quitBtn = new LabelledRectangleButton("Quit", centerX,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		RectangleButton quitBtn = new RectangleButton("Quit", centerX,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
 		quitBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clicked " +  quitBtn.label);
 				System.exit(0);
 			}
         });
@@ -493,7 +501,7 @@ public class Game extends Application{
 		
 		Group group = new Group();
 		group.getChildren().addAll(quitBtn, restartBtn);
-		intermediaryUi.refreshInterface((new InterfaceMenu("Congratulation!", group.getChildren(), 2)).getChildren());
+		intermediaryUi.refreshInterface((new UserInterface("Congratulation!", group.getChildren(), 2)).getChildren());
 		
 		intermediaryUi.setVisible(true);
 		canvas.setVisible(false);
@@ -501,7 +509,7 @@ public class Game extends Application{
 	}
 
 	/**
-	 * Save the current state to a file and set the game state to RUNNING
+	 * Save the current state to a file
 	 */
 	public void saveGame() {
 		try(ObjectOutputStream oos =
@@ -527,7 +535,7 @@ public class Game extends Application{
 	}
 
 	/**
-	 * The game loader, it reload the previous save and set the gameState to RUNNING
+	 * The game loader, it reload the previous save
 	 */
 	@SuppressWarnings("unchecked")
 	public void loadGame() {

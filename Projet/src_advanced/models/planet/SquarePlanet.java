@@ -2,15 +2,31 @@ package models.planet;
 
 import java.io.Serializable;
 
+import models.GameObject;
 import models.shape.Polygon;
 import models.spaceship.StrongSpaceShip;
 
+/**
+ * Square planet. Second planet with stronger spaceship type.
+ * inherits from Planet
+ * @author meryl
+ *
+ * @see GameObject
+ * @see Planet
+ * @see StrongSpaceShip
+ * @see Polygon
+ */
 public class SquarePlanet extends Planet  implements Serializable {
 
+	/**
+	 * * The square planet constructor call its parent constructor then setting planet shape
+	 * with a set of x and y coordinates.
+	 * 
+	 * @see Planet#planetGenerator()
+	 * @see Planet#Planet(models.spaceship.SpaceshipType)
+	 */
 	public SquarePlanet() {
 		super(new StrongSpaceShip());
-		double x = this.getX();
-		double y = this.getY();
 		double[] Xs = new double[] {
 				this.x + this.width,
 				this.x + this.width,

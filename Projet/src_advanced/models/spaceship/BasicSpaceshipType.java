@@ -2,7 +2,7 @@ package models.spaceship;
 
 import models.shape.Polygon;
 /**
- * <b>BasicSpaceShipType class represent the basicship</b>
+ * <b>BasicSpaceShipType class represent the basic ship</b>
  * <p>
  *     The BasicSpaceShip class extends the SpaceshipType class
  * </p>
@@ -14,7 +14,8 @@ import models.shape.Polygon;
  * **/
 public class BasicSpaceshipType extends SpaceshipType {
 	/**
-	 * Constructors
+	 * Constructors of the basic spaceship
+	 * call the parent constructor with its stats and defined a shape.
 	 */
 	public BasicSpaceshipType() {
 		super(3, 2, 3);

@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
  * </p>
  * @see Planet
  * @see SpaceshipType
+ *  @see Shape
  * @author meryl,Virginie
  * @version 2.1
  */
@@ -29,6 +30,9 @@ public abstract class Shape implements Serializable {
 	public Shape() {
 	}
 	
+	/**
+	 * Shape constructors setting the width and the height of the shape
+	 */
 	public Shape(double width, double height) {
 		this.width = width;
 		this. height = height;
@@ -41,7 +45,8 @@ public abstract class Shape implements Serializable {
 	\***********************************/
 
 	/**
-	 * Set the shape at a specific position
+	 * <b>abstract method</b>
+	 * <p>Set the shape at a specific position. to be implemented</p>
 	 * @param posX : the X coordinate of the new position
 	 * @param posY : the Y coordinate of the new position
 	 */	
@@ -49,7 +54,7 @@ public abstract class Shape implements Serializable {
 	
 
 	/**
-	 * This method permits to draw the shape on the window
+	 * <p>This method permits to draw the shape on the window</p>
 	 * @param gc
 	 */
 	public void drawShape(GraphicsContext gc, Color rgb) {
