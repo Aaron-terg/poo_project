@@ -32,11 +32,25 @@ import models.shape.Shape;
  * @version 2.1
  * **/
 public abstract class SpaceshipType extends GameObject implements Renderable, Serializable{
-	
+	/**
+	* the power of its attack
+	*/ 
 	protected int attPower;
+	/**
+	*	its speed
+	*/
 	protected int speed;
+	/**
+	* The necessary time for its production
+	*/
 	protected long productionTime;
+	/**
+	*  its shape
+	*/
 	protected Shape spaceshipShape;
+	/**
+	* Its own player
+	*/
 	protected Player player;
 	
 	/**
