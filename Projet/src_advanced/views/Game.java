@@ -19,6 +19,8 @@ import controllers.UserInput;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.print.PageLayout;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -119,7 +121,7 @@ public class Game extends Application{
 			public void handle(KeyEvent e) {
 				KeyCode code = e.getCode();
 				if(code.equals(KeyCode.ENTER)) {
-					uSet = new UniverseSetting(15, 1, true);
+					uSet = new UniverseSetting(20, 1, true);
 					initGame();
 					gameRenderer();
 
@@ -161,11 +163,14 @@ public class Game extends Application{
 				//				if(gameState.equals(GameState.RUNNING)) {
 				double elapsedTime = (now - prevTime) / 1E9f;
 				double elapsedTimeCaped = Math.min(elapsedTime, maxStep);
+				if(accTime == 0)
+					((AI)players.get(players.size()-1)).randomAttack();
+
 				accTime += elapsedTimeCaped;
 				accTimeFrameRate += elapsedTimeCaped;
 				accTimeLaunch += elapsedTimeCaped;
 				prevTime =now;
-
+				
 				// update every seconds
 				while(accTime >= step) {
 					for (Iterator<Planet> planetIt = universe.getPlanets().iterator(); planetIt.hasNext();) {
@@ -266,6 +271,7 @@ public class Game extends Application{
 			user.firstPlanet(universe);
 			canvas.setOnMouseClicked(userIn.mouseClicked());
 			EventHandler<KeyEvent> onKeyPressed = (EventHandler<KeyEvent>) scene.getOnKeyPressed();
+			scene.setCursor(Cursor.CROSSHAIR);
 			scene.setOnKeyPressed(userIn.keyPressed(onKeyPressed));
 			canvas.setOnMousePressed(userIn.mousePressed());
 			canvas.setOnMouseDragged(userIn.mouseDragged());
@@ -282,7 +288,8 @@ public class Game extends Application{
 			players.add(ia);
 		}
 		
-
+		players.add(new AI(universe));
+		System.out.println(players.size());
 		// setting of the controller for the player
 		
 	}
@@ -311,7 +318,7 @@ public class Game extends Application{
 			Player player = playerIt.next();
 
 			// test if the player can play
-			if(player.hasTerritory()) { 
+			if(player.hasTerritory() || player.playerTag == "PIRATE_AI") { 
 
 				// player have spacefleet ready to be sent?
 				if(player.inAction()) { 
@@ -342,7 +349,7 @@ public class Game extends Application{
 									// if -> fluidifie les collisions 
 									// while assure que les planetes ne soit pas dans la planete
 									// TODO improve getAround 
-									double radiusSum = (obstacle.circonstrictRadius() + spaceshipType.circonstrictRadius());
+//									double radiusSum = (obstacle.circonstrictRadius() + spaceshipType.circonstrictRadius());
 //									if(Math.sqrt(obstacle.distanceCarre(spaceshipType.getX(), spaceshipType.getY()))
 //											< radiusSum && !obstacle.equals(planet)) {
 									if(obstacle.intersects(spaceshipType)) {

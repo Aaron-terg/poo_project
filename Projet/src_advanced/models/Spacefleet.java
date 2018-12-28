@@ -86,6 +86,29 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 		nbWave = Math.round(this.nbShip / nbShipToSend);
 	}
 	
+	public Spacefleet(double x, double y, Player player, int nbShip, Planet destination, SpaceshipType spaceshipType) {
+		this.nbShip = nbShip;
+		this.destination = destination;
+		this.spaceshipType = spaceshipType;
+		this.spaceships = new ArrayList<>();
+		
+		while (nbShip > 0) {
+			try {
+				SpaceshipType spaceship = this.spaceshipType.getClass().newInstance();
+				spaceship.setPlayer(player);
+				
+				double posX = (15)*Math.cos(nbShip*angle) + x;
+				double posY = -(15)*Math.sin(nbShip*angle) + y;
+				spaceship.x = posX;
+				spaceship.y = posY;
+				spaceship.getSpaceshipShape().setPosition(posX, posY);
+				this.spaceships.add(spaceship);
+			} catch (InstantiationException | IllegalAccessException e) {
+				e.getMessage();
+			}
+		}
+		
+	}
 	/***********************************\
 	 * 								   *
 	 * 				Method			   *

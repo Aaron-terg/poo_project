@@ -44,16 +44,6 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 * SpaceshipType constructor
 	 * 
 	 */
-	public SpaceshipType() {
-		Random randomNumber = new Random();
-		this.attPower = randomNumber.nextInt(10)+2;
-		this.speed = randomNumber.nextInt(3)+1;
-		this.productionTime = randomNumber.nextInt(3000)+1000;	
-		this.spaceshipShape = new Polygon();
-		this.width = 20;
-		this.height = 20;
-	}
-
 	public SpaceshipType(int attPower, int speed, long productionTime) {
 		this.attPower = attPower;
 		this.speed = speed;
@@ -112,6 +102,8 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	 */
 	public void render(GraphicsContext gc) {
 		this.spaceshipShape.drawShape(gc, player.getColor());
+		(new models.shape.Circle(getX(), getY(), circonstrictRadius*2)).drawShape(gc, Color.TRANSPARENT);
+
 
 	}
 	/**

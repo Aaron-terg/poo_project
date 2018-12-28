@@ -13,6 +13,4 @@ public class RoundPlanet extends Planet implements Serializable{
 		this.circonstrictRadius = this.width /2;
 	}
 	
-	
-	
 }

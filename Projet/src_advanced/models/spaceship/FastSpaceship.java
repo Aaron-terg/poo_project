@@ -5,7 +5,7 @@ import models.shape.Polygon;
 public class FastSpaceship extends SpaceshipType{
 	
 	public FastSpaceship() {
-		super(1, 3, 15);
+		super(10, 3, 15);
 		double[] Xs = new double[] {
 				0,
 				this.width,

@@ -1,6 +1,9 @@
 package views.button;
 
+import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -17,7 +20,15 @@ public class RectangleButton extends Group{
 		rectBtn.setStroke(Color.CADETBLUE);
 		rectBtn.setStrokeWidth(5);
 		rectBtn.setFill(Color.TRANSPARENT);
-		
+		this.setOnMouseEntered(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+
+				setCursor(Cursor.HAND);
+			}
+
+		});
         this.getChildren().add(rectBtn);
 	}
 

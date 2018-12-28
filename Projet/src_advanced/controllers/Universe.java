@@ -46,7 +46,7 @@ public class Universe implements Renderable, Serializable{
 	public Universe(int nbPlanets) {
 		
 		
-		nbPlanets = Math.min(15, nbPlanets);
+		nbPlanets = Math.min(10, nbPlanets);
 		nbPlanets = Math.max(2, nbPlanets);
 		int minDist = 100;
 		// Making of a set of planet
@@ -56,19 +56,14 @@ public class Universe implements Renderable, Serializable{
 			
 			//check if the planet is not over an other planet
 			Planet planet = Planet.planetGenerator();
-//			GameObject planetTestBound = new GameObject(planet.getX(), planet.getY(), planet.width() + minDist, planet.height() + minDist);
-//			planet.resize(planet.width()+ minDist, planet.height()+ minDist);
 			int j = planets.size() - 1;
 			while(j >= 0) {
 				Planet prevPlanet = planets.get(j);
-				superImposedTest &= !planet.superimposed(prevPlanet);
+				superImposedTest &= !planet.superimposed(prevPlanet, minDist);
 				j--;
 			}
-			if(superImposedTest) { 
-//				planet.resize(planet.width()- minDist, planet.height()- minDist);
-
+			if(superImposedTest)
 				planets.add(planet);
-			}
 				
 			superImposedTest = true;
 		}	

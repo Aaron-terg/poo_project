@@ -233,26 +233,24 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 * @param planet
 	 * @return
 	 */
-	public boolean superimposed(Planet planet) {
+	public boolean superimposed(Planet planet, int minDist) {
 		if(this.intersects(planet))
 			return true;
 		
 		// TODO fixed evalation of distance
-		boolean test = planet instanceof RoundPlanet, result;
-		int minDist = 100;
-		if(test) {
-			double radiusThis = ((this.width() <= this.height())? this.height() : this.width())/2;
-			double radiusP = ((planet.width() <= planet.height())? planet.height() : planet.width()) / 2;
-			result = this.distanceCarre(planet.getX(), planet.getY())  <=  minDist*minDist + (radiusThis + radiusP)*(radiusThis + radiusP);
-		}else {
-			double radiusThis = this.circonstrictRadius() + 5;
-			double radiusP = planet.circonstrictRadius() + 5;
-			result = this.distanceCarre(planet.getX(), planet.getY())  <=  minDist*minDist + (radiusThis + radiusP)*(radiusThis + radiusP);
+		double radiusP, radiusThis;
+		if(planet instanceof RoundPlanet) 
+			radiusP = ((planet.width() <= planet.height())? planet.height() : planet.width()) / 2;
+		else
+			radiusP = planet.circonstrictRadius();
 		
+		if(this instanceof RoundPlanet)
+			radiusThis = ((this.width() <= this.height())? this.height() : this.width())/2;
+		else
+			radiusThis = this.circonstrictRadius();
 
-			
-		}
-		return result;
+		return this.distanceCarre(planet.getX(), planet.getY()) 
+				<=  minDist*minDist + (radiusThis + radiusP)*(radiusThis + radiusP);
 		
 		}
 	

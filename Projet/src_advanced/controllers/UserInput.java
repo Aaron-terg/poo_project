@@ -81,7 +81,7 @@ public class UserInput implements Serializable{
 	/**
 	 * The keyboard listener manager
 	 * @return a {@link KeyEvent} to be assign to a scene
-	 * @see Game
+	 * @see Game#initGame()
 	 */
 	public EventHandler<KeyEvent> keyPressed(EventHandler<KeyEvent> keyEv) {
 		

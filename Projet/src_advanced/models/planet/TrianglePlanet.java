@@ -1,5 +1,6 @@
 package models.planet;
 
+import models.GameObject;
 import models.shape.Polygon;
 import models.spaceship.FastSpaceship;
 
@@ -20,6 +21,7 @@ public class TrianglePlanet extends Planet{
 				this.y+ this.height,
 				this.y , 
 		};
+		
 		this.planetShape = new Polygon(Xs, Ys);
 	}
 

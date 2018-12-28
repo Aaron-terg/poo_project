@@ -88,10 +88,6 @@ public class GameObject implements Renderable, Serializable{
 		return (width < 0)? -width : width;
 	}
 	
-	public String label() {
-		return label;
-	}
-	
 	/***********************************\
 	 * 								   *
 	 * 				Method			   *

@@ -167,7 +167,7 @@ public class SettingUniverseScreen extends UserInterface{
 
 			@Override
 			public void handle(MouseEvent event) {
-				int maxPlanet = 20;
+				int maxPlanet = 15;
 				if(universe.nbPlanet < maxPlanet) {
 					universe.nbPlanet++;
 					nbplanet.setText("" + universe.nbPlanet);

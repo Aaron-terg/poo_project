@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Random;
 
+import javafx.scene.paint.Color;
 import models.Player;
 import models.Spacefleet;
 import models.planet.Planet;
+import models.spaceship.BasicSpaceshipType;
+import models.spaceship.FastSpaceship;
+import models.spaceship.SpaceshipType;
+import models.spaceship.StrongSpaceShip;
 import views.Game;
-import javafx.scene.paint.Color;
 
 /**
  * The AI allow the user to measure himself to a challenging AI
@@ -42,12 +46,16 @@ public class AI extends Player implements Serializable{
 	 */
 	private boolean allOwned;
 	
+	private Random rand ;
+	
 	/**
 	 * AI Constructor
 	 * @param universe the universe containing the set of planet
 	 */
 	public AI(Universe universe) {
-		this(universe, "IA_test", Color.DARKCYAN);
+		super("PIRATE_AI", Color.DARKCYAN);
+		this.universe = universe;
+		rand = new Random();
 	}
 
 	/**
@@ -57,8 +65,8 @@ public class AI extends Player implements Serializable{
 	 * @param string
 	 * @param rgb
 	 */
-	public AI(Universe universe, String string, Color rgb) {
-		super(string, rgb);
+	public AI(Universe universe, String playerName, Color rgb) {
+		super(playerName, rgb);
 		this.universe = universe;
 		this.firstPlanet(universe);
 		nextTarget = universe.getPlanets().get(0);
@@ -72,7 +80,8 @@ public class AI extends Player implements Serializable{
 	 */
 	@Override
 	public boolean inAction() {
-		expansion();
+		if(this.playerTag != "PIRATE_AI") 
+			expansion();
 		return super.inAction();
 	}
 	
@@ -158,4 +167,34 @@ public class AI extends Player implements Serializable{
 		Random rand = new Random();
 		percent= rand.nextInt(bound);
 	}
+
+	public void randomAttack() {
+		if(rand.nextInt(100) < 33) {
+			Random random = rand;
+			int indexPlanet = random.nextInt(universe.getPlanets().size());
+			int nbShip = random.nextInt(10) + 1;
+			int typeOfSpaceShip = random.nextInt(3);
+			nextTarget = universe.getPlanets().get(indexPlanet);
+			SpaceshipType spaceshipType;
+			
+			switch(typeOfSpaceShip) {
+				case 0:
+					spaceshipType = new BasicSpaceshipType();
+					break;
+				case 1:
+					spaceshipType = new StrongSpaceShip();
+					break;
+				case 2:
+					spaceshipType = new FastSpaceship();
+					break;
+				default:
+					spaceshipType = new BasicSpaceshipType();
+			}
+			double posX = random.nextDouble()*Game.WIDTH,
+					posY = random.nextDouble()*Game.HEIGHT;
+			Spacefleet spacefleet = new Spacefleet(posX, posY, this, nbShip, nextTarget, spaceshipType);
+			this.spacefleets.add(spacefleet);
+		}
+	}
+	
 }
