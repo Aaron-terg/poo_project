@@ -2,7 +2,7 @@ package models.spaceship;
 
 import models.shape.Polygon;
 /**
- * <b>FastSpaceship class represent the fast ship</b>
+ * <b>FastSpaceship class represents the fast ship</b>
  * <p>
  *     The FastSpaceship class extends the SpaceshipType class
  * </p>

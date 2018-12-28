@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
  * <p>
  * 	 A polygon has the following properties : 
  * <ul>
- * 		<li>A table of points which represent the coordinates of the polygon's tops</li>
+ * 		<li>A table of points which represents the coordinates of the polygon's tops</li>
  * 	</li>
  * </p>
  * @author meryl

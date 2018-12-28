@@ -20,7 +20,7 @@ import models.spaceship.FastSpaceship;
 public class TrianglePlanet extends Planet{
 
 	/**
-	 * * The triangle planet constructor call its parent constructor then setting planet shape
+	 * * The triangle planet constructor calls its parent constructor then setting planet shape
 	 * with a set of x and y coordinates.
 	 * 
 	 * @see Planet#planetGenerator()

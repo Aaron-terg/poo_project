@@ -2,7 +2,7 @@ package models.spaceship;
 
 import models.shape.Polygon;
 /**
- * <b>BasicSpaceShipType class represent the basic ship</b>
+ * <b>BasicSpaceShipType class represents the basic ship</b>
  * <p>
  *     The BasicSpaceShip class extends the SpaceshipType class
  * </p>

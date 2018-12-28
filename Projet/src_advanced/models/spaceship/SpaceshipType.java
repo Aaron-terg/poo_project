@@ -10,7 +10,7 @@ import models.shape.Renderable;
 import models.shape.Shape;
 
 /**
- * <b>SpaceShipType abstract class represent the ship</b>
+ * <b>SpaceShipType abstract class represents the ship</b>
  * <p> SpaceshipType extends {@link GameObject}</p>
  * <p> SpaceshipType implements {@link Renderable}, {@link Serializable}</p>
  * <p>
@@ -167,10 +167,9 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 	
 
 	/**
-	 * Find && calculate a path around a circle
-	 * Move away the ship from the planet and find the new position thanks to this.newPosition
+	 * Find and calculate a path around a circle
+	 * Move away the ship from the planet and find the new position thanks to this.moveTo
 	 * @param obstacle, the planet to avoid
-	 * @param fleet : to know which planet is the destination of the ships
 	 * @see SpaceshipType#moveTo(double, double)
 	 */
 	public void getAround(Planet obstacle) {

@@ -24,7 +24,7 @@ import views.Game;
  * <b>User control utilities</b>
  * <p> Universe implements {@link Serializable}</p>
 
- * <p> The UserInput class define the control provide to the user in {@link javafx}</p>
+ * <p> The UserInput class defines the control provide to the user in {@link javafx}</p>
  * 
  * @see Universe
  * @see Player
@@ -58,7 +58,7 @@ public class UserInput implements Serializable{
 	public boolean action;
 	
 	/**
-	 * A line joining the selecting planet and the mouse while the player is dragging away the mouse.
+	 * A line joining the selected planet and the mouse while the player is dragging away the mouse.
 	 * 
 	 * @see Line
 	 * @see UserInput#mouseDragged()
@@ -96,7 +96,7 @@ public class UserInput implements Serializable{
 
 	/**
 	 * The keyboard listener manager for the game.
-	 * It specify action when digits key, A or E keys are pressed.
+	 * It specifies action when digits key, A or E keys are pressed.
 	 * <ul> 
 	 * <li> Digits key: manage the spaceship type of the selected planet.</li>
 	 * <li> A / E : manage the percentage of spaceships sent.</li>
@@ -202,8 +202,8 @@ public class UserInput implements Serializable{
 	/**
 	 * The mouse pressed listener for the game.
 	 * All the selection of the user's planet / spacefleet are done here
-	 * if a spacefleet / planet is selected it create a line with the center of object selected as origin.
-	 * @return a {@link MouseEvent} to be assign to a scene
+	 * if a spacefleet / planet is selected it creates a line with the center of object selected as origin.
+	 * @return a {@link MouseEvent} to be assigned to a scene
 	 * @see Game
 	 */	
 	public EventHandler<MouseEvent> mousePressed(){

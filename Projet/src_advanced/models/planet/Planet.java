@@ -68,7 +68,7 @@ public abstract class Planet extends GameObject implements Renderable, Serializa
 	protected int productionRate;
 	
 	/**
-	 * The number of spaceship on the planet
+	 * The number of spaceships on the planet
 	 * 
 	 * @see Planet#NbShipOnPlanet()
 	 */
@@ -83,7 +83,7 @@ public abstract class Planet extends GameObject implements Renderable, Serializa
 	
 	/**
 	 * Planet Constructor to be called in the child class.<br/>
-	 * set a random new position, size, number of spaceship on planet and specify the production rate.
+	 * set a random new position, size, number of spaceships on planet and specify the production rate.
 	 * 
 	 */
 	public Planet(SpaceshipType spaceshipType) {
@@ -182,9 +182,9 @@ public abstract class Planet extends GameObject implements Renderable, Serializa
 	}
 
 	/**
-	 * Get the number of ship on the planet.
+	 * Get the number of ships on the planet.
 	 * 
-	 * @return the number of ship on the planet.
+	 * @return the number of ships on the planet.
 	 * 
 	 * @see Planet#shipOnPlanet
 	 */
@@ -193,9 +193,9 @@ public abstract class Planet extends GameObject implements Renderable, Serializa
 	}
 	
 	/**
-	 * Set the number of ship on the planet.
+	 * Set the number of ships on the planet.
 	 * 
-	 * @param nb the number of ship to add.
+	 * @param nb the number of ships to add.
 	 * 
 	 * @see Planet#shipOnPlanet
 	 */
