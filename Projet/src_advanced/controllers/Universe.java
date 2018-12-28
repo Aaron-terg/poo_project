@@ -29,7 +29,7 @@ import models.shape.Renderable;
 public class Universe implements Renderable, Serializable{
 	
 	/**
-	 * <b>The set of planet.</b>
+	 * <b>The set of planets.</b>
 	 * 
 	 * @see Planet
 	 * @see Universe#getPlanets()
@@ -41,7 +41,7 @@ public class Universe implements Renderable, Serializable{
 	 * <b>Universe constructor</b>
 	 * <p> create a set of planet randomly generated.
 	 * 
-	 * @param nbPlanets the number of planet to create bond within 0 and 20
+	 * @param nbPlanets the number of planets to create bond within 0 and 20
 	 */
 	public Universe(int nbPlanets) {
 		

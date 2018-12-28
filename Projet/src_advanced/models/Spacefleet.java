@@ -44,9 +44,9 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	
 	/**
 	 * <ul>
-	 * <li>nbShip: the total number of spaceship defined by the percentage</li>
+	 * <li>nbShip: the total number of spaceships defined by the percentage</li>
 	 * <li>nbWave: the number of launch needed to send nbShipToSend in order to reach the nbShip</li>
-	 * <li>nbShipToSend: the number of ship to send by wave defined with the raidus of the starting planet</li>
+	 * <li>nbShipToSend: the number of ships to send by wave defined with the radius of the starting planet</li>
 	 * <li>nbShipSend: the number of ship sent </li>
 	 * </ul>
 	 */
@@ -67,8 +67,8 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	/**
 	 * Spacefleet constructor.<br/>
 	 * set a new fleet with a total of ship and a starting planet.<br/>
-	 * It also defined the number of wave and number of ship to be send from the size of the planets.
-	 * @param nbShip the number of spaceship to be send (bound by the number of spaceship on the starting planet)
+	 * It also defined the number of waves and number of ships to be sent from the size of the planets.
+	 * @param nbShip the number of spaceship to be sent (bound by the number of spaceships on the starting planet)
 	 * @param start  planet of departure
 	 */
 	public Spacefleet(int nbShip, Planet start) {
@@ -143,7 +143,7 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	\***********************************/
 
 	/**
-	 * Get the current number of ship already send
+	 * Get the current number of ships already sent
 	 * @return the current number of ship in the fleet
 	 */
 	public int fleetSize() {
@@ -151,14 +151,14 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	}
 	
 	/**
-	 * @return the number of wave left
+	 * @return the number of waves left
 	 */
 	public int getNbWave() {
 		return this.nbWave;
 	}
 	
 	/**
-	 * Get the set of spaceship sent
+	 * Get the set of spaceships sent
 	 * @return an ArrayList of spaceship
 	 */
 	public ArrayList<SpaceshipType> fleet(){
@@ -196,10 +196,10 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	}
 	
 	/**
-	 * Check if the couple of coordinate are inside one the spaceship
+	 * Check if the couple of coordinates is inside one of the spaceships
 	 * @param x the x coordinate 
 	 * @param y the y coordinate
-	 * @return true if the couple of coordinate is inside one the spaceship
+	 * @return true if the couple of coordinates is inside one of the spaceships
 	 */
 	public boolean inside(double x, double y) {
 		boolean result = false;
@@ -219,8 +219,8 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	}
 	
 	/**
-	 * Send a number of ship defined in the constructor every time the method is called and the number of wave left is >0.
-	 * The spaceship are sent from "gate" around the planet specify by the angle and radius of the planet.
+	 * Send a number of ships defined in the constructor every time the method is called and the number of wave left is >0.
+	 * The spaceships are sent from "gate" around the planet specify by the angle and radius of the planet.
 	 * 
 	 * @see Spacefleet#Spacefleet(int, Planet)
 	 * @see Spacefleet#angle

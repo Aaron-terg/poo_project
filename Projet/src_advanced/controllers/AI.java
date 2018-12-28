@@ -15,7 +15,7 @@ import models.spaceship.StrongSpaceShip;
 import views.Game;
 
 /**
- * <b>The AI allow the user to measure himself to a challenging AI</b>
+ * <b>The AI allows the user to measure himself to a challenging AI</b>
  *  <p> AI extends {@link Player} </p>
  *  <p> AI implements {@link Serializable}</p>
  *  
@@ -29,7 +29,7 @@ import views.Game;
 public class AI extends Player implements Serializable{
 
 	/**
-	 * The universe containing the set of planet
+	 * The universe containing the set of planets
 	 * @see Universe#getPlanets()
 	 */
 	public Universe universe; 
@@ -93,7 +93,7 @@ public class AI extends Player implements Serializable{
 	
 	/**
 	 * the principal "algorithm" for the decision making of the AI
-	 * it iterate over the universe's set of planet and then test if their is one owned near or not
+	 * it iterates over the universe's set of planets and then tests if there is one owned near or not
 	 */
 	public void expansion() {
 		

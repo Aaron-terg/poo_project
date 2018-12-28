@@ -21,8 +21,8 @@ import views.ui.UserInterface;
 public class UniverseSetting implements Serializable{
 	/**
 	 * <ul>
-	 * <li> nbPlanet: number of planet for the universe </li>
-	 * <li> nbPlayer: number of player for the game</li>
+	 * <li> nbPlanet: number of planets for the universe </li>
+	 * <li> nbPlayer: number of players for the game</li>
 	 * </ul>
 	 */
 	public int nbPlanet, nbPlayer;

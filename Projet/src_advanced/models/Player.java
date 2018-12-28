@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import models.planet.Planet;
 
 /**
- * <b>Player class represent the player</b>
+ * <b>Player class represents the player</b>
  *  <p> Player implements {@link Serializable}</p>
  * <p>
  *     A player has the following property:
@@ -61,7 +61,7 @@ public class Player implements Serializable{
 	protected double[] color;
 	
 	/**
-	 * the percentage of spaceship to send from a selected planet.
+	 * the percentage of spaceships to send from a selected planet.
 	 * by default: 50
 	 * it can be augmented with the SHIFT key and regress with the ALT key
 	 * 
@@ -105,7 +105,7 @@ public class Player implements Serializable{
 	\***********************************/
 	
 	/**
-	 * Get the set of planet owned by the player
+	 * Get the set of planets owned by the player
 	 * 
 	 * @return the set of planet owned by the player
 	 * @see Player#territory
@@ -142,7 +142,7 @@ public class Player implements Serializable{
 	\***********************************/
 
 	/**
-	 * Check if the player can still playing
+	 * Check if the player can still play
 	 * @return true if the number of planet owned by the player is greater than 0
 	 */
 	public boolean hasTerritory() {

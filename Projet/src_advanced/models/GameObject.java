@@ -61,7 +61,7 @@ public class GameObject implements Renderable, Serializable{
 	
 	/**
 	 * GameObject constructor set the x, y, width, and height attributes
-	 * construct a circonstric circle with the height and width.
+	 * construct a circonstrict circle with the height and width.
 	 * @param x the abscisse coordinate
 	 * @param y the height coordinate
 	 */
@@ -142,7 +142,7 @@ public class GameObject implements Renderable, Serializable{
 	}
 	
 	/**
-	 * Check if the couple of coordinate are inside the boundaries
+	 * Check if the couple of coordinates is inside the boundaries
 	 * @param x the x coordinate 
 	 * @param y the y coordinate
 	 * @return true if the couple of coordinate is inside the boundaries

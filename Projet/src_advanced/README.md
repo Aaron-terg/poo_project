@@ -10,9 +10,9 @@ Instruction manual
 ##Rules 
 
 
-- The objective of this game is to conquer the universe. You will start with one planet picked randomly between a set of planet. this planet, your planet, will be colored in red and start producing spaceship.
+- The objective of this game is to conquer the universe. You will start with one planet picked randomly between a set of planet. this planet, your planet, will be colored in red and start producing spaceships.
 
-- The number written on the planet is the number of ships you've got. this number will increment every second while you possess the planet. 
+- The number written on the planet is the number of ships you've got. This number will be incremented every second while you possess the planet. 
 
 - There are other planets around you, your mission, conquer them! Send your ships on them to destroy their base and possess it.
 
@@ -23,16 +23,16 @@ Instruction manual
 
 - Your objective is to send your ships on the other planets and more especially on the other player's planet. You gain a planet when you destroy all the ships on it.
 
-- If one of your planet is in danger, think about recharging them with ship by sharing the ship of an other planet of yours. 
+- If one of your planet is in danger, think about recharging them with ship by sharing the ships of one of your other planets.
 
-- When an enemy  ship enter your planet this planet will lose  as many spaceship as the attack  power of the spaceship. Despite the fact an ally spaceship only increments by one the reserve.
+- When an enemy  ship enter in your planet, this planet will lose as many spaceship as the attack  power of the spaceship. Despite the fact an ally spaceship only increments by one the reserve.
 
 - You win when there is no more player in the game to stand before you.
 
 
 ##Controls
 
-Before getting to the  front, here is some useful information to control your fleets.
+Before getting to the  front, here is some useful informations to control your fleets.
 
 ###Troop movement
 
@@ -57,7 +57,7 @@ The troop movement is done in three step:
 
 LEFT Mouse pressing
 --
-three case:
+three cases:
  1. The click is perform over one of your planet: select this planet, highlight it and create a new line with the center of the planet as origin. 
  2. The click is perform over one your spaceship: select the spacefleet it belong to, highlight it and create a new line with the selected spaceship position as origin.
  3. The click is perform everywhere else: create a selection box to make easier the selection of a spacefleet.
@@ -109,7 +109,7 @@ CTRL + R: Start a new game
  
 ##The user interface
 
-There is four different splashscreen for the user to perform specific action independant of the game.
+There is four differents splashscreens for the user to perform specific action independant of the game.
 
 ####Main menu
 
@@ -119,7 +119,7 @@ when you start the applications you come across the main menu. You can either ch
 if you choose the new game option you will be redirected to the setting menu. 
  - adding / removing player: click on the plus square for adding a new player or click on the colored square to remove one player.
  
-    /!\ the game will not start if there is less planets than player or less than 2 players. there can be up to 4 player.
+    /!\ the game will not start if there are less planets than player or less than 2 players. there can be up to 4 player.
  
  - adding / removing planets: click on the plus button to add planet or the minus button to remove one.
  
@@ -132,7 +132,7 @@ if you choose the new game option you will be redirected to the setting menu.
  
 ####contextual menu
  
-During the game you set the game in pause mode (P key). During that time, you will have an UI displaying three option:
+During the game you can set the game in pause mode (P key). During that time, you will have an UI displaying three options:
  1. Resume: resume the game where you paused it <=> CTRL + ESCAPE.
  2. Restart: Return to the setting menu != CTRL + R : return to the main menu
  3. Save: Save the current state of the game and stored it in a file. <=> CTRL + S
