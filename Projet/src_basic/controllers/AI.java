@@ -4,14 +4,17 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Random;
 
+import javafx.scene.paint.Color;
+import models.Planet;
 import models.Player;
 import models.Spacefleet;
-import models.planet.Planet;
 import views.Game;
-import javafx.scene.paint.Color;
 
 /**
- * The AI allows the user to measure himself to a challenging AI
+ * <b>The AI allows the user to measure himself to a challenging AI</b>
+ *  <p> AI extends {@link Player} </p>
+ *  <p> AI implements {@link Serializable}</p>
+ *  
  * @author meryl
  * @see Player
  * @see Universe
@@ -26,7 +29,7 @@ public class AI extends Player implements Serializable{
 	 * @see Universe#getPlanets()
 	 */
 	public Universe universe; 
-	
+
 	/**
 	 * an intermediary Planet variable for decision making
 	 * 
@@ -34,21 +37,19 @@ public class AI extends Player implements Serializable{
 	 * @see AI#endGameAttack()
 	 */
 	private Planet nextTarget;
-	
-	private double nextTargetDistance;
+
 	/**
-	 * A boolean marker to see if every  planets of the universe is owned.
-	 * If it does, then start the phase 2 of the attack
+	 * The distance between the current planet selected and the targetted planet.
+	 * 
+	 * @see AI#expansion()
+	 */
+	private double nextTargetDistance;
+
+	/**
+	 * A boolean marker verifying the availability of every  planet of the universe.
+	 * If it true, then start the phase 2 of the attack
 	 */
 	private boolean allOwned;
-	
-	/**
-	 * AI Constructor
-	 * @param universe the universe containing the set of planet
-	 */
-	public AI(Universe universe) {
-		this(universe, "IA_test", Color.DARKCYAN);
-	}
 
 	/**
 	 * The AI constructor calling the super 
@@ -57,8 +58,8 @@ public class AI extends Player implements Serializable{
 	 * @param string
 	 * @param rgb
 	 */
-	public AI(Universe universe, String string, Color rgb) {
-		super(string, rgb);
+	public AI(Universe universe, String playerName, Color rgb) {
+		super(playerName, rgb);
 		this.universe = universe;
 		this.firstPlanet(universe);
 		nextTarget = universe.getPlanets().get(0);
@@ -75,13 +76,13 @@ public class AI extends Player implements Serializable{
 		expansion();
 		return super.inAction();
 	}
-	
+
 	/**
 	 * the principal "algorithm" for the decision making of the AI
-	 * it iterates over the universe's set of planets and then tests if there is own near and not owned
+	 * it iterates over the universe's set of planets and then tests if there is one owned near or not
 	 */
 	public void expansion() {
-		
+
 		boolean currentTest = true;
 		//prioritize the planet not owned
 		for (Iterator<Planet> univ = universe.getPlanets().iterator(); univ.hasNext();) {
@@ -90,18 +91,19 @@ public class AI extends Player implements Serializable{
 				for (Iterator<Planet> territoryIt = this.territory.iterator(); territoryIt.hasNext();) {
 					Planet planetOwned = territoryIt.next();
 					Spacefleet spacefleet;
-					
+
 					if(planetOwned.nbShipOnPlanet() > 40) {
 						newPercent(planetOwned.nbShipOnPlanet());
 						spacefleet = newLaunch(percent, planetOwned);
-						double newDist = planet.distance(spacefleet.getX(), spacefleet.getY());
-						if(!planet.owner().equals((Player)this) || newDist < nextTargetDistance) {
-							nextTarget = planet;
-							nextTargetDistance = newDist;
+						if(spacefleet != null) {
+							double newDist = planet.distance(spacefleet.getX(), spacefleet.getY());
+							if(!planet.owner().equals((Player)this) || newDist < nextTargetDistance) {
+								nextTarget = planet;
+								nextTargetDistance = newDist;
 
+							}
+							spacefleet.setDestination(nextTarget);
 						}
-						
-						spacefleet.setDestination(nextTarget);
 					}
 				}
 			}
@@ -110,20 +112,20 @@ public class AI extends Player implements Serializable{
 				for (Iterator<Planet> territoryIt = this.territory.iterator(); territoryIt.hasNext();) {
 					Planet planetOwned = territoryIt.next();
 					Spacefleet spacefleet;
-					
+
 					if(planetOwned.nbShipOnPlanet() > 40) {
 						newPercent(planetOwned.nbShipOnPlanet());
 						spacefleet = newLaunch(percent, planetOwned);
-						if(!nextTarget.isOwn()) {
+						if(spacefleet != null && !nextTarget.isOwn()) {
 							double newDist = planet.distance(spacefleet.getX(), spacefleet.getY());
 
 							if((!nextTarget.isOwn() || nextTarget.owner().equals((Player)this)) || newDist < nextTargetDistance){
 								nextTarget = planet;
 								nextTargetDistance = newDist;
 							}
-							
+
 							spacefleet.setDestination(nextTarget);
-							
+
 						}
 					}
 				}
@@ -148,7 +150,7 @@ public class AI extends Player implements Serializable{
 			}
 		}
 	}
-	
+
 	/**
 	 * choose a percentage randomly given a bound which is the max Spacefleet the planet owned
 	 * @param bound the bound for the random picking
@@ -157,4 +159,5 @@ public class AI extends Player implements Serializable{
 		Random rand = new Random();
 		percent= rand.nextInt(bound);
 	}
+
 }

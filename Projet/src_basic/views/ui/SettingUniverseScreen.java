@@ -12,16 +12,29 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import views.Game;
 import views.button.AddRectangleButton;
-import views.button.LabelledRectangleButton;
+import views.button.RectangleButton;
 import views.button.RemoveRectangleButton;
 
+/**
+ * <b>The setting screen</b>
+ * <p> SettingUniverseScreen extends {@link UserInterface}</p
+ * <p>Here you can set the number  of player / planet and choose if you want to play or just watch the AI fighting each other</b>
+ * @author meryl
+ *
+ * @version src_advanced
+ */
 public class SettingUniverseScreen extends UserInterface{
 
-	public UniverseSetting universe;
-	
+	/**
+	 * Create a group of button linked to the universe setting. Every action on one of the button modify the current setting.
+	 * 
+	 * @param game the current game
+	 * @param universe the universe setting to tickle with
+	 * @see Game
+	 * @see UniverseSetting
+	 */
 	public SettingUniverseScreen(Game game, UniverseSetting universe) {
-		
-		this.universe = universe;
+		super();
 
 		// title
 		Text title = new Text(Game.WIDTH/2, 200, "Setting");
@@ -33,12 +46,30 @@ public class SettingUniverseScreen extends UserInterface{
 		
 		// number of player button group
 		Group addbtnGroup = new Group();
-		Text textPlayer = new Text(Game.WIDTH/2 -200, 300, "Number of player :");
-		AddRectangleButton addBtn1 = new AddRectangleButton(Game.WIDTH/2 - 200, Game.HEIGHT /2, 100, 100);
+		Text textPlayer = new Text(Game.WIDTH/2 -200, title.getY() + 100, "Number of player :");
+		AddRectangleButton addBtn1 = new AddRectangleButton(Game.WIDTH/2 - 200, textPlayer.getY() + 100, 100, 100);
 		
+		// check if there is a user
+		CheckBox checkbox = new CheckBox("human player");
+		checkbox.relocate( addBtn1.getX(),addBtn1.getY() + 150 );
+		if(universe.humanPlayer)
+			checkbox.setSelected(true);
+		else
+			checkbox.setSelected(false);
+		checkbox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+			@Override
+			public void handle(MouseEvent event) {
+				if(checkbox.isSelected())
+					universe.humanPlayer = true;
+				else
+					universe.humanPlayer = false;
+			}
+				});
+				
 		// number of planet button group
 		Group planetbtnGroup = new Group();
-		Text textPlanet = new Text(Game.WIDTH/2 -200, addBtn1.getY() + 200, "Number of planet :");
+		Text textPlanet = new Text(Game.WIDTH/2 -200, checkbox.getLayoutY() + 100, "Number of planet :");
 		RemoveRectangleButton rmBtn = new RemoveRectangleButton(textPlanet.getX() + 300, textPlanet.getY() , 50, 50);
 		AddRectangleButton addBtn2 = new AddRectangleButton(textPlanet.getX() + 500, textPlanet.getY() , 50, 50);
 		Text nbplanet = new Text(textPlanet.getX() + 400, textPlanet.getY(), ""+ universe.nbPlanet );
@@ -89,13 +120,14 @@ public class SettingUniverseScreen extends UserInterface{
 					
 				});
 				
+				int maxPlayer = 4;
 				// add a new rectangle to the group
 				addbtnGroup.getChildren().add(rect);
 				addBtn1.relocate(translation, addBtn1.getY());
 				addBtn1.setX(translation);
 				System.out.println("player added");
 				universe.nbPlayer++;
-				if(universe.nbPlayer == 4)
+				if(universe.nbPlayer == maxPlayer)
 					addBtn1.setVisible(false);
 				else
 					addBtn1.setVisible(true);
@@ -108,24 +140,6 @@ public class SettingUniverseScreen extends UserInterface{
 					rmBtn.setVisible(true);
 			};
 			
-		});
-		
-		// check if there is a user
-		CheckBox checkbox = new CheckBox("human player");
-		checkbox.relocate( Game.WIDTH/2 -250, Game.HEIGHT/2 - 100 );
-		if(universe.humanPlayer)
-			checkbox.setSelected(true);
-		else
-			checkbox.setSelected(false);
-		checkbox.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				if(checkbox.isSelected())
-					universe.humanPlayer = true;
-				else
-					universe.humanPlayer = false;
-			}
 		});
 		
 		addbtnGroup.getChildren().addAll(textPlayer, addBtn1, checkbox);
@@ -157,6 +171,8 @@ public class SettingUniverseScreen extends UserInterface{
 					rmBtn.setVisible(false);
 				else 
 					rmBtn.setVisible(true);
+				if(universe.nbPlanet < UniverseSetting.PLANET_MAX)
+					addBtn2.setVisible(true);
 
 			}
 		});
@@ -166,12 +182,12 @@ public class SettingUniverseScreen extends UserInterface{
 
 			@Override
 			public void handle(MouseEvent event) {
-
-				if(universe.nbPlanet < 15) {
+				int maxPlanet = UniverseSetting.PLANET_MAX;
+				if(universe.nbPlanet < maxPlanet) {
 					universe.nbPlanet++;
 					nbplanet.setText("" + universe.nbPlanet);
 				}
-				if(universe.nbPlanet == 15)
+				if(universe.nbPlanet == maxPlanet)
 					addBtn2.setVisible(false);
 				else 
 					addBtn2.setVisible(true);
@@ -186,13 +202,12 @@ public class SettingUniverseScreen extends UserInterface{
 		planetbtnGroup.getChildren().addAll(textPlanet,nbplanet, addBtn2, rmBtn);
 	
 		// start the game when the setting is done
-		LabelledRectangleButton startGame = new LabelledRectangleButton("Start", Game.WIDTH/2, Game.HEIGHT  - 150, 400, 100);
+		RectangleButton startGame = new RectangleButton("Start", Game.WIDTH/2, textPlanet.getY() + 200, 400, 100);
 		startGame.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
 				if(universe.nbPlayer > 1) {
-					System.out.println("clicked " +  startGame.label);
 					game.initGame();
 					game.gameRenderer();
 				}

@@ -5,29 +5,38 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 /**
  * The class Polygon extends the class Shape and represents a polygon
+ * <p> Polygon extends {@link Shape}</p>
  * <p>
  * 	 A polygon has the following properties : 
  * <ul>
- * 		<li>A table of points which represent the coordinates of the polygon's tops</li>
+ * 		<li>A table of points which represents the coordinates of the polygon's tops</li>
  * 	</li>
  * </p>
- * @author virginie Meryl
+ * @author meryl
+ * 
+ *  @see Shape
  *
  */
 public class Polygon extends Shape{
+
 	/**
-	* the table of coordinates of the polygon's top
-	*/
+	 * the position of the vertices of the polygon
+	 */
 	private double[] x, y; 
-	
-	
+
+
 	/**
 	 * Triangle constructor
 	 */
 	public Polygon() {
-		this(new double[]{0,20,10}, new double[]{0, 0 ,20});
+		this(new double[]{0,18,10}, new double[]{0, 0 ,18});
 	}
-	
+
+	/**
+	 * polygon constructor
+	 * @param x an array of x coordinates
+	 * @param y an array of y coordinates
+	 */
 	public Polygon(double[] x, double[] y) {
 		super(x[1], y[2]);
 		this.x = x;
@@ -39,7 +48,7 @@ public class Polygon extends Shape{
 	 * 			Getter && Setter	   *
 	 * 								   *
 	\***********************************/
-	
+
 	/**
 	 * 
 	 * @return the table of X polygon's coordinates
@@ -61,14 +70,19 @@ public class Polygon extends Shape{
 	 * 				Method			   *
 	 * 								   *
 	\***********************************/
-	@Override
 
+	/**
+	 * Draw the shape on the window 
+	 * @param the GraphicsContext gc
+	 * @param rgb the color of the shape
+	 */
+	@Override
 	public void drawShape(GraphicsContext gc, Color rgb) {
 		super.drawShape(gc, rgb);
-		
+
 		gc.strokePolygon(x, y, x.length);
 		gc.fillPolygon(x, y, x.length);
-		
+
 	}
 
 
@@ -76,7 +90,7 @@ public class Polygon extends Shape{
 	public double[] position() {
 		return (new double[]{this.x[0],y.clone()[0]});
 	}
-	
+
 	@Override
 	/**
 	 * set a point of the polygon at a specified position and calculate the others new positions;
@@ -94,5 +108,5 @@ public class Polygon extends Shape{
 		}
 
 	}
-	
+
 }

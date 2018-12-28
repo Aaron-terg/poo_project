@@ -3,8 +3,25 @@ package views.button;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
+/**
+ * <b>A javafx "plus" button with custom property</b>
+ * <p>extend {@link RectangleButton}</p>
+ * 
+ * @author meryl
+ * @see AddRectangleButton
+ * @see RemoveRectangleButton 
+ * @version src_advanced
+ */
 public class AddRectangleButton extends RectangleButton {
 
+	/**
+	 * create a rectangle with current parameters
+	 * and draw a "plus" in the rectangle
+	 * @param x the x position
+	 * @param y the y position
+	 * @param w the width of the rectangle
+	 * @param h the height of the rectangle
+	 */
 	public AddRectangleButton(double x, double y, double w, double h) {
 		super(x, y, w, h);
 		

@@ -4,13 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import models.planet.Planet;
-import models.shape.Renderable;
 import javafx.scene.canvas.GraphicsContext;
+import models.Planet;
+import models.shape.Renderable;
 
 /**
  * 
  * <b>Universe</b>
+ *  <p> Universe implements {@link Renderable}, {@link Serializable}</p>
  * <p>
  * 		Universe class is the manager. its tasks are:
  * 		<ul>
@@ -20,7 +21,7 @@ import javafx.scene.canvas.GraphicsContext;
  * 			<li>render them<li>
  * 
  * @see Planet
- * 
+ * @see UniverseSetting
  * @author meryl
  * @version src_basic
  *
@@ -28,7 +29,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class Universe implements Renderable, Serializable{
 	
 	/**
-	 * <b>The set of planet.</b>
+	 * <b>The set of planets.</b>
 	 * 
 	 * @see Planet
 	 * @see Universe#getPlanets()
@@ -40,13 +41,13 @@ public class Universe implements Renderable, Serializable{
 	 * <b>Universe constructor</b>
 	 * <p> create a set of planet randomly generated.
 	 * 
-	 * @param nbPlanets the number of planet to create bond within 0 and 20
+	 * @param nbPlanets the number of planets to create bond within 0 and 20
 	 */
 	public Universe(int nbPlanets) {
 		
 		
-		nbPlanets = Math.min(20, nbPlanets);
-		nbPlanets = Math.max(0, nbPlanets);
+		nbPlanets = Math.min(UniverseSetting.PLANET_MAX, nbPlanets);
+		nbPlanets = Math.max(2, nbPlanets);
 		
 		// Making of a set of planet
 		planets = new ArrayList<Planet>();
@@ -61,7 +62,7 @@ public class Universe implements Renderable, Serializable{
 				superImposedTest &= !planet.superimposed(prevPlanet);
 				j--;
 			}
-			if(superImposedTest) 
+			if(superImposedTest)
 				planets.add(planet);
 				
 			superImposedTest = true;

@@ -8,12 +8,12 @@ import java.util.Random;
 import controllers.Universe;
 import controllers.UserInput;
 import javafx.scene.paint.Color;
-import models.planet.Planet;
 
 /**
  * <b>Player class represents the player</b>
+ *  <p> Player implements {@link Serializable}</p>
  * <p>
- *     A player has the following properties:
+ *     A player has the following property:
  *     <ul>
  *         <li>A collection of the planet owned</li>
  *         <li>its tag name</li>
@@ -22,9 +22,9 @@ import models.planet.Planet;
  * 
  * @see Planet
  * @see SpaceShip
- * 
  * @author meryl, Virginie
  * @version src_basic
+ * @since src_basic
  *
  */
 public class Player implements Serializable{
@@ -58,7 +58,7 @@ public class Player implements Serializable{
 	protected double[] color;
 	
 	/**
-	 * the percentage of spaceship to send from a selected planet.
+	 * the percentage of spaceships to send from a selected planet.
 	 * by default: 50
 	 * it can be augmented with the SHIFT key and regress with the ALT key
 	 * 
@@ -104,7 +104,7 @@ public class Player implements Serializable{
 	/**
 	 * Get the set of planets owned by the player
 	 * 
-	 * @return the set of planets owned by the player
+	 * @return the set of planet owned by the player
 	 * @see Player#territory
 	 * @see Planet
 	 */
@@ -115,7 +115,7 @@ public class Player implements Serializable{
 	/**
 	 * Get the fleets of the player
 	 * 
-	 * @return the set of fleets owned by the player
+	 * @return the set of planet owned by the player
 	 * @see Player#spacefleets
 	 * @see Spacefleet
 	 */
@@ -140,7 +140,7 @@ public class Player implements Serializable{
 
 	/**
 	 * Check if the player can still play
-	 * @return true if the number of planets owned by the player is greater than 0
+	 * @return true if the number of planet owned by the player is greater than 0
 	 */
 	public boolean hasTerritory() {
 		return territory.size() != 0;
@@ -160,7 +160,7 @@ public class Player implements Serializable{
 	}
 	
 	/**
-	 * Add a planet in the list of planets owned by the player
+	 * Add a planet in the list of planet owned by the player
 	 * and set the owner of the planet
 	 * @param p the planet conquered
 	 * 
@@ -181,12 +181,21 @@ public class Player implements Serializable{
 	 * @return a new Spacefleet ready to be sent
 	 */
 	public Spacefleet newLaunch(int percent, Planet start) {
+		
 		int nbShip = (int)(percent*start.nbShipOnPlanet())/100;
+		if(nbShip <= 0)
+			return null;
 		Spacefleet spacefleet = new Spacefleet(nbShip, start);
 		this.spacefleets.add(spacefleet);
 		return spacefleet;
 	}
 	
+	/**
+	 * set the new destination for the current selected spacefleet.
+	 * @param planet the new destination
+	 * 
+	 * @see UserInput#mouseReleased()
+	 */
 	public void newDest(Planet planet){
 		Spacefleet currentSpacefleet;
 		if(GameObject.selected instanceof Planet) {
@@ -195,7 +204,8 @@ public class Player implements Serializable{
 			if(currentPlanet != planet) {
 
 				currentSpacefleet = this.newLaunch(this.percent, currentPlanet);
-				currentSpacefleet.setDestination(planet); 
+				if(currentSpacefleet != null)
+					currentSpacefleet.setDestination(planet); 
 
 			}
 

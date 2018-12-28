@@ -1,27 +1,20 @@
 package models.shape;
 
 import java.io.Serializable;
-/**
- * The class "Line" represents a Line: 
- * <p>
- * 
- * 		The line has the following properties 
- * <ul>
- * 		<li>  the X coordinate of a point </li>
- * 		<li> The Y coordinate of the same point </li>
- * 	</li>
- * 
- * </p>
- * 
- * @see Shape
- * @see Serializable
- */
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
+/**
+ * The line making the joints between the selected gameobject and the position underneath the cursor.
+ * 
+ * @see Shape
+ * @author meryl
+ * @version src_basic
+ */
 public class Line extends Shape implements Serializable{
-	
+	/**
+	 * the position of the shape
+	 */
 	private double x, y;
 	/**
 	 * Line constructor
@@ -43,6 +36,7 @@ public class Line extends Shape implements Serializable{
 		this.x = originX;
 		this.y = originY;
 	}
+	
 	/***********************************\
 	 * 								   *
 	 * 			Method				   *
@@ -60,7 +54,6 @@ public class Line extends Shape implements Serializable{
 	}
 
 	@Override
-
 	public void drawShape(GraphicsContext gc, Color rgb) {
 		super.drawShape(gc, rgb);
 		gc.setLineWidth(2f);

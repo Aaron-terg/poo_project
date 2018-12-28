@@ -19,6 +19,7 @@ import controllers.UserInput;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -29,14 +30,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import models.Planet;
 import models.Player;
 import models.Spacefleet;
-import models.planet.Planet;
-import models.spaceship.SpaceshipType;
-import views.button.LabelledRectangleButton;
-import views.ui.InterfaceMenu;
+import models.SpaceshipType;
+import views.button.RectangleButton;
 import views.ui.SettingUniverseScreen;
-import views.ui.SplashScreenGroup;
 import views.ui.UserInterface;
 
 /**
@@ -52,8 +51,7 @@ public class Game extends Application{
 	/**
 	 * The dimension of the window application
 	 */
-	public final static double WIDTH = 1400;
-	public final static double HEIGHT = 900;
+	public final static double WIDTH = 1400, HEIGHT = 900;
 
 
 	/**
@@ -62,12 +60,19 @@ public class Game extends Application{
 	 */
 	private Scene scene;
 	
+	/**
+	 * The animation loop need for the rendering
+	 */
 	private static AnimationTimer gameLoop;
 	
+	/**
+	 * the canvas needed for setting the control while loading a game.
+	 * @see Game#loadGame()
+	 */
 	private Canvas canvas;
 	
 	/**
-	 * user interface, (more view to come in an update)
+	 * the user interface for configuring a new game
 	 */
 	public UserInterface intermediaryUi;
 	
@@ -76,11 +81,14 @@ public class Game extends Application{
 	 */
 	private UserInput userIn;
 	
+	/**
+	 * the setting of the universe configured by the user interface
+	 */
 	public static UniverseSetting uSet;
 	
 	/**
 	 * The universe of the game for playing with.
-	 * COntain a set of planet.
+	 * Contain a set of planet.
 	 */
 	public static Universe universe;
 
@@ -94,9 +102,21 @@ public class Game extends Application{
 		launch(args);
 	}
 
+	/**
+	 * Init the application.
+	 * defined the canvas, user interface, game loop scene interaction.
+	 * 
+	 * @see Game#canvas
+	 * @see Game#scene
+	 * @see Game#gameLoop
+	 * @see Game#intermediaryUi
+	 * @param stage
+	 * @throws Exception
+	 */
 	@Override
 	public void start(Stage stage) throws Exception {
 
+		System.out.println("basic version");
 		// setting of the application
 		stage.setTitle("Space Game");
 		stage.setResizable(false);
@@ -104,8 +124,7 @@ public class Game extends Application{
 		canvas = new Canvas(WIDTH, HEIGHT);
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 
-		intermediaryUi = new UserInterface();
-		intermediaryUi.refreshInterface((new SplashScreenGroup(this)).getChildren());
+		intermediaryUi = new UserInterface(this);
 
 		((Group)scene.getRoot()).getChildren().addAll(canvas, intermediaryUi);
 
@@ -117,10 +136,11 @@ public class Game extends Application{
 			@Override
 			public void handle(KeyEvent e) {
 				KeyCode code = e.getCode();
-				if(code.equals(KeyCode.P) || code.equals(KeyCode.ESCAPE)) {
+				if(code.equals(KeyCode.P))
 					pause();
-
-				}if (code.equals(KeyCode.S) && e.isControlDown()) {
+				if(code.equals(KeyCode.ESCAPE))
+					gameRenderer();
+				if (code.equals(KeyCode.S) && e.isControlDown()) {
 					saveGame();
 				}
 				if (code.equals(KeyCode.P) && e.isControlDown()) {
@@ -129,7 +149,7 @@ public class Game extends Application{
 				if (code.equals(KeyCode.Q) && e.isControlDown())
 					System.exit(0);	
 				if (code.equals(KeyCode.R) && e.isControlDown()) {
-					((UserInterface) intermediaryUi).refreshInterface((new SplashScreenGroup(Game.this)).getChildren());
+					((UserInterface) intermediaryUi).refreshInterface((new UserInterface(Game.this)).getChildren());
 					intermediaryUi.setVisible(true);
 					canvas.setVisible(false);
 					gameLoop.stop();
@@ -151,14 +171,14 @@ public class Game extends Application{
 				gc.setFill(Color.WHITE);
 				gc.fillRect(0, 0, WIDTH, HEIGHT);
 
-				//				if(gameState.equals(GameState.RUNNING)) {
 				double elapsedTime = (now - prevTime) / 1E9f;
 				double elapsedTimeCaped = Math.min(elapsedTime, maxStep);
+
 				accTime += elapsedTimeCaped;
 				accTimeFrameRate += elapsedTimeCaped;
 				accTimeLaunch += elapsedTimeCaped;
 				prevTime =now;
-
+				
 				// update every seconds
 				while(accTime >= step) {
 					for (Iterator<Planet> planetIt = universe.getPlanets().iterator(); planetIt.hasNext();) {
@@ -233,14 +253,20 @@ public class Game extends Application{
 
 	}
 
+	/**
+	 * Configure the universe to be create thanks to the user interface.
+	 */
 	public void gameSetting() {
 		intermediaryUi.setVisible(true);
 		canvas.setVisible(false);
-		uSet = new UniverseSetting(10, 2, true);
+		uSet = new UniverseSetting(20, 1, true);
 
 		intermediaryUi.refreshInterface((new SettingUniverseScreen(this, uSet)).getChildren());
 	}
 	
+	/**
+	 * set the universe with the value of the universe setting: number of player, planet user control if there is an user.
+	 */
 	@SuppressWarnings("unchecked")
 	public void initGame() {
 		gameLoop.stop();
@@ -251,34 +277,37 @@ public class Game extends Application{
 		
 		universe = new Universe(uSet.nbPlanet);
 
-		// SplashScreen renderer
+		// setting of the controller for the player
 		if(uSet.humanPlayer) {
-			Player user = new Player("Aaron Terg", uSet.color[3]);
+			Player user = new Player("Aaron Terg", uSet.color[0]);
 			userIn = new UserInput(user);
 
 			user.firstPlanet(universe);
 			canvas.setOnMouseClicked(userIn.mouseClicked());
 			EventHandler<KeyEvent> onKeyPressed = (EventHandler<KeyEvent>) scene.getOnKeyPressed();
+			scene.setCursor(Cursor.CROSSHAIR);
 			scene.setOnKeyPressed(userIn.keyPressed(onKeyPressed));
 			canvas.setOnMousePressed(userIn.mousePressed());
 			canvas.setOnMouseDragged(userIn.mouseDragged());
 			canvas.setOnMouseReleased(userIn.mouseReleased());
+			canvas.setOnScroll(userIn.scrollEvent());
 			
 			players.add(user);
 			uSet.nbPlayer--;
 		}
 		
-		
+		// create the AI
 		for (int i = 0; i < uSet.nbPlayer; i++) {
-			Player ia = new AI(universe, "AI" + i, uSet.color[i]);
+			int colorIndex = players.size();
+			Player ia = new AI(universe, "AI_" + i+1, uSet.color[colorIndex]);
 			players.add(ia);
 		}
 		
-
-		// setting of the controller for the player
-		
 	}
 
+	/**
+	 * start the game loop renderer 
+	 */
 	public void gameRenderer() {
 
 		if(universe != null) {
@@ -293,8 +322,6 @@ public class Game extends Application{
 
 	/**
 	 * update all the game object
-	 * if their is the need
-	 * 
 	 */
 	public void update() {
 
@@ -303,48 +330,43 @@ public class Game extends Application{
 			Player player = playerIt.next();
 
 			// test if the player can play
-			if(player.hasTerritory()) { 
+			if(player.inAction() || player.hasTerritory()) { 
 
-				// player have spacefleet ready to be sent?
-				if(player.inAction()) { 
+				for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
+					Spacefleet spacefleet = fleetIt.next();
 
-					for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
-						Spacefleet spacefleet = fleetIt.next();
+					// launch the first wave of a spacefleet
+					if(spacefleet.fleetSize() == 0)
+						spacefleet.takeOff();
 
-						// launch the first wave of a spacefleet
-						if(spacefleet.fleetSize() == 0)
-							spacefleet.takeOff();
+					for (Iterator<SpaceshipType> iterator = spacefleet.fleet().iterator(); iterator.hasNext();) {
 
-						for (Iterator<SpaceshipType> iterator = spacefleet.fleet().iterator(); iterator.hasNext();) {
+						SpaceshipType spaceshipType = iterator.next();
 
-							SpaceshipType spaceshipType = iterator.next();
+						Planet planet = spacefleet.getDestination();
 
-							Planet planet = spacefleet.getDestination();
+						if(planet == null) //exit if the spaceship doesn't have destination
+							break;
 
-							if(planet == null) //exit if the spaceship doesn't have destination
-								break;
-
-							// spaceship collision with planet
-							if(planet.intersects(spaceshipType)) {
-								planet.spaceShipEnter(spaceshipType);
-								iterator.remove();
-							}
-							else{
-								for(Planet obstacle : universe.getPlanets()) {
-									// if -> fluidifie les collisions 
-									// while assure que les planetes ne soit pas dans la planete
-									// TODO improve getAround 
-									while(obstacle.getPlanetShape().distPoint(spaceshipType.getX(), spaceshipType.getY())
-											< obstacle.width()/2 + spaceshipType.width() && !obstacle.equals(planet)) {
-										spaceshipType.getAround(obstacle,spacefleet);
-									}
-								}
-								spaceshipType.goTo(planet);
-							}
+						// spaceship collision with planet
+						if(planet.intersects(spaceshipType)) {
+							planet.spaceShipEnter(spaceshipType);
+							iterator.remove();
 						}
-						if(spacefleet.isArrived())
-							fleetIt.remove();
+						else{
+							for(Planet obstacle : universe.getPlanets()) {
+								// if -> fluidifie les collisions 
+								// while assure que les planetes ne soit pas dans la planete
+								if(obstacle.distance(spaceshipType.getX(), spaceshipType.getY())
+										< obstacle.width()/2 + spaceshipType.width()/2 +15 && !obstacle.equals(planet)) {
+									spaceshipType.getAround(obstacle);
+								}
+							}
+							spaceshipType.goTo(planet);
+						}
 					}
+					if(spacefleet.isArrived())
+						fleetIt.remove();
 				}
 			}
 			else {
@@ -387,7 +409,7 @@ public class Game extends Application{
 	}
 
 	/**
-	 * Set the game to pause, and display the pause menu (to be implemented)
+	 * Set the game to pause, and display the pause menu
 	 */
 	public void pause() {
 		gameLoop.stop();
@@ -397,34 +419,31 @@ public class Game extends Application{
 				centerY = (Game.HEIGHT /2);
 		
 		int nbBtn = 3;
-		LabelledRectangleButton restartBtn = new LabelledRectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		RectangleButton restartBtn = new RectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
 		restartBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clicked " +  restartBtn.label);
 				gameSetting();
 			}
         });
 		
 		nbBtn--;
-		LabelledRectangleButton saveBtn = new LabelledRectangleButton("Save", centerX,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		RectangleButton saveBtn = new RectangleButton("Save", centerX,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
 		saveBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clicked " +  saveBtn.label);
 				saveGame();
 			}
         });
 		nbBtn--;
 		
-		LabelledRectangleButton continueBtn = new LabelledRectangleButton("Continue", centerX,  centerY + ((btnHeight * nbBtn)) + 25 * (nbBtn -1), 2*btnWidth, btnHeight);
+		RectangleButton continueBtn = new RectangleButton("Resume", centerX,  centerY + ((btnHeight * nbBtn)) + 25 * (nbBtn -1), 2*btnWidth, btnHeight);
 		continueBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clicked " +  continueBtn.label);
 				gameRenderer();
 			}
         });
@@ -432,7 +451,7 @@ public class Game extends Application{
 		
 		Group group = new Group();
 		group.getChildren().addAll( restartBtn, saveBtn, continueBtn);
-		intermediaryUi.refreshInterface((new InterfaceMenu("Pause", group.getChildren(), 3)).getChildren());
+		intermediaryUi.refreshInterface((new UserInterface("Pause", group.getChildren(), 3)).getChildren());
 		
 		intermediaryUi.setVisible(true);
 		canvas.setVisible(false);
@@ -450,24 +469,23 @@ public class Game extends Application{
 				centerX = (Game.WIDTH / 2),
 				centerY = (Game.HEIGHT /2);
 		
+		String txt = (!uSet.humanPlayer || players.get(0) instanceof AI )? "Too Bad..." : "Congratulations!";
 		int nbBtn = 3;
-		LabelledRectangleButton restartBtn = new LabelledRectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		RectangleButton restartBtn = new RectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
 		restartBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clicked " +  restartBtn.label);
 				gameSetting();
 			}
         });
 		
 		nbBtn--;
-		LabelledRectangleButton quitBtn = new LabelledRectangleButton("Quit", centerX,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
+		RectangleButton quitBtn = new RectangleButton("Quit", centerX,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
 		quitBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
 			public void handle(MouseEvent event) {
-				System.out.println("clicked " +  quitBtn.label);
 				System.exit(0);
 			}
         });
@@ -476,7 +494,7 @@ public class Game extends Application{
 		
 		Group group = new Group();
 		group.getChildren().addAll(quitBtn, restartBtn);
-		intermediaryUi.refreshInterface((new InterfaceMenu("Congratulation!", group.getChildren(), 2)).getChildren());
+		intermediaryUi.refreshInterface((new UserInterface(txt, group.getChildren(), 2)).getChildren());
 		
 		intermediaryUi.setVisible(true);
 		canvas.setVisible(false);
@@ -484,7 +502,7 @@ public class Game extends Application{
 	}
 
 	/**
-	 * Save the current state to a file and set the game state to RUNNING
+	 * Save the current state to a file
 	 */
 	public void saveGame() {
 		try(ObjectOutputStream oos =
@@ -510,7 +528,7 @@ public class Game extends Application{
 	}
 
 	/**
-	 * The game loader, it reload the previous save and set the gameState to RUNNING
+	 * The game loader, it reload the previous save
 	 */
 	@SuppressWarnings("unchecked")
 	public void loadGame() {
@@ -537,6 +555,8 @@ public class Game extends Application{
 				canvas.setOnMousePressed(userIn.mousePressed());
 				canvas.setOnMouseDragged(userIn.mouseDragged());
 				canvas.setOnMouseReleased(userIn.mouseReleased());
+				canvas.setOnScroll(userIn.scrollEvent());
+
 			}
 			System.out.println("information checked ! ");
 

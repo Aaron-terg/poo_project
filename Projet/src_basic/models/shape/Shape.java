@@ -2,13 +2,14 @@ package models.shape;
 
 import java.io.Serializable;
 
-import models.spaceship.SpaceshipType;
-import models.planet.Planet;
+import models.Planet;
+import models.SpaceshipType;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
  * <b>The shape abstract class contains basics functions of a shape</b>
+ *  <p> Shape implements {@link Serializable}</p>
  * A Shape has the following properties : 
  * <p>
  * <ul>
@@ -17,18 +18,24 @@ import javafx.scene.paint.Color;
  * </p>
  * @see Planet
  * @see SpaceshipType
+ *  @see Circle
+ *  @see Line
+ *  @see Polygon
  * @author meryl,Virginie
- * @version 2.1
+ * @version src_advanced
  */
 public abstract class Shape implements Serializable {
-	
+
 	protected double height, width;
 	/**
 	 * Shape constructors
 	 */
 	public Shape() {
 	}
-	
+
+	/**
+	 * Shape constructors setting the width and the height of the shape
+	 */
 	public Shape(double width, double height) {
 		this.width = width;
 		this. height = height;
@@ -54,21 +61,21 @@ public abstract class Shape implements Serializable {
 		return width;
 	}
 
-	
-	
+
+
 	/***********************************\
 	 * 								   *
 	 * 				Method			   *
 	 * 								   *
 	\***********************************/
-	
+
 	/**
 	 * Get the actual position of the shape 
 	 * @return a table of Coordinates
 	 */
 
 	public abstract double[] position();
-	
+
 
 	/**
 	 * Set the shape at a specific position
@@ -76,7 +83,7 @@ public abstract class Shape implements Serializable {
 	 * @param posY : the Y coordinate of the new position
 	 */	
 	public abstract void setPosition(double posX, double posY);
-	
+
 
 	/**
 	 * This method permits to draw the shape on the window

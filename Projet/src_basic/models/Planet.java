@@ -1,22 +1,22 @@
-package models.planet;
+package models;
 
 import java.io.Serializable;
 import java.util.Random;
 
-import models.GameObject;
-import models.Player;
-import models.spaceship.BasicSpaceshipType;
-import models.spaceship.SpaceshipType;
-import models.shape.Circle;
-import models.shape.Renderable;
-import views.Game;
+import controllers.UserInput;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import models.shape.Circle;
+import models.shape.Renderable;
+import models.shape.Shape;
+import views.Game;
 
 /**
- * <b>Planet class represents the planet</b>
+ * <b>Planet abstract class representing the planet</b>
+ * <p> Planet extends {@link GameObject}</p>
+ *  <p> Planet implements {@link Renderable}, {@link Serializable}</p>
  * <p>
- *     A planet has the following properties:
+ *     A planet has the following property:
  *     <ul>
  *         <li>The state of the planet showing if it is own or not</li>
  *         <li>The spaceship type it produce</li>
@@ -25,12 +25,16 @@ import javafx.scene.paint.Color;
  *     </li>
  * </p>
  * 
- * @see SpaceshipType
+ * 
+ * @see GameObject
+ * @see RoundPlanet
+ * @see SquarePlanet
+ * @see TrianglePlanet
  * @see Player
  *
  * 
  * @author meryl
- * @version 2.1
+ * @version src_basic
  *
  */
 public class Planet extends GameObject implements Renderable, Serializable{
@@ -49,32 +53,35 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	 * 
 	 * @see SpaceshipType
 	 * @see Planet#getSpaceShipeType()
-	 * @see Planet#setSpaceShipeType(SpaceshipType)
 	 */
-	private SpaceshipType spaceshipType = null; 
+	protected SpaceshipType spaceshipType = null; 
 	
 	/**
 	 * The ratio of to create a Spaceship
 	 * 
 	 * @see Planet#getProductionRate()
 	 */
-	private int productionRate = 15;
+	protected int productionRate;
 	
 	/**
-	 * The number of spaceship on the planet
+	 * The number of spaceships on the planet
 	 * 
 	 * @see Planet#NbShipOnPlanet()
 	 */
-	private int shipOnPlanet;
+	protected int shipOnPlanet;
 	
 	/**
 	 * The models.shape of the planet
 	 * 
 	 * @see javafx.scene.shape
-	 * @see Planet#getPlanetShape()
-	 * @see Planet#setPlanetShape(PlanetShape)
 	 */
-	private Circle planetShape;
+	protected Circle planetShape;
+	
+	/**
+	 * Planet Constructor to be called in the child class.<br/>
+	 * set a random new position, size, number of spaceships on planet and specify the production rate.
+	 * 
+	 */
 	
 	/**
 	 * Planet Constructor
@@ -89,8 +96,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		double pointY = (frameHeight - radius)*randomNumber.nextDouble() + radius;
 		this.shipOnPlanet = randomNumber.nextInt(100)+1;
 		
-		
-		this.spaceshipType = new BasicSpaceshipType();
+		this.spaceshipType = new SpaceshipType();
 		
 		this.x = pointX - radius;
 		this.y = pointY - radius;
@@ -98,6 +104,8 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		this.width = this.height;
 		validPosition(frameWidth, frameHeight);
 		this.planetShape = new Circle(this.x + radius, this.y + radius, radius);
+		this.productionRate = (int)((20 + 50*(width/200)) / this.spaceshipType.getProductionTime());
+
 	}
 	
 	/***********************************\
@@ -107,6 +115,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	\***********************************/
 
 	/**
+	 /**
 	 * Get the current owner of the planet.
 	 * 
 	 * @return the player owning this planet or null if the planet is neutral.
@@ -121,7 +130,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	
 	/**
 	 * set the current owner of the planet.
-	 * 
+	 * and  remove this planet of the territory of the previous owner.
 	 * @param player
 	 * 			The new owner of the planet
 	 * 
@@ -148,19 +157,6 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	}
 	
 	/**
-	 * set the type of spaceship the planet will now produce.
-	 * 
-	 * @param spaceshipType
-	 * 			the type of spaceship the planet will produce.
-	 * 
-	 * @see SpaceshipType
-	 * @see Planet#spaceshipType
-	 */
-	public void setSpaceShipeType(SpaceshipType spaceshipType) {
-		this.spaceshipType = spaceshipType;
-	}
-
-	/**
 	 * Get the production rate of the planet.
 	 * 
 	 * @return the production rate of the planet.
@@ -172,9 +168,9 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	}
 
 	/**
-	 * Get the number of ship on the planet.
+	 * Get the number of ships on the planet.
 	 * 
-	 * @return the number of ship on the planet.
+	 * @return the number of ships on the planet.
 	 * 
 	 * @see Planet#shipOnPlanet
 	 */
@@ -183,15 +179,16 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	}
 	
 	/**
-	 * Set the number of ship on the planet.
+	 * Set the number of ships on the planet.
 	 * 
-	 * @param nb the number of ship to add.
+	 * @param nb the number of ships to add.
 	 * 
 	 * @see Planet#shipOnPlanet
 	 */
 	public void nbShipOnPlanet(int nb) {
 		this.shipOnPlanet += nb;
 	}
+	
 	
 	/**
 	 * Get the models.shape of the planet.
@@ -205,20 +202,6 @@ public class Planet extends GameObject implements Renderable, Serializable{
 		return this.planetShape;
 	}
 	
-	/**
-	 * set the models.shape of the planet.
-	 * 
-	 * @param models.shape
-	 * 			The new models.shape of the planet.
-	 * 
-	 * @see javafx.scene#shape
-	 * @see Planet#planetShape
-	 * 
-	 */
-	public void setPlanetShape(Circle shape) {
-		this.planetShape = shape;
-	}
-	
 	/***********************************\
 	 * 								   *
 	 * 				Method			   *
@@ -226,6 +209,7 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	\***********************************/
 	
 	/**
+		/**
 	 * Test if the planetState is currently own.
 	 * 
 	 * @return a boolean showing if the planetState is currently own.
@@ -238,14 +222,13 @@ public class Planet extends GameObject implements Renderable, Serializable{
 	public boolean isOwn() {
 		return (this.owner != null); 
 	}
-	
 	/**
 	 * Check if two planets are too close
 	 * @param p
 	 * @return
 	 */
 	public boolean superimposed(Planet p) {
-		return this.getPlanetShape().distance(p.getPlanetShape()) <= 100;
+		return this.distance(p.getX(), p.getY()) <= 50 + (p.width + this.width) /2;
 	}
 	
 

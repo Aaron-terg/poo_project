@@ -1,12 +1,12 @@
 package models.shape;
 
-import models.planet.Planet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
+import models.Planet;
 /**
  * 
  * <b>Circle</b>
+ * <p> Circle extends {@link Shape}</p>
  * <p>
  * 		Circle class represents the shape of the planet. A circle has the following properties:
  * 		<ul>
@@ -16,46 +16,41 @@ import javafx.scene.paint.Color;
  * 
  * 	<p>	
  * @see Planet
- * 
+ * @see Shape
  * @author meryl,Virginie
- * @version src_basic
+ * @version src_advanced
  *
  */
 public class Circle extends Shape{
+
 	/**
-	* the center's coordinates
-	*/
-	private double x, y;
-	/**
-	* the radius of the circle
-	*/
-	private double radius;
-	
-	/**
-	 *  Circle constructor, default constructor
+	 * the position of the shape
 	 */
-	public Circle() {
-		this.x = 0;
-		this.y = 0;
-		this.radius = 1;
-	}
-	
+	private double x, y;
+
+	/**
+	 * the radius of the shape.
+	 */
+	private double radius;
+
+	/**
+	 * The circle constructor
+	 * @param x coordinates
+	 * @param y coordinates
+	 * @param diameter
+	 */
 	public Circle(double x, double y, double radius) {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
-	}
-	
-	public Circle(Circle c) {
-		this(c.x, c.y, c.radius);
-	}
-	
+}
+
 	/***********************************\
 	 * 								   *
 	 * 			Getter/Setter		   *
 	 * 								   *
 	\***********************************/
-	
+
 	/**
 	 * Return the radius of the circle
 	 * @return
@@ -90,46 +85,7 @@ public class Circle extends Shape{
 	 * 				Method			   *
 	 * 								   *
 	\***********************************/
-	
-/**
- * Check if a shape intersects the circle; 
- * return true if there is a collision
- * @param shape
- * @return
- */
-	public boolean intersects(Shape shape) {
-		if(shape instanceof Circle) {
-			double newRadius  = this.radius + ((Circle)shape).radius;
-			return Math.abs(shape.position()[0] - this.position()[0])  <= newRadius
-					&& Math.abs(shape.position()[1] - this.position()[1])  <= newRadius;
-		}else if(shape instanceof Polygon) {
-			Polygon poly  = (Polygon)shape;
-			boolean result = false;
-			for (int i = 0; i < poly.getX().length; i++) {
-				result |= distPoint(poly.getX()[i], poly.getY()[i]) <= radius;
-			}
-			return result;
-		}
-		return false;
-		}
-	/**
-	 * Calculate the distance between two circles.
-	 * @param shape : the second circle
-	 * @return the distance
-	 */
-	public double distance(Circle shape) {
-			double radiusSum  = this.radius + shape.getRadius();
-			return this.distPoint(shape.position()[0], shape.position()[1]) - radiusSum;
-		}
-	/**
-	 * Calculate the distance between a circle and a point
-	 * @param p1X : the X coordinate of the point
-	 * @param p1Y : the Y cooridnate of the point
-	 * @return a distance (double)
-	 */
-	public double distPoint(double p1X, double p1Y) {
-		return Math.sqrt(Math.pow((p1X - this.x), 2) + Math.pow((p1Y - this.y), 2));
-	}
+
 
 	/**
 	 * Draw the shape on the window 
@@ -149,4 +105,4 @@ public class Circle extends Shape{
 		this.y = posY;
 	}
 }
-	
+
