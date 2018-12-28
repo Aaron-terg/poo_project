@@ -13,9 +13,9 @@ import models.shape.Renderable;
 import models.shape.Shape;
 
 /**
- * <b>SpaceShipType class represent the ship</b>
+ * <b>SpaceShipType class represents the ship</b>
  * <p>
- *     A SpaceShip has the following property:
+ *     A SpaceShip has the following properties:
  *     <ul>
  *         <li>The power of its attack</li>
  *         <li>The speed </li>
@@ -140,14 +140,15 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 
 	/**
 	 * Find && calculate a path around a circle
-	 * Move away the ship from the planet and find the new position thanks to this.newPosition
+	 * 
+	 * Move away the ship from the planet and find the new position thanks to this.moveTo
 	 * @param obstacle, the planet to avoid
 	 * @param fleet : to know which planet is the destination of the ships
 	 * @see SpaceshipType#moveTo(double, double)
 	 */
 	public void getAround(Planet obstacle, Spacefleet fleet) {
 		Planet destination = fleet.getDestination();
-		double cos=0, sin=0; 
+		double cos=0, sin=0; // Apply an angle with a cosinus and a sinus and consider the planet as a trigonometric circle
 		double a = (destination.getY()-obstacle.getY())/(destination.getX()-obstacle.getX());//the coefficient of the line a*x+b
 		double b = destination.getY()-a*destination.getX() + width;
 		double line = a*this.getX()+b;
@@ -160,7 +161,7 @@ public abstract class SpaceshipType extends GameObject implements Renderable, Se
 			//Check where is the ship compared to the line between obstacle's center && destination's center
 			
 			if(destinationisOnLeft && destinationisDown&& this.getY() >=line ||!destinationisOnLeft && destinationisDown){//spread the ship away from the planet
-				cos=-1; //move away from the circle
+				cos=-1; //consider the obstacle as a trigonometric circle so cos = X axis and sin = Y axis and apply this to move away the ship from the circle
 			}else 
 				sin=1;
 			

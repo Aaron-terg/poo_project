@@ -49,7 +49,7 @@ public class Spacefleet extends GameObject implements Renderable, Serializable {
 	/**
 	 * Spacefleet constructor.<br/>
 	 * set a new fleet with a total of ship and a starting planet
-	 * @param nbShip the number of spaceship to be send (bound by the number of spaceship on the starting planet)
+	 * @param nbShip the number of spaceship to be sent (bound by the number of spaceship on the starting planet)
 	 * @param start  planet of departure
 	 */
 	public Spacefleet(int nbShip, Planet start) {

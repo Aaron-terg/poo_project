@@ -11,7 +11,7 @@ import views.Game;
 import javafx.scene.paint.Color;
 
 /**
- * The AI allow the user to measure himself to a challenging AI
+ * The AI allows the user to measure himself to a challenging AI
  * @author meryl
  * @see Player
  * @see Universe
@@ -22,7 +22,7 @@ import javafx.scene.paint.Color;
 public class AI extends Player implements Serializable{
 
 	/**
-	 * The universe containing the set of planet
+	 * The universe containing the set of planets
 	 * @see Universe#getPlanets()
 	 */
 	public Universe universe; 
@@ -37,7 +37,7 @@ public class AI extends Player implements Serializable{
 	
 	private double nextTargetDistance;
 	/**
-	 * A boolean marker to if every  planet of the universe is owned.
+	 * A boolean marker to see if every  planets of the universe is owned.
 	 * If it does, then start the phase 2 of the attack
 	 */
 	private boolean allOwned;
@@ -78,7 +78,7 @@ public class AI extends Player implements Serializable{
 	
 	/**
 	 * the principal "algorithm" for the decision making of the AI
-	 * it iterate over the universe's set of planet and then test if their is own near and not owned
+	 * it iterates over the universe's set of planets and then tests if there is own near and not owned
 	 */
 	public void expansion() {
 		

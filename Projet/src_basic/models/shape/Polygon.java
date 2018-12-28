@@ -11,11 +11,13 @@ import javafx.scene.paint.Color;
  * 		<li>A table of points which represent the coordinates of the polygon's tops</li>
  * 	</li>
  * </p>
- * @author virginie
+ * @author virginie Meryl
  *
  */
 public class Polygon extends Shape{
-
+	/**
+	* the table of coordinates of the polygon's top
+	*/
 	private double[] x, y; 
 	
 	

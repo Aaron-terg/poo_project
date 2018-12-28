@@ -14,9 +14,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 /**
- * <b>Planet class represent the planet</b>
+ * <b>Planet class represents the planet</b>
  * <p>
- *     A planet has the following property:
+ *     A planet has the following properties:
  *     <ul>
  *         <li>The state of the planet showing if it is own or not</li>
  *         <li>The spaceship type it produce</li>

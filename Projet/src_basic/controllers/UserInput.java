@@ -18,7 +18,7 @@ import views.Game;
 
 /**
  * <b>User control utilities</b>
- * <p> The UserInput class define the control provide to the user in {@link javafx}</p>
+ * <p> The UserInput class defines the control provide to the user in {@link javafx}</p>
  * 
  * @author meryl, Virginie
  * @since src_basic

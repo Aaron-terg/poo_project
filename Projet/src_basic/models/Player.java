@@ -11,9 +11,9 @@ import javafx.scene.paint.Color;
 import models.planet.Planet;
 
 /**
- * <b>Player class represent the player</b>
+ * <b>Player class represents the player</b>
  * <p>
- *     A player has the following property:
+ *     A player has the following properties:
  *     <ul>
  *         <li>A collection of the planet owned</li>
  *         <li>its tag name</li>
@@ -102,9 +102,9 @@ public class Player implements Serializable{
 	\***********************************/
 	
 	/**
-	 * Get the set of planet owned by the player
+	 * Get the set of planets owned by the player
 	 * 
-	 * @return the set of planet owned by the player
+	 * @return the set of planets owned by the player
 	 * @see Player#territory
 	 * @see Planet
 	 */
@@ -115,7 +115,7 @@ public class Player implements Serializable{
 	/**
 	 * Get the fleets of the player
 	 * 
-	 * @return the set of planet owned by the player
+	 * @return the set of fleets owned by the player
 	 * @see Player#spacefleets
 	 * @see Spacefleet
 	 */
@@ -139,8 +139,8 @@ public class Player implements Serializable{
 	\***********************************/
 
 	/**
-	 * Check if the player can still playing
-	 * @return true if the number of planet owned by the player is greater than 0
+	 * Check if the player can still play
+	 * @return true if the number of planets owned by the player is greater than 0
 	 */
 	public boolean hasTerritory() {
 		return territory.size() != 0;
@@ -160,7 +160,7 @@ public class Player implements Serializable{
 	}
 	
 	/**
-	 * Add a planet in the list of planet owned by the player
+	 * Add a planet in the list of planets owned by the player
 	 * and set the owner of the planet
 	 * @param p the planet conquered
 	 * 

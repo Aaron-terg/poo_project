@@ -22,8 +22,13 @@ import javafx.scene.paint.Color;
  *
  */
 public class Circle extends Shape{
-	
+	/**
+	* the center's coordinates
+	*/
 	private double x, y;
+	/**
+	* the radius of the circle
+	*/
 	private double radius;
 	
 	/**

@@ -123,10 +123,10 @@ public class GameObject implements Renderable, Serializable{
 	}
 	
 	/**
-	 * Check if the couple of coordinate are inside the boundaries
+	 * Check if the couple of coordinates is inside the boundaries
 	 * @param x the x coordinate 
 	 * @param y the y coordinate
-	 * @return true if the couple of coordinate is inside the boundaries
+	 * @return true if the couple of coordinates is inside the boundaries
 	 */
 	public boolean isInside(double x, double y) {
 		return ((width < 0)? x >= (this.x + this.width) && x <= this.x :  x <= (this.x + this.width) && x >= this.x)
