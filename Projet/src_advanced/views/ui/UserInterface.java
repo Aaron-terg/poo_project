@@ -16,9 +16,10 @@ import views.button.RectangleButton;
 
 /**
  * The main user interface containing the basis of an canvas
- * 
+ * <p> RectangleButton extends {@link Group}</p>
  * @author meryl
  *
+ *@see SettingUniverseScreen
  * @version src_advanced
  * @since src_basic
  */

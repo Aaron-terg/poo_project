@@ -7,8 +7,9 @@ import models.shape.Polygon;
 import models.spaceship.StrongSpaceShip;
 
 /**
- * Square planet. Second planet with stronger spaceship type.
- * inherits from Planet
+ * <b>Square planet. Second planet with stronger spaceship type.</b>
+ * <p> SquarePlanet extends {@link Planet}</p>
+ *  <p> SquarePlanet implements {@link Serializable}</p>
  * @author meryl
  *
  * @see GameObject

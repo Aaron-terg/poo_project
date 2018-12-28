@@ -2,15 +2,23 @@ package models;
 
 import java.io.Serializable;
 
+import controllers.AI;
 import controllers.UserInput;
-import models.shape.Renderable;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import models.planet.Planet;
+import models.shape.Renderable;
+import models.spaceship.SpaceshipType;
 
 /**
  * <b>The GameObject is the basis of every element the user will interact with</b>
- * 
+ *  <p> GameObject implements {@link Renderable}, {@link Serializable}</p>
+ *  
+ *  @see Spacefleet
+ *  @see SpaceshipType
+ *  @see Planet
+ *  @see Player
+ *  @see UserInput
+ *  @see AI
  * @author meryl, Virginie
  * @version src_advanced
  * @since src_basic

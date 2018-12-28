@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 /**
  * The class Polygon extends the class Shape and represents a polygon
+ * <p> Polygon extends {@link Shape}</p>
  * <p>
  * 	 A polygon has the following properties : 
  * <ul>

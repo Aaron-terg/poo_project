@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import controllers.AI;
 import controllers.Universe;
 import controllers.UserInput;
 import javafx.scene.paint.Color;
@@ -12,6 +13,7 @@ import models.planet.Planet;
 
 /**
  * <b>Player class represent the player</b>
+ *  <p> Player implements {@link Serializable}</p>
  * <p>
  *     A player has the following property:
  *     <ul>
@@ -22,7 +24,7 @@ import models.planet.Planet;
  * 
  * @see Planet
  * @see SpaceShip
- * 
+ * @see AI
  * @author meryl, Virginie
  * @version src_advanced
  * @since src_basic

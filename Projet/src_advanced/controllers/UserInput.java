@@ -22,7 +22,17 @@ import views.Game;
 
 /**
  * <b>User control utilities</b>
+ * <p> Universe implements {@link Serializable}</p>
+
  * <p> The UserInput class define the control provide to the user in {@link javafx}</p>
+ * 
+ * @see Universe
+ * @see Player
+ * @see Planet
+ * @see SpaceshipType
+ * @see Spacefleet
+ * @see Line
+ * @see GameObject
  * 
  * @author meryl, Virginie
  * @version src_advanced

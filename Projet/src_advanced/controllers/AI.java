@@ -15,7 +15,10 @@ import models.spaceship.StrongSpaceShip;
 import views.Game;
 
 /**
- * The AI allow the user to measure himself to a challenging AI
+ * <b>The AI allow the user to measure himself to a challenging AI</b>
+ *  <p> AI extends {@link Player} </p>
+ *  <p> AI implements {@link Serializable}</p>
+ *  
  * @author meryl
  * @see Player
  * @see Universe

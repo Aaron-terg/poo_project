@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 
 /**
  * <b>The shape abstract class contains basics functions of a shape</b>
+ *  <p> Shape implements {@link Serializable}</p>
  * A Shape has the following properties : 
  * <p>
  * <ul>
@@ -17,9 +18,11 @@ import javafx.scene.paint.Color;
  * </p>
  * @see Planet
  * @see SpaceshipType
- *  @see Shape
+ *  @see Circle
+ *  @see Line
+ *  @see Polygon
  * @author meryl,Virginie
- * @version 2.1
+ * @version src_advanced
  */
 public abstract class Shape implements Serializable {
 	

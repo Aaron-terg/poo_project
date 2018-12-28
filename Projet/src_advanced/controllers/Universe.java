@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import models.GameObject;
+import javafx.scene.canvas.GraphicsContext;
 import models.planet.Planet;
 import models.shape.Renderable;
-import javafx.scene.canvas.GraphicsContext;
 
 /**
  * 
  * <b>Universe</b>
+ *  <p> Universe implements {@link Renderable}, {@link Serializable}</p>
  * <p>
  * 		Universe class is the manager. its tasks are:
  * 		<ul>
@@ -21,7 +21,7 @@ import javafx.scene.canvas.GraphicsContext;
  * 			<li>render them<li>
  * 
  * @see Planet
- * 
+ * @see UniverseSetting
  * @author meryl
  * @version src_basic
  *
@@ -46,7 +46,7 @@ public class Universe implements Renderable, Serializable{
 	public Universe(int nbPlanets) {
 		
 		
-		nbPlanets = Math.min(10, nbPlanets);
+		nbPlanets = Math.min(UniverseSetting.PLANET_MAX, nbPlanets);
 		nbPlanets = Math.max(2, nbPlanets);
 		int minDist = 100;
 		// Making of a set of planet

@@ -1,12 +1,13 @@
 package models.shape;
 
-import models.planet.Planet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import models.planet.Planet;
 
 /**
  * 
  * <b>Circle</b>
+ * <p> Circle extends {@link Shape}</p>
  * <p>
  * 		Circle class represents the shape of the planet. A circle has the following properties:
  * 		<ul>

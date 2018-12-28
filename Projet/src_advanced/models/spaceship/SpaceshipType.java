@@ -1,20 +1,18 @@
 package models.spaceship;
 
 import java.io.Serializable;
-import java.util.Random;
 
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import models.GameObject;
 import models.Player;
-import models.Spacefleet;
 import models.planet.Planet;
-import models.shape.Polygon;
 import models.shape.Renderable;
 import models.shape.Shape;
 
 /**
  * <b>SpaceShipType abstract class represent the ship</b>
+ * <p> SpaceshipType extends {@link GameObject}</p>
+ * <p> SpaceshipType implements {@link Renderable}, {@link Serializable}</p>
  * <p>
  *     A SpaceShip has the following property:
  *     <ul>
@@ -27,6 +25,9 @@ import models.shape.Shape;
  *     </li>
  * </p>
  * 
+ * @see BasicSpaceshipType
+ * @see StrongSpaceShip
+ * @see FastSpaceship
  * @author meryl
  * @version src_advanced
  * **/

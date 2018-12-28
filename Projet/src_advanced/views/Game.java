@@ -136,10 +136,11 @@ public class Game extends Application{
 			@Override
 			public void handle(KeyEvent e) {
 				KeyCode code = e.getCode();
-				if(code.equals(KeyCode.P) || code.equals(KeyCode.ESCAPE)) {
+				if(code.equals(KeyCode.P))
 					pause();
-
-				}if (code.equals(KeyCode.S) && e.isControlDown()) {
+				if(code.equals(KeyCode.ESCAPE))
+					gameRenderer();
+				if (code.equals(KeyCode.S) && e.isControlDown()) {
 					saveGame();
 				}
 				if (code.equals(KeyCode.P) && e.isControlDown()) {
@@ -261,7 +262,7 @@ public class Game extends Application{
 	public void gameSetting() {
 		intermediaryUi.setVisible(true);
 		canvas.setVisible(false);
-		uSet = new UniverseSetting(15, 2, true);
+		uSet = new UniverseSetting(5, 2, true);
 
 		intermediaryUi.refreshInterface((new SettingUniverseScreen(this, uSet)).getChildren());
 	}
@@ -281,7 +282,7 @@ public class Game extends Application{
 
 		// setting of the controller for the player
 		if(uSet.humanPlayer) {
-			Player user = new Player("Aaron Terg", uSet.color[3]);
+			Player user = new Player("Aaron Terg", uSet.color[0]);
 			userIn = new UserInput(user);
 
 			user.firstPlanet(universe);
@@ -300,7 +301,8 @@ public class Game extends Application{
 		
 		// create the AI
 		for (int i = 0; i < uSet.nbPlayer; i++) {
-			Player ia = new AI(universe, "AI" + i, uSet.color[i]);
+			int colorIndex = players.size();
+			Player ia = new AI(universe, "AI_" + i+1, uSet.color[colorIndex]);
 			players.add(ia);
 		}
 		
@@ -330,47 +332,43 @@ public class Game extends Application{
 		for (Iterator<Player> playerIt = players.iterator(); playerIt.hasNext();) {
 			Player player = playerIt.next();
 
-			// test if the player can play
-			if(player.hasTerritory() || player.playerTag == "PIRATE_AI") { 
+			// test if the player can play or player have spacefleet ready to be sent?
+			if(player.inAction() || player.hasTerritory() || player.playerTag == "PIRATE_AI") { 
 
-				// player have spacefleet ready to be sent?
-				if(player.inAction()) { 
+				for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
+					Spacefleet spacefleet = fleetIt.next();
 
-					for (Iterator<Spacefleet> fleetIt = player.getFleets().iterator(); fleetIt.hasNext();) {
-						Spacefleet spacefleet = fleetIt.next();
+					// launch the first wave of a spacefleet
+					if(spacefleet.fleetSize() == 0)
+						spacefleet.takeOff();
 
-						// launch the first wave of a spacefleet
-						if(spacefleet.fleetSize() == 0)
-							spacefleet.takeOff();
+					for (Iterator<SpaceshipType> iterator = spacefleet.fleet().iterator(); iterator.hasNext();) {
 
-						for (Iterator<SpaceshipType> iterator = spacefleet.fleet().iterator(); iterator.hasNext();) {
+						SpaceshipType spaceshipType = iterator.next();
 
-							SpaceshipType spaceshipType = iterator.next();
+						Planet planet = spacefleet.getDestination();
 
-							Planet planet = spacefleet.getDestination();
+						if(planet == null) //exit if the spaceship doesn't have destination
+							break;
 
-							if(planet == null) //exit if the spaceship doesn't have destination
-								break;
-
-							// spaceship collision with planet
-							if(planet.intersects(spaceshipType)) {
-								planet.spaceShipEnter(spaceshipType);
-								iterator.remove();
-							}
-							else{
-								for(Planet obstacle : universe.getPlanets()) {
-									// if -> fluidifie les collisions 
-									// while assure que les planetes ne soit pas dans la planete
-									// TODO improve getAround 
-//									double radiusSum = (obstacle.circonstrictRadius() + spaceshipType.circonstrictRadius());
-//									if(Math.sqrt(obstacle.distanceCarre(spaceshipType.getX(), spaceshipType.getY()))
-//											< radiusSum && !obstacle.equals(planet)) {
-									if(obstacle.intersects(spaceshipType)) {
-										spaceshipType.getAround(obstacle);
-									}
+						// spaceship collision with planet
+						if(planet.intersects(spaceshipType)) {
+							planet.spaceShipEnter(spaceshipType);
+							iterator.remove();
+						}
+						else{
+							for(Planet obstacle : universe.getPlanets()) {
+								// if -> fluidifie les collisions 
+								// while assure que les planetes ne soit pas dans la planete
+								// TODO improve getAround 
+								//									double radiusSum = (obstacle.circonstrictRadius() + spaceshipType.circonstrictRadius());
+								//									if(Math.sqrt(obstacle.distanceCarre(spaceshipType.getX(), spaceshipType.getY()))
+								//											< radiusSum && !obstacle.equals(planet)) {
+								if(obstacle.intersects(spaceshipType)) {
+									spaceshipType.getAround(obstacle);
 								}
-								spaceshipType.goTo(planet);
 							}
+							spaceshipType.goTo(planet);
 						}
 						if(spacefleet.isArrived())
 							fleetIt.remove();
@@ -447,7 +445,7 @@ public class Game extends Application{
         });
 		nbBtn--;
 		
-		RectangleButton continueBtn = new RectangleButton("Continue", centerX,  centerY + ((btnHeight * nbBtn)) + 25 * (nbBtn -1), 2*btnWidth, btnHeight);
+		RectangleButton continueBtn = new RectangleButton("Resume", centerX,  centerY + ((btnHeight * nbBtn)) + 25 * (nbBtn -1), 2*btnWidth, btnHeight);
 		continueBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
 			@Override
@@ -477,6 +475,7 @@ public class Game extends Application{
 				centerX = (Game.WIDTH / 2),
 				centerY = (Game.HEIGHT /2);
 		
+		String txt = (!uSet.humanPlayer || players.get(0) instanceof AI )? "Too Bad..." : "Congratulations!";
 		int nbBtn = 3;
 		RectangleButton restartBtn = new RectangleButton("Restart", centerX ,  centerY + ((btnHeight * nbBtn))  + 25 * (nbBtn -1), 2* btnWidth, btnHeight);
 		restartBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -501,7 +500,7 @@ public class Game extends Application{
 		
 		Group group = new Group();
 		group.getChildren().addAll(quitBtn, restartBtn);
-		intermediaryUi.refreshInterface((new UserInterface("Congratulation!", group.getChildren(), 2)).getChildren());
+		intermediaryUi.refreshInterface((new UserInterface(txt, group.getChildren(), 2)).getChildren());
 		
 		intermediaryUi.setVisible(true);
 		canvas.setVisible(false);

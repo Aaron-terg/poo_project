@@ -3,10 +3,18 @@ package controllers;
 import java.io.Serializable;
 
 import javafx.scene.paint.Color;
+import models.Player;
+import views.ui.UserInterface;
 
 /**
- * The universe's parameters adjustable from the user interface.
- * 
+ * <b>The universe's parameters adjustable from the user interface.</b>
+ * <p> Universe implements{@link Serializable}</p>
+ *
+ * @see Universe
+ * @see Player
+ * @see Planet
+ * @see UserInterface
+ * @see UserInput
  * @author meryl
  *
  */
@@ -18,6 +26,10 @@ public class UniverseSetting implements Serializable{
 	 * </ul>
 	 */
 	public int nbPlanet, nbPlayer;
+	/**
+	 * The max number allowed for the src_advanced
+	 */
+	public final static int PLANET_MAX = 10;
 	
 	/**
 	 * Defined if there is a need for a user controller.
@@ -40,10 +52,11 @@ public class UniverseSetting implements Serializable{
 		this.nbPlayer = nbPlayer;
 		this.humanPlayer = humanPlayer;
 		color = new Color[] {
+				Color.RED,
 				Color.GREEN,
 				Color.AQUAMARINE,
-				Color.BLUEVIOLET,
-				Color.RED
+				Color.BLUEVIOLET
+				
 		};
 	}
 	 

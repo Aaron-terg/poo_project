@@ -1,12 +1,15 @@
 package models.planet;
 
+import java.io.Serializable;
+
 import models.GameObject;
 import models.shape.Polygon;
 import models.spaceship.FastSpaceship;
 
 /**
- * triangle planet. third planet with faster but weaker spaceship type.
- * inherits from Planet
+ * <b>triangle planet. third planet with faster but weaker spaceship type.</b>
+ * <p> TrianglePlanet extends {@link Planet}</p>
+ *  <p> TrianglePlanet implements {@link Serializable}</p>
  * @author meryl
  *
  * @see GameObject

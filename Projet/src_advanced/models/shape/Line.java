@@ -3,6 +3,8 @@ package models.shape;
 import java.io.Serializable;
 /**
  * The class "Line" represents a Line: 
+ * <p> Line extends {@link Shape}</p>
+ *  <p> SpaceshipType implements {@link Serializable}</p>
  * <p>
  * 
  * 		The line has the following properties 

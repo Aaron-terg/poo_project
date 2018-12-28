@@ -17,6 +17,7 @@ import views.button.RemoveRectangleButton;
 
 /**
  * <b>The setting screen</b>
+ * <p> SettingUniverseScreen extends {@link UserInterface}</p
  * <p>Here you can set the number  of player / planet and choose if you want to play or just watch the AI fighting each other</b>
  * @author meryl
  *
@@ -170,6 +171,8 @@ public class SettingUniverseScreen extends UserInterface{
 					rmBtn.setVisible(false);
 				else 
 					rmBtn.setVisible(true);
+				if(universe.nbPlanet < UniverseSetting.PLANET_MAX)
+					addBtn2.setVisible(true);
 
 			}
 		});
@@ -179,7 +182,7 @@ public class SettingUniverseScreen extends UserInterface{
 
 			@Override
 			public void handle(MouseEvent event) {
-				int maxPlanet = 15;
+				int maxPlanet = UniverseSetting.PLANET_MAX;
 				if(universe.nbPlanet < maxPlanet) {
 					universe.nbPlanet++;
 					nbplanet.setText("" + universe.nbPlanet);

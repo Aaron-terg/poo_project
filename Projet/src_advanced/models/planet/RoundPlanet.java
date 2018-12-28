@@ -7,7 +7,9 @@ import models.shape.Circle;
 import models.spaceship.BasicSpaceshipType;
 
 /**
- * Round planet. The basic planet with basic spaceship type.
+ * <b>Round planet. The basic planet with basic spaceship type.</b>
+ * <p> RoundPlanet extends {@link Planet}</p>
+ *  <p> RoundPlanet implements {@link Serializable}</p>
  * 
  * inherits from Planet
 

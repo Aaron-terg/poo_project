@@ -15,6 +15,8 @@ import views.Game;
 
 /**
  * <b>Planet abstract class representing the planet</b>
+ * <p> Planet extends {@link GameObject}</p>
+ *  <p> Planet implements {@link Renderable}, {@link Serializable}</p>
  * <p>
  *     A planet has the following property:
  *     <ul>

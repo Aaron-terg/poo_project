@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import controllers.AI;
+import controllers.UserInput;
 import javafx.scene.canvas.GraphicsContext;
 import models.planet.Planet;
 import models.shape.Renderable;
@@ -11,7 +13,15 @@ import models.spaceship.SpaceshipType;
 
 /**
  * <b>A commando of spaceship braving the universe to conquer planets</b>
- * 
+ * <p> Spacefleet extends {@link GameObject}</p>
+ *  <p> Spacefleet implements {@link Renderable}, {@link Serializable}</p>
+ *  
+ *  @see GameObject
+ *  @see SpaceshipType
+ *  @see Planet
+ *  @see Player
+ *  @see UserInput
+ *  @see AI
  * @author meryl, Virginie
  * @version src_advanced
  * @since src_basic

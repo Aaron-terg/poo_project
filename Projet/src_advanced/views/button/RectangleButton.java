@@ -12,8 +12,8 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 /**
- * <b>A javafx button with a custom rectangle</b>
- * 
+ * <b>A javafx button with custom property</b>
+ * <p> RectangleButton extends {@link Group}</p>
  * @author meryl
  * @see AddRectangleButton
  * @see RemoveRectangleButton 
